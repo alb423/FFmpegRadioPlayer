@@ -16,7 +16,6 @@
 #define DEFAULT_BROADCAST_URL @"hinet_radio_json.json"
 
 @interface ViewController : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource>
-//@interface ViewController : UIViewController <UIPickerViewDelegate>
 {
 	AVFormatContext *pFormatCtx;    
     AVCodecContext *pAudioCodecCtx;

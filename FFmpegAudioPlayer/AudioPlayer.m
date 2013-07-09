@@ -83,8 +83,8 @@ void HandleOutputBuffer (
     if([audioPacketQueue count]==0)
     {
         int err, vSilenceDataSize = 1024*64;
-#if 0
-        if(vSlienceCount>10)
+#if 1
+        if(vSlienceCount>20)
         {
             // Stop fill silence, since the data may be eof or error happen
             //[self Stop:false];
@@ -147,7 +147,10 @@ void HandleOutputBuffer (
                 if(len<0){
                     gotFrame = 0;
                     printf("Error while decoding\n");
-                    break;
+                    // 20130609 modified start
+                    return -1;
+                    //break;
+                    // 20130609 modified end
                 }
                 if(gotFrame>0) {
                     int outCount=0;
@@ -519,7 +522,7 @@ void HandleOutputBuffer (
     AudioQueueSetParameter(mQueue, kAudioQueueParam_Volume, vVolume);
 }
 
-- (void) Play{
+- (int) Play{
     OSStatus eErr=noErr;
     
     int i;
@@ -529,7 +532,12 @@ void HandleOutputBuffer (
     
     for(i=0;i<AUDIO_BUFFER_QUANTITY;i++)
     {
-        [self putAVPacketsIntoAudioQueue:mBuffers[i]];
+        eErr = [self putAVPacketsIntoAudioQueue:mBuffers[i]];
+        if(eErr!=noErr)
+        {
+            NSLog(@"putAVPacketsIntoAudioQueue() error %ld", eErr);
+            return -1;
+        }
     }
     
     // 20130427 Test temparally    
@@ -540,16 +548,17 @@ void HandleOutputBuffer (
     if(eErr!=noErr)
     {
         NSLog(@"AudioQueuePrime() error %ld", eErr);
-        //return;
+        return -1;
     }
 #endif
     
-    //
     eErr=AudioQueueStart(mQueue, nil);
     if(eErr!=noErr)
     {
         NSLog(@"AudioQueueStart() error %ld", eErr);
+        return -1;
     }
+    return 0;
 }
 
 -(void)Stop:(BOOL)bStopImmediatelly{

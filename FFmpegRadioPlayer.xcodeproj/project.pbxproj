@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9A22811417640C2F00BB4CED /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A22811317640C2F00BB4CED /* iAd.framework */; };
 		9A305E6817264BA7008A747D /* Visualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A305E6717264BA7008A747D /* Visualizer.m */; };
 		9A6674821721133300FB478C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674811721133300FB478C /* UIKit.framework */; };
 		9A6674841721133300FB478C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674831721133300FB478C /* Foundation.framework */; };
@@ -21,8 +22,6 @@
 		9A6674A91721133400FB478C /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674A81721133400FB478C /* SenTestingKit.framework */; };
 		9A6674AA1721133400FB478C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674811721133300FB478C /* UIKit.framework */; };
 		9A6674AB1721133400FB478C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674831721133300FB478C /* Foundation.framework */; };
-		9A6674B31721133400FB478C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9A6674B11721133400FB478C /* InfoPlist.strings */; };
-		9A6674B61721133400FB478C /* FFmpegAudioPlayerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A6674B51721133400FB478C /* FFmpegAudioPlayerTests.m */; };
 		9A6674C3172113AC00FB478C /* AudioPacketQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A6674C0172113AC00FB478C /* AudioPacketQueue.m */; };
 		9A6674C4172113AC00FB478C /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A6674C2172113AC00FB478C /* AudioPlayer.m */; };
 		9A6674CF1721157900FB478C /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674C71721157900FB478C /* libavcodec.a */; };
@@ -38,8 +37,6 @@
 		9A6674E1172119AA00FB478C /* libbz2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674DB1721195700FB478C /* libbz2.1.0.dylib */; };
 		9A6674E317211FCB00FB478C /* AudioPacketQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A6674C0172113AC00FB478C /* AudioPacketQueue.m */; };
 		9A6674E517211FCB00FB478C /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A6674C2172113AC00FB478C /* AudioPlayer.m */; };
-		9A6674E91721238700FB478C /* AAC_12khz_Mono_5.aac in Resources */ = {isa = PBXBuildFile; fileRef = 9A6674E81721238700FB478C /* AAC_12khz_Mono_5.aac */; };
-		9A7F6D44174B3E6100BF347D /* 19_Austria.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9A7F6D43174B3E6100BF347D /* 19_Austria.mp3 */; };
 		9A87A154175DA51B00C91DA6 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9A87A150175DA51B00C91DA6 /* MainStoryboard_iPad.storyboard */; };
 		9A87A155175DA51B00C91DA6 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9A87A152175DA51B00C91DA6 /* MainStoryboard_iPhone.storyboard */; };
 		9AB634261763182D00D6B177 /* hinet_radio_json.json in Resources */ = {isa = PBXBuildFile; fileRef = 9AB634251763182D00D6B177 /* hinet_radio_json.json */; };
@@ -47,7 +44,8 @@
 		9AF84B1C172FB95700A56189 /* output.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 9AF84B1B172FB95700A56189 /* output.pcm */; };
 		B20543361726DC6700BC6067 /* Visualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A305E6717264BA7008A747D /* Visualizer.m */; };
 		B2070F42172D766C00745C49 /* AudioUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = B2070F41172D766C00745C49 /* AudioUtilities.m */; };
-		B29584AD172BCF14007D0DCB /* test_mono_8000Hz_8bit_PCM.wav in Resources */ = {isa = PBXBuildFile; fileRef = B29584AC172BCF13007D0DCB /* test_mono_8000Hz_8bit_PCM.wav */; };
+		B227CE8B1776CB0A00CAF8F7 /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B227CE8A1776CB0A00CAF8F7 /* SecondViewController.m */; };
+		B2CA3198177360B9004261DF /* GetRadioProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = B2CA3197177360B9004261DF /* GetRadioProgram.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,16 +59,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9A22811317640C2F00BB4CED /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		9A305E6617264BA7008A747D /* Visualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Visualizer.h; sourceTree = "<group>"; };
 		9A305E6717264BA7008A747D /* Visualizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Visualizer.m; sourceTree = "<group>"; };
-		9A66747E1721133300FB478C /* FFmpegAudioPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FFmpegAudioPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9A66747E1721133300FB478C /* FFmpegRadioPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FFmpegRadioPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A6674811721133300FB478C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		9A6674831721133300FB478C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		9A6674851721133300FB478C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		9A6674891721133300FB478C /* FFmpegAudioPlayer-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FFmpegAudioPlayer-Info.plist"; sourceTree = "<group>"; };
+		9A6674891721133300FB478C /* FFmpegRadioPlayer-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FFmpegRadioPlayer-Info.plist"; sourceTree = "<group>"; };
 		9A66748B1721133300FB478C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		9A66748D1721133300FB478C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		9A66748F1721133300FB478C /* FFmpegAudioPlayer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FFmpegAudioPlayer-Prefix.pch"; sourceTree = "<group>"; };
+		9A66748F1721133300FB478C /* FFmpegRadioPlayer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FFmpegRadioPlayer-Prefix.pch"; sourceTree = "<group>"; };
 		9A6674901721133300FB478C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		9A6674911721133300FB478C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		9A6674931721133300FB478C /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
@@ -78,12 +77,8 @@
 		9A6674971721133300FB478C /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		9A66749F1721133300FB478C /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		9A6674A01721133300FB478C /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		9A6674A71721133400FB478C /* FFmpegAudioPlayerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FFmpegAudioPlayerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9A6674A71721133400FB478C /* FFmpegRadioPlayerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FFmpegRadioPlayerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A6674A81721133400FB478C /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		9A6674B01721133400FB478C /* FFmpegAudioPlayerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FFmpegAudioPlayerTests-Info.plist"; sourceTree = "<group>"; };
-		9A6674B21721133400FB478C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		9A6674B41721133400FB478C /* FFmpegAudioPlayerTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FFmpegAudioPlayerTests.h; sourceTree = "<group>"; };
-		9A6674B51721133400FB478C /* FFmpegAudioPlayerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FFmpegAudioPlayerTests.m; sourceTree = "<group>"; };
 		9A6674BF172113AC00FB478C /* AudioPacketQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioPacketQueue.h; sourceTree = "<group>"; };
 		9A6674C0172113AC00FB478C /* AudioPacketQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioPacketQueue.m; sourceTree = "<group>"; };
 		9A6674C1172113AC00FB478C /* AudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioPlayer.h; sourceTree = "<group>"; };
@@ -99,8 +94,6 @@
 		9A6674D9172115B600FB478C /* libiconv.2.4.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.2.4.0.dylib; path = usr/lib/libiconv.2.4.0.dylib; sourceTree = SDKROOT; };
 		9A6674DB1721195700FB478C /* libbz2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.1.0.dylib; path = usr/lib/libbz2.1.0.dylib; sourceTree = SDKROOT; };
 		9A6674DD1721196B00FB478C /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		9A6674E81721238700FB478C /* AAC_12khz_Mono_5.aac */ = {isa = PBXFileReference; lastKnownFileType = file; path = AAC_12khz_Mono_5.aac; sourceTree = "<group>"; };
-		9A7F6D43174B3E6100BF347D /* 19_Austria.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 19_Austria.mp3; sourceTree = "<group>"; };
 		9A87A151175DA51B00C91DA6 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
 		9A87A153175DA51B00C91DA6 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
 		9AB634251763182D00D6B177 /* hinet_radio_json.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = hinet_radio_json.json; sourceTree = "<group>"; };
@@ -108,7 +101,10 @@
 		9AF84B1B172FB95700A56189 /* output.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = output.pcm; sourceTree = "<group>"; };
 		B2070F40172D766C00745C49 /* AudioUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioUtilities.h; sourceTree = "<group>"; };
 		B2070F41172D766C00745C49 /* AudioUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioUtilities.m; sourceTree = "<group>"; };
-		B29584AC172BCF13007D0DCB /* test_mono_8000Hz_8bit_PCM.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = test_mono_8000Hz_8bit_PCM.wav; path = ../test_mono_8000Hz_8bit_PCM.wav; sourceTree = "<group>"; };
+		B227CE891776CB0A00CAF8F7 /* SecondViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SecondViewController.h; path = ../SecondViewController.h; sourceTree = "<group>"; };
+		B227CE8A1776CB0A00CAF8F7 /* SecondViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SecondViewController.m; path = ../SecondViewController.m; sourceTree = "<group>"; };
+		B2CA3196177360B9004261DF /* GetRadioProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetRadioProgram.h; sourceTree = "<group>"; };
+		B2CA3197177360B9004261DF /* GetRadioProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetRadioProgram.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +112,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A22811417640C2F00BB4CED /* iAd.framework in Frameworks */,
 				9ADF204E1761D4D80018ACF3 /* AVFoundation.framework in Frameworks */,
 				9A6674E1172119AA00FB478C /* libbz2.1.0.dylib in Frameworks */,
 				9A6674DE1721196B00FB478C /* libz.dylib in Frameworks */,
@@ -151,7 +148,6 @@
 			isa = PBXGroup;
 			children = (
 				9A6674871721133300FB478C /* FFmpegAudioPlayer */,
-				9A6674AE1721133400FB478C /* FFmpegAudioPlayerTests */,
 				9A6674801721133300FB478C /* Frameworks */,
 				9A66747F1721133300FB478C /* Products */,
 			);
@@ -160,8 +156,8 @@
 		9A66747F1721133300FB478C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				9A66747E1721133300FB478C /* FFmpegAudioPlayer.app */,
-				9A6674A71721133400FB478C /* FFmpegAudioPlayerTests.octest */,
+				9A66747E1721133300FB478C /* FFmpegRadioPlayer.app */,
+				9A6674A71721133400FB478C /* FFmpegRadioPlayerTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -169,6 +165,7 @@
 		9A6674801721133300FB478C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9A22811317640C2F00BB4CED /* iAd.framework */,
 				9ADF204D1761D4D80018ACF3 /* AVFoundation.framework */,
 				9A6674DD1721196B00FB478C /* libz.dylib */,
 				9A6674DB1721195700FB478C /* libbz2.1.0.dylib */,
@@ -188,16 +185,16 @@
 				9AB634251763182D00D6B177 /* hinet_radio_json.json */,
 				9A87A150175DA51B00C91DA6 /* MainStoryboard_iPad.storyboard */,
 				9A87A152175DA51B00C91DA6 /* MainStoryboard_iPhone.storyboard */,
-				9A7F6D43174B3E6100BF347D /* 19_Austria.mp3 */,
 				9AF84B1B172FB95700A56189 /* output.pcm */,
-				B29584AC172BCF13007D0DCB /* test_mono_8000Hz_8bit_PCM.wav */,
-				9A6674E81721238700FB478C /* AAC_12khz_Mono_5.aac */,
 				9A305E6617264BA7008A747D /* Visualizer.h */,
 				9A305E6717264BA7008A747D /* Visualizer.m */,
 				9A6674C61721156200FB478C /* ffmpeg */,
+				B227CE881776C49F00CAF8F7 /* Radio */,
 				9A6674C5172113B300FB478C /* AudioPlay */,
 				9A6674901721133300FB478C /* AppDelegate.h */,
 				9A6674911721133300FB478C /* AppDelegate.m */,
+				B227CE891776CB0A00CAF8F7 /* SecondViewController.h */,
+				B227CE8A1776CB0A00CAF8F7 /* SecondViewController.m */,
 				9A66749F1721133300FB478C /* ViewController.h */,
 				9A6674A01721133300FB478C /* ViewController.m */,
 				9A6674881721133300FB478C /* Supporting Files */,
@@ -208,32 +205,13 @@
 		9A6674881721133300FB478C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				9A6674891721133300FB478C /* FFmpegAudioPlayer-Info.plist */,
+				9A6674891721133300FB478C /* FFmpegRadioPlayer-Info.plist */,
 				9A66748A1721133300FB478C /* InfoPlist.strings */,
 				9A66748D1721133300FB478C /* main.m */,
-				9A66748F1721133300FB478C /* FFmpegAudioPlayer-Prefix.pch */,
+				9A66748F1721133300FB478C /* FFmpegRadioPlayer-Prefix.pch */,
 				9A6674931721133300FB478C /* Default.png */,
 				9A6674951721133300FB478C /* Default@2x.png */,
 				9A6674971721133300FB478C /* Default-568h@2x.png */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		9A6674AE1721133400FB478C /* FFmpegAudioPlayerTests */ = {
-			isa = PBXGroup;
-			children = (
-				9A6674B41721133400FB478C /* FFmpegAudioPlayerTests.h */,
-				9A6674B51721133400FB478C /* FFmpegAudioPlayerTests.m */,
-				9A6674AF1721133400FB478C /* Supporting Files */,
-			);
-			path = FFmpegAudioPlayerTests;
-			sourceTree = "<group>";
-		};
-		9A6674AF1721133400FB478C /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				9A6674B01721133400FB478C /* FFmpegAudioPlayerTests-Info.plist */,
-				9A6674B11721133400FB478C /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -265,12 +243,21 @@
 			name = ffmpeg;
 			sourceTree = "<group>";
 		};
+		B227CE881776C49F00CAF8F7 /* Radio */ = {
+			isa = PBXGroup;
+			children = (
+				B2CA3196177360B9004261DF /* GetRadioProgram.h */,
+				B2CA3197177360B9004261DF /* GetRadioProgram.m */,
+			);
+			name = Radio;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9A66747D1721133300FB478C /* FFmpegAudioPlayer */ = {
+		9A66747D1721133300FB478C /* FFmpegRadioPlayer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9A6674B91721133400FB478C /* Build configuration list for PBXNativeTarget "FFmpegAudioPlayer" */;
+			buildConfigurationList = 9A6674B91721133400FB478C /* Build configuration list for PBXNativeTarget "FFmpegRadioPlayer" */;
 			buildPhases = (
 				9A66747A1721133300FB478C /* Sources */,
 				9A66747B1721133300FB478C /* Frameworks */,
@@ -280,14 +267,14 @@
 			);
 			dependencies = (
 			);
-			name = FFmpegAudioPlayer;
+			name = FFmpegRadioPlayer;
 			productName = FFmpegAudioPlayer;
-			productReference = 9A66747E1721133300FB478C /* FFmpegAudioPlayer.app */;
+			productReference = 9A66747E1721133300FB478C /* FFmpegRadioPlayer.app */;
 			productType = "com.apple.product-type.application";
 		};
-		9A6674A61721133400FB478C /* FFmpegAudioPlayerTests */ = {
+		9A6674A61721133400FB478C /* FFmpegRadioPlayerTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9A6674BC1721133400FB478C /* Build configuration list for PBXNativeTarget "FFmpegAudioPlayerTests" */;
+			buildConfigurationList = 9A6674BC1721133400FB478C /* Build configuration list for PBXNativeTarget "FFmpegRadioPlayerTests" */;
 			buildPhases = (
 				9A6674A21721133400FB478C /* Sources */,
 				9A6674A31721133400FB478C /* Frameworks */,
@@ -299,9 +286,9 @@
 			dependencies = (
 				9A6674AD1721133400FB478C /* PBXTargetDependency */,
 			);
-			name = FFmpegAudioPlayerTests;
+			name = FFmpegRadioPlayerTests;
 			productName = FFmpegAudioPlayerTests;
-			productReference = 9A6674A71721133400FB478C /* FFmpegAudioPlayerTests.octest */;
+			productReference = 9A6674A71721133400FB478C /* FFmpegRadioPlayerTests.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -313,7 +300,7 @@
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Liao KuoHsun";
 			};
-			buildConfigurationList = 9A6674791721133300FB478C /* Build configuration list for PBXProject "FFmpegAudioPlayer" */;
+			buildConfigurationList = 9A6674791721133300FB478C /* Build configuration list for PBXProject "FFmpegRadioPlayer" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -325,8 +312,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				9A66747D1721133300FB478C /* FFmpegAudioPlayer */,
-				9A6674A61721133400FB478C /* FFmpegAudioPlayerTests */,
+				9A66747D1721133300FB478C /* FFmpegRadioPlayer */,
+				9A6674A61721133400FB478C /* FFmpegRadioPlayerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -340,9 +327,6 @@
 				9A6674941721133300FB478C /* Default.png in Resources */,
 				9A6674961721133300FB478C /* Default@2x.png in Resources */,
 				9A6674981721133300FB478C /* Default-568h@2x.png in Resources */,
-				9A6674E91721238700FB478C /* AAC_12khz_Mono_5.aac in Resources */,
-				B29584AD172BCF14007D0DCB /* test_mono_8000Hz_8bit_PCM.wav in Resources */,
-				9A7F6D44174B3E6100BF347D /* 19_Austria.mp3 in Resources */,
 				9A87A154175DA51B00C91DA6 /* MainStoryboard_iPad.storyboard in Resources */,
 				9A87A155175DA51B00C91DA6 /* MainStoryboard_iPhone.storyboard in Resources */,
 				9AB634261763182D00D6B177 /* hinet_radio_json.json in Resources */,
@@ -353,7 +337,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9A6674B31721133400FB478C /* InfoPlist.strings in Resources */,
 				9AF84B1C172FB95700A56189 /* output.pcm in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -388,6 +371,8 @@
 				9A6674921721133300FB478C /* AppDelegate.m in Sources */,
 				9A6674A11721133300FB478C /* ViewController.m in Sources */,
 				B2070F42172D766C00745C49 /* AudioUtilities.m in Sources */,
+				B2CA3198177360B9004261DF /* GetRadioProgram.m in Sources */,
+				B227CE8B1776CB0A00CAF8F7 /* SecondViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,7 +380,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9A6674B61721133400FB478C /* FFmpegAudioPlayerTests.m in Sources */,
 				9A6674C3172113AC00FB478C /* AudioPacketQueue.m in Sources */,
 				9A6674C4172113AC00FB478C /* AudioPlayer.m in Sources */,
 				9A305E6817264BA7008A747D /* Visualizer.m in Sources */,
@@ -407,7 +391,7 @@
 /* Begin PBXTargetDependency section */
 		9A6674AD1721133400FB478C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 9A66747D1721133300FB478C /* FFmpegAudioPlayer */;
+			target = 9A66747D1721133300FB478C /* FFmpegRadioPlayer */;
 			targetProxy = 9A6674AC1721133400FB478C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -417,14 +401,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				9A66748B1721133300FB478C /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		9A6674B11721133400FB478C /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				9A6674B21721133400FB478C /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -528,12 +504,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "FFmpegAudioPlayer/FFmpegAudioPlayer-Prefix.pch";
+				GCC_PREFIX_HEADER = "FFmpegAudioPlayer/FFmpegRadioPlayer-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(inheriented)";
 				"HEADER_SEARCH_PATHS[arch=armv7]" = "\"$(SRCROOT)/ffmpeg/compiled/armv7-neon/include\"";
 				"HEADER_SEARCH_PATHS[arch=armv7s]" = "\"$(SRCROOT)/ffmpeg/compiled/armv7s-neon/include\"";
 				"HEADER_SEARCH_PATHS[sdk=iphonesimulator*]" = "\"$(SRCROOT)/ffmpeg/compiled/i386/include\"";
-				INFOPLIST_FILE = "FFmpegAudioPlayer/FFmpegAudioPlayer-Info.plist";
+				INFOPLIST_FILE = "FFmpegAudioPlayer/FFmpegRadioPlayer-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/ffmpeg/compiled/i386/lib\"",
@@ -541,7 +517,7 @@
 				"LIBRARY_SEARCH_PATHS[arch=armv7]" = "\"$(SRCROOT)/ffmpeg/compiled/armv7-neon/lib\"";
 				"LIBRARY_SEARCH_PATHS[arch=armv7s]" = "\"$(SRCROOT)/ffmpeg/compiled/armv7s-neon/lib\"";
 				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = "\"$(SRCROOT)/ffmpeg/compiled/i386/lib\"";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = FFmpegRadioPlayer;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -550,17 +526,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "FFmpegAudioPlayer/FFmpegAudioPlayer-Prefix.pch";
+				GCC_PREFIX_HEADER = "FFmpegAudioPlayer/FFmpegRadioPlayer-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(inheriented)";
 				"HEADER_SEARCH_PATHS[arch=armv7]" = "\"$(SRCROOT)/ffmpeg/compiled/armv7-neon/include\"";
 				"HEADER_SEARCH_PATHS[arch=armv7s]" = "\"$(SRCROOT)/ffmpeg/compiled/armv7s-neon/include\"";
 				"HEADER_SEARCH_PATHS[sdk=iphonesimulator*]" = "\"$(SRCROOT)/ffmpeg/compiled/i386/include\"";
-				INFOPLIST_FILE = "FFmpegAudioPlayer/FFmpegAudioPlayer-Info.plist";
+				INFOPLIST_FILE = "FFmpegAudioPlayer/FFmpegRadioPlayer-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/ffmpeg/compiled/i386/lib\"",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = FFmpegRadioPlayer;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -576,7 +552,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FFmpegAudioPlayer/FFmpegAudioPlayer-Prefix.pch";
 				INFOPLIST_FILE = "FFmpegAudioPlayerTests/FFmpegAudioPlayerTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = FFmpegRadioPlayerTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -593,7 +569,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FFmpegAudioPlayer/FFmpegAudioPlayer-Prefix.pch";
 				INFOPLIST_FILE = "FFmpegAudioPlayerTests/FFmpegAudioPlayerTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = FFmpegRadioPlayerTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -602,7 +578,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9A6674791721133300FB478C /* Build configuration list for PBXProject "FFmpegAudioPlayer" */ = {
+		9A6674791721133300FB478C /* Build configuration list for PBXProject "FFmpegRadioPlayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9A6674B71721133400FB478C /* Debug */,
@@ -611,7 +587,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9A6674B91721133400FB478C /* Build configuration list for PBXNativeTarget "FFmpegAudioPlayer" */ = {
+		9A6674B91721133400FB478C /* Build configuration list for PBXNativeTarget "FFmpegRadioPlayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9A6674BA1721133400FB478C /* Debug */,
@@ -620,7 +596,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9A6674BC1721133400FB478C /* Build configuration list for PBXNativeTarget "FFmpegAudioPlayerTests" */ = {
+		9A6674BC1721133400FB478C /* Build configuration list for PBXNativeTarget "FFmpegRadioPlayerTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9A6674BD1721133400FB478C /* Debug */,

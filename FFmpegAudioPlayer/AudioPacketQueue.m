@@ -65,7 +65,7 @@
     NSMutableData *pTmpData = [[NSMutableData alloc] initWithBytes:pPacket length:sizeof(*pPacket)];
     [pQueue addObject: pTmpData];
     pTmpData = nil;
-    count++;
+    count= count + 1;
     [pLock unlock];
     return 1;
 }
@@ -75,11 +75,12 @@
     
     // Do we have any items?
     [pLock  lock];
-    if ([pQueue count]>0) {
+    //if ([pQueue count]>0) {
+    if (count>0) {
         packetData = [pQueue objectAtIndex:0];
         if(packetData!= nil)
         {
-            //NSLog(@"getAVPacket %d", [pQueue count]);
+            NSLog(@"getAVPacket %d", [pQueue count]);
             [packetData getBytes:pPacket];
             packetData = nil;
             [pQueue removeObjectAtIndex: 0];
@@ -98,9 +99,9 @@
 }
 
 -(void)freeAVPacket:(AVPacket *) pPacket{
-    [pLock  lock];
+    //[pLock  lock];
     av_free_packet(pPacket);
-    [pLock unlock];
+    //[pLock unlock];
 }
 
 

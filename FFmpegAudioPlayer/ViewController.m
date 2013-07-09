@@ -8,8 +8,10 @@
 
 
 #import "ViewController.h"
+#import "iAd/ADBannerView.h"
 #import "AudioPlayer.h"
 #import "AudioUtilities.h"
+#import "GetRadioProgram.h"
 #define WAV_FILE_NAME @"1.wav"
 
 
@@ -62,6 +64,10 @@
 // #define AUDIO_TEST_PATH @"rtsp://media.iwant-in.net/pop"
 
 
+// When unitest is selected, we should disable error prompt msgbox of UI
+#define _UNITTEST_FOR_ALL_URL_ 0
+#define _UNITTEST_PLAY_INTERVAL_ 30
+
 @interface ViewController (){
     UIAlertView *pLoadRtspAlertView;
     UIActivityIndicatorView *pIndicator;
@@ -76,18 +82,19 @@
 
 @implementation ViewController
 {
-    NSInteger vTestCase;
-    
     NSInteger vPlayTimerSecond, vPlayTimerMinute;
     NSArray *PlayTimerSecondOptions;
     NSArray *PlayTimerMinuteOptions;
+
+#if _UNITTEST_FOR_ALL_URL_==1
+    NSInteger vTestCase;
+    NSString *pTestLog;
+#endif
 }
 
 @synthesize URLListData, URLNameToDisplay, VolumeBar;
 
-// When unitest is selected, we should disable error prompt msgbox of UI
-#define _UNITTEST_FOR_ALL_URL_ 0
-#define _UNITTEST_PLAY_INTERVAL_ 30
+
 
 
 //- (void)timerFired:(NSTimer *)timer
@@ -136,28 +143,6 @@
     
 }
 
--(void)runNextTestCase:(NSTimer *)timer {
-    
-    if(timer!=nil)
-    {
-        [self StopPlayAudio:nil];
-        
-        if(vTestCase==[URLListData count])
-        {
-            [timer invalidate];
-            return;
-        }
-        else
-        {
-            vTestCase++;
-        
-            NSDictionary *URLDict = [URLListData objectAtIndex:vTestCase];
-            pUserSelectedURL = [URLDict valueForKey:@"url"];
-            [self PlayAudio:_PlayAudioButton];
-        }
-    }
-}
-
 
 - (void)viewDidLoad
 {    
@@ -170,6 +155,13 @@
     [self ProcessJsonDataForBroadCastURL:pJsonData];
     pAudioPath=nil;
     pJsonData = nil;
+    
+    
+    // Show the default broadcast URL
+    // TODO: the default broadcast URL should be assigned to the last used URL.
+    NSDictionary *URLDict = [URLListData objectAtIndex:0];
+    pUserSelectedURL = [URLDict valueForKey:@"url"];
+    URLNameToDisplay.text = [URLDict valueForKey:@"title"];
     
     // init Volumen Bar
     VolumeBar.maximumValue = 1.0;
@@ -186,8 +178,8 @@
     
 #if _UNITTEST_FOR_ALL_URL_ == 1 // Unittest
     vTestCase = 0;
-    NSDictionary *URLDict = [URLListData objectAtIndex:vTestCase];
     pUserSelectedURL = [URLDict valueForKey:@"url"];
+    pTestLog = [[NSString alloc]initWithString:pUserSelectedURL];
     [self PlayAudio:_PlayAudioButton];
     
     [NSTimer scheduledTimerWithTimeInterval:_UNITTEST_PLAY_INTERVAL_
@@ -197,6 +189,13 @@
                                       repeats:YES];
     
 #endif
+    
+    
+    // Do all Test here
+    #if 0
+    [GetRadioProgram GetRequest];
+    #endif
+    
     
     [super viewDidLoad];
     return;
@@ -214,7 +213,9 @@
     if(timer!=nil)
     {
         [timer invalidate];
-#if _UNITTEST_FOR_ALL_URL_ != 1
+#if _UNITTEST_FOR_ALL_URL_ == 1
+        pTestLog = [pTestLog stringByAppendingString:@" RTSP Fail\n"];
+#else
         UIAlertView *pErrAlertView = [[UIAlertView alloc] initWithTitle:@"\n\nRTSP error"
                                                                 message:nil delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [pErrAlertView show];
@@ -324,7 +325,9 @@
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                 [vBn setTitle:@"Play" forState:UIControlStateNormal];
                 [self stopAlertView:nil];
-#if _UNITTEST_FOR_ALL_URL_ != 1
+#if _UNITTEST_FOR_ALL_URL_ == 1
+                pTestLog = [pTestLog stringByAppendingString:@" RTSP Fail\n"];
+#else
                 UIAlertView *pErrAlertView = [[UIAlertView alloc] initWithTitle:@"\n\nRTSP error"
                                                                 message:nil delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
                 [pErrAlertView show];
@@ -350,7 +353,16 @@
             
             if([aPlayer getStatus]!=eAudioRunning)
             {
-                [aPlayer Play];
+                int vRet = 0;
+                vRet = [aPlayer Play];
+                if(vRet<0)
+                {
+#if _UNITTEST_FOR_ALL_URL_ == 1
+                    pTestLog = [pTestLog stringByAppendingString:@" decode Fail\n"];
+#endif
+                    NSLog(@"[aPlayer Play] error");
+
+                }
             }
             
 #else
@@ -360,9 +372,19 @@
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 [self stopAlertView:nil];
                 sleep(5);
+                //sleep(3);
                 if([aPlayer getStatus]!=eAudioRunning)
                 {
-                    [aPlayer Play];
+                    int vRet = 0;
+                    vRet = [aPlayer Play];
+                    if(vRet<0)
+                    {
+#if _UNITTEST_FOR_ALL_URL_ == 1
+                        pTestLog = [pTestLog stringByAppendingString:@" decode Fail\n"];
+#endif
+                        NSLog(@"[aPlayer Play] error");
+                        
+                    }
                 }
                 
 //                vVisualizertimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self
@@ -797,7 +819,17 @@
 
 
 #pragma mark - ad_banner_view
-#if 0
+- (BOOL) allowActionToRun
+{
+    return YES;
+}
+
+#if 1
+- (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
+{
+    ;
+}
+
 - (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner willLeaveApplication:(BOOL)willLeave
 {
     NSLog(@"Banner view is beginning an ad action");
@@ -807,6 +839,33 @@
         // insert code here to suspend any services that might conflict with the advertisement
     }
     return shouldExecuteAction;
+}
+#endif
+
+#pragma mark - test case callback
+
+#if _UNITTEST_FOR_ALL_URL_==1
+-(void)runNextTestCase:(NSTimer *)timer {
+    if(timer!=nil)
+    {
+        [self StopPlayAudio:nil];
+        
+        vTestCase++;
+        if(vTestCase==[URLListData count])
+        {
+            [timer invalidate];
+            pTestLog = [pTestLog stringByAppendingString:@"\nFinished"];
+            NSLog(@"%@", pTestLog);
+            return;
+        }
+        else
+        {
+            NSDictionary *URLDict = [URLListData objectAtIndex:vTestCase];
+            pUserSelectedURL = [URLDict valueForKey:@"url"];
+            pTestLog = [pTestLog stringByAppendingFormat:@"\n%@",pUserSelectedURL];
+            [self PlayAudio:_PlayAudioButton];
+        }
+    }
 }
 #endif
 
