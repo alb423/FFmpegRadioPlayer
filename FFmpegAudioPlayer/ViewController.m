@@ -339,14 +339,45 @@
 
             aPlayer = [[AudioPlayer alloc]initAudio:nil withCodecCtx:(AVCodecContext *) pAudioCodecCtx];
 
-#if 0
+#if 1
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
                 [self readFFmpegAudioFrameAndDecode];
             });
             
             // TODO: Currently We set sleep 5 seconds for buffer data
             // We should caculate the audio timestamp to make sure the buffer duration.
+            
+            // 20130715
+            // wait until the audio buffer is big enough
+            //while(
+            
+            /*
+             Total bytes / bit_rate
+             
+             pAudioCodecCtx->bit_rate
+             
+             */
+            
+            
+#if 0
             sleep(5);
+#else
+            if((pAudioCodecCtx->bit_rate!=0) && (pAudioCodecCtx->channels!=0))
+            {
+                while(1)
+                {
+                    int vSeconds = 0;
+                    vSeconds = ([aPlayer getSize]/(pAudioCodecCtx->bit_rate/pAudioCodecCtx->channels));
+                    NSLog(@"%d seconds, size %d bits %d", vSeconds, [aPlayer getSize], pAudioCodecCtx->bit_rate);
+                    if(vSeconds >= 2)
+                        break;
+                }
+            }
+            else
+            {
+                sleep(5);
+            }
+#endif
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 [self stopAlertView:nil];
             });
@@ -371,8 +402,10 @@
             // Run Audio Player in main thread
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 [self stopAlertView:nil];
+                
+
                 sleep(5);
-                //sleep(3);
+ 
                 if([aPlayer getStatus]!=eAudioRunning)
                 {
                     int vRet = 0;

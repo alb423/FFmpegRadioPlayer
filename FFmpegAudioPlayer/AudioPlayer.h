@@ -57,7 +57,7 @@
 -(int) putAVPacket: (AVPacket *) pkt;
 -(int) getAVPacket :(AVPacket *) pkt;
 -(void)freeAVPacket:(AVPacket *) pkt;
-
+-(int) getSize;
 @property BOOL bIsADTSAAS;
 //@property NSMutableArray *pSampleQueue;
 

@@ -33,6 +33,11 @@
 //@synthesize pSampleQueue;
 @synthesize bIsADTSAAS;
 
+-(int) getSize
+{
+    return [audioPacketQueue size];
+}
+
 
 -(int) putAVPacket: (AVPacket *) pkt
 {
