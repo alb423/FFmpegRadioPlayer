@@ -84,16 +84,21 @@ void HandleOutputBuffer (
     // NSLog(@"get 1 from audioPacketQueue: %d", [audioPacketQueue count]);
     
     // If no data, we put silence audio (PCM format only)
-    // If AudioQueue buffer is empty, AudioQueue will stop. 
+    // If AudioQueue buffer is empty, AudioQueue will stop.
+    
+    // 20130716
+    // If AudioQueue is too small, it may be disconnected.
+    // We should try to reconnect again 
     if([audioPacketQueue count]==0)
     {
         int err, vSilenceDataSize = 1024*64;
 #if 1
-        if(vSlienceCount>20)
+        if(vSlienceCount>5)
         {
             // Stop fill silence, since the data may be eof or error happen
             //[self Stop:false];
             mIsRunning = false;
+
             return 0;
         }
 #endif
@@ -117,11 +122,9 @@ void HandleOutputBuffer (
         {
             NSLog(@"Error enqueuing audio buffer: %d", err);
         }
-
         return 1;
     }
     vSlienceCount = 0;
-    
     
 //    while (([audioPacketQueue count]>0) && (buffer->mPacketDescriptionCount < buffer->mPacketDescriptionCapacity))
     if(buffer->mPacketDescriptionCount < buffer->mPacketDescriptionCapacity)

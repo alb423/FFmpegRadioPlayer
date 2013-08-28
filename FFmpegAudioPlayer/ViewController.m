@@ -71,7 +71,8 @@
 @interface ViewController (){
     UIAlertView *pLoadRtspAlertView;
     UIActivityIndicatorView *pIndicator;
-    NSTimer *vLoadRtspAlertViewtimer;
+    NSTimer *vLoadRtspAlertViewTimer;
+    NSTimer *vReConnectMMSServerTimer;
     //NSTimer *vVisualizertimer;
     
     NSString *pUserSelectedURL;
@@ -94,7 +95,22 @@
 
 @synthesize URLListData, URLNameToDisplay, VolumeBar;
 
-
+// 20130828 albert.liao modified start
+-(void)reConnectMMSServer:(NSTimer *)timer {
+    //NSLog(@"reConnectMMSServer");
+    //NSLog(@"func:%s line %d",__func__, __LINE__);
+    if(timer!=nil)
+    {
+        if([aPlayer getStatus]!=eAudioRunning)
+        {
+            [self StopPlayAudio:nil];            
+            NSLog(@"func:%s line %d reconnect %@",__func__, __LINE__, pUserSelectedURL);
+            //[self PlayAudio:_PlayAudioButton];
+            [self PlayAudio:nil];
+        }
+    }
+}
+// 20130828 albert.liao modified end
 
 
 //- (void)timerFired:(NSTimer *)timer
@@ -231,10 +247,10 @@
         pLoadRtspAlertView = nil;
     }
     
-    if(vLoadRtspAlertViewtimer)
+    if(vLoadRtspAlertViewTimer)
     {
-        [vLoadRtspAlertViewtimer invalidate];
-        vLoadRtspAlertViewtimer = nil;
+        [vLoadRtspAlertViewTimer invalidate];
+        vLoadRtspAlertViewTimer = nil;
     }
     else
         return;
@@ -256,7 +272,7 @@
     
     // start a timer for 60 seconds, if rtsp cannot connect correctly.
     // we should dismiss alert view and let user can try again or leave this program
-    vLoadRtspAlertViewtimer = [NSTimer scheduledTimerWithTimeInterval:30
+    vLoadRtspAlertViewTimer = [NSTimer scheduledTimerWithTimeInterval:30
                                      target:self
                                    selector:@selector(stopAlertView:)
                                    userInfo:nil
@@ -274,6 +290,8 @@
     
     [self destroyFFmpegAudioStream];
     
+    [vReConnectMMSServerTimer invalidate];
+    vReConnectMMSServerTimer = nil;
     //[vVisualizertimer invalidate];
     //vVisualizertimer = nil;
     //[visualizer clear];
@@ -290,7 +308,8 @@
 - (IBAction)PlayAudio:(id)sender {
     
     UIButton *vBn = (UIButton *)sender;
-
+    if(vBn==nil)
+       vBn = _PlayAudioButton;
 #if 0
     [AudioUtilities initForDecodeAudioFile:AUDIO_TEST_PATH ToPCMFile:@"/Users/liaokuohsun/1.wav"];
     NSLog(@"Save file to /Users/liaokuohsun/1.wav");
@@ -345,19 +364,7 @@
             });
             
             // TODO: Currently We set sleep 5 seconds for buffer data
-            // We should caculate the audio timestamp to make sure the buffer duration.
-            
-            // 20130715
-            // wait until the audio buffer is big enough
-            //while(
-            
-            /*
-             Total bytes / bit_rate
-             
-             pAudioCodecCtx->bit_rate
-             
-             */
-            
+            // We should caculate the audio timestamp to make sure the buffer duration.            
             
 #if 0
             sleep(5);
@@ -367,6 +374,7 @@
                 while(1)
                 {
                     int vSeconds = 0;
+                    usleep(100*1000);
                     vSeconds = ([aPlayer getSize]/(pAudioCodecCtx->bit_rate/pAudioCodecCtx->channels));
                     NSLog(@"%d seconds, size %d bits %d", vSeconds, [aPlayer getSize], pAudioCodecCtx->bit_rate);
                     if(vSeconds >= 2)
@@ -394,8 +402,19 @@
                     NSLog(@"[aPlayer Play] error");
 
                 }
+                else
+                {
+                // 20130828 albert.liao modified start                    
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        vReConnectMMSServerTimer = [NSTimer scheduledTimerWithTimeInterval:MMS_LIVENESS_CHECK_TIMER
+                                                                                    target:self
+                                                                                  selector:@selector(reConnectMMSServer:)
+                                                                                  userInfo:nil
+                                                                                   repeats:YES];
+                    });
+                // 20130828 albert.liao modified end
+                }
             }
-            
 #else
             //[visualizer setSampleRate:pAudioCodecCtx->sample_rate];
             // Dismiss alertview in main thread
@@ -428,10 +447,21 @@
             
             // Read ffmpeg audio packet in another thread
             [self readFFmpegAudioFrameAndDecode];
+            
+            // 20130828 albert.liao modified start
+            vReConnectMMSServerTimer = [NSTimer scheduledTimerWithTimeInterval:MMS_LIVENESS_CHECK_TIMER
+                                                                        target:self
+                                                                      selector:@selector(reConnectMMSServer:)
+                                                                      userInfo:nil
+                                                                       repeats:YES];
+            // 20130828 albert.liao modified end
 #endif
+            
             [vBn setTitle:@"Play" forState:UIControlStateNormal];
         });
     }
+    
+
 }
 
 
@@ -663,7 +693,16 @@
                 }
                 else
                 {
-                    //NSLog(@"receive unexpected packet!!");
+                    int i=0;
+                    NSLog(@"receive unexpected packet, size=%d!!", vxPacket.size);
+                    for(i=0;i<vxPacket.size;i+=7)
+                    {
+                        NSLog(@"%02X%02X%02X %02X%02X%02X%02X",\
+                              vxPacket.data[i],vxPacket.data[i+1],vxPacket.data[i+2],vxPacket.data[i+3],\
+                              vxPacket.data[i+4],vxPacket.data[i+5],vxPacket.data[i+6],vxPacket.data[i+7]);
+                        
+                    // TODO: dump the packet
+                    }
                     av_free_packet(&vxPacket);
                 }
             }
