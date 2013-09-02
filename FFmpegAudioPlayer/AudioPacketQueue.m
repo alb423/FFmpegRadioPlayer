@@ -83,7 +83,9 @@
         packetData = [pQueue objectAtIndex:0];
         if(packetData!= nil)
         {
-            NSLog(@"getAVPacket %d", [pQueue count]);
+            int vCount = [pQueue count];
+            if(vCount<10)
+                NSLog(@"getAVPacket %d", vCount);
             [packetData getBytes:pPacket];
             packetData = nil;
             [pQueue removeObjectAtIndex: 0];

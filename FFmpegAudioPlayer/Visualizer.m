@@ -10,9 +10,8 @@
     {
         powers = [[NSMutableArray alloc]
                   initWithCapacity:self.frame.size.width / 2];
+        sampleRate = 44100;
     }
-    
-    sampleRate = 44100;
     
     return self; // return this BarVisualizer
     

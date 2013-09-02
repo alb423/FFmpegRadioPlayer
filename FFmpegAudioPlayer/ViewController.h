@@ -14,7 +14,9 @@
 //#import "Visualizer.h"
 
 #define DEFAULT_BROADCAST_URL @"hinet_radio_json.json"
-#define MMS_LIVENESS_CHECK_TIMER 1 
+#define MMS_LIVENESS_CHECK_TIMER 1  // Seconds
+#define AUDIO_BUFFER_TIME 10 // Seconds
+
 @interface ViewController : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource>
 {
 	AVFormatContext *pFormatCtx;    

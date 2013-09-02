@@ -101,13 +101,20 @@
     //NSLog(@"func:%s line %d",__func__, __LINE__);
     if(timer!=nil)
     {
-        if([aPlayer getStatus]!=eAudioRunning)
-        {
-            [self StopPlayAudio:nil];            
-            NSLog(@"func:%s line %d reconnect %@",__func__, __LINE__, pUserSelectedURL);
-            //[self PlayAudio:_PlayAudioButton];
-            [self PlayAudio:nil];
-        }
+        //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+            if([aPlayer getStatus]!=eAudioRunning)
+            {
+                NSLog(@"func:%s line %d",__func__, __LINE__);
+                // Stop Audio
+                //[self PlayAudio:nil];
+                [self StopPlayAudio:nil];
+                //aPlayer = nil;
+            
+                NSLog(@"func:%s line %d reconnect %@",__func__, __LINE__, pUserSelectedURL);
+                [self PlayAudio:nil];
+                //[self PlayAudio:nil];
+            }
+        //});
     }
 }
 // 20130828 albert.liao modified end
@@ -171,7 +178,7 @@
     [self ProcessJsonDataForBroadCastURL:pJsonData];
     pAudioPath=nil;
     pJsonData = nil;
-    
+    IsStop = TRUE;
     
     // Show the default broadcast URL
     // TODO: the default broadcast URL should be assigned to the last used URL.
@@ -289,9 +296,10 @@
     //aPlayer = nil;    
     
     [self destroyFFmpegAudioStream];
-    
+
     [vReConnectMMSServerTimer invalidate];
     vReConnectMMSServerTimer = nil;
+    
     //[vVisualizertimer invalidate];
     //vVisualizertimer = nil;
     //[visualizer clear];
@@ -325,7 +333,7 @@
     //visualizer = [[Visualizer alloc] initWithFrame:vxRect];
     //[self.view addSubview:visualizer];
     
-    if([vBn.currentTitle isEqualToString:@"Stop"])
+    if(IsStop==false)//[vBn.currentTitle isEqualToString:@"Stop"])
     {
         [vBn setTitle:@"Play" forState:UIControlStateNormal];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
@@ -366,15 +374,15 @@
             // TODO: Currently We set sleep 5 seconds for buffer data
             // We should caculate the audio timestamp to make sure the buffer duration.            
             
-#if 0
-            sleep(5);
+#if 1
+            sleep(AUDIO_BUFFER_TIME);
 #else
             if((pAudioCodecCtx->bit_rate!=0) && (pAudioCodecCtx->channels!=0))
             {
                 while(1)
                 {
                     int vSeconds = 0;
-                    usleep(100*1000);
+                    usleep(500*1000);
                     vSeconds = ([aPlayer getSize]/(pAudioCodecCtx->bit_rate/pAudioCodecCtx->channels));
                     NSLog(@"%d seconds, size %d bits %d", vSeconds, [aPlayer getSize], pAudioCodecCtx->bit_rate);
                     if(vSeconds >= 2)
@@ -383,7 +391,7 @@
             }
             else
             {
-                sleep(5);
+                sleep(AUDIO_BUFFER_TIME);
             }
 #endif
             dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -423,7 +431,7 @@
                 [self stopAlertView:nil];
                 
 
-                sleep(5);
+                sleep(AUDIO_BUFFER_TIME);
  
                 if([aPlayer getStatus]!=eAudioRunning)
                 {
@@ -496,7 +504,7 @@
     }
     else if( strncmp([pAudioInPath UTF8String], "mms:", 4)==0)
     {
-        //replay "mms:" to "mmsh:" or "mmst:"
+        //replace "mms:" to "mmsh:" or "mmst:"
         pAudioInPath = [pAudioInPath stringByReplacingOccurrencesOfString:@"mms:" withString:@"mmsh:"];
 //pAudioInPath = [pAudioInPath stringByReplacingOccurrencesOfString:@"mms:" withString:@"mmst:"];
         //NSLog(@"pAudioPath=%@", pAudioInPath);
@@ -514,6 +522,11 @@
         
     avcodec_register_all();
     av_register_all();
+    
+    // 20130829 albert.liao modified start
+    av_log_set_level(AV_LOG_VERBOSE);
+    // 20130829 albert.liao modified end
+    
     if(IsLocalFile!=TRUE)
     {
         avformat_network_init();
@@ -527,7 +540,7 @@
 #if 1 // TCP
     AVDictionary *opts = 0;
     av_dict_set(&opts, "rtsp_transport", "tcp", 0);
-    NSLog(@"%@", pAudioInPath);
+    NSLog(@"pAudioInPath=%@", pAudioInPath);
     
     // Open video file
     if(avformat_open_input(&pFormatCtx, [pAudioInPath cStringUsingEncoding:NSASCIIStringEncoding], NULL, &opts) != 0) {
@@ -697,10 +710,12 @@
                     NSLog(@"receive unexpected packet, size=%d!!", vxPacket.size);
                     for(i=0;i<vxPacket.size;i+=7)
                     {
-                        NSLog(@"%02X%02X%02X %02X%02X%02X%02X",\
-                              vxPacket.data[i],vxPacket.data[i+1],vxPacket.data[i+2],vxPacket.data[i+3],\
+                        if(vxPacket.size-i>=8)
+                        {
+                        NSLog(@"%02X%02X%02X%02X %02X%02X%02X%02X",\
+                              vxPacket.data[i],vxPacket.data[i+1],vxPacket.data[i+2],vxPacket.data[i+3],
                               vxPacket.data[i+4],vxPacket.data[i+5],vxPacket.data[i+6],vxPacket.data[i+7]);
-                        
+                        }
                     // TODO: dump the packet
                     }
                     av_free_packet(&vxPacket);
@@ -934,7 +949,7 @@
         {
             NSDictionary *URLDict = [URLListData objectAtIndex:vTestCase];
             pUserSelectedURL = [URLDict valueForKey:@"url"];
-            pTestLog = [pTestLog stringByAppendingFormat:@"\n%@",pUserSelectedURL];
+            pTestLog = [pTestLog stringByAppendingFormat:@"\ntest %@",pUserSelectedURL];
             [self PlayAudio:_PlayAudioButton];
         }
     }

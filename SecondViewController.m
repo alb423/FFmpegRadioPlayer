@@ -34,7 +34,8 @@
 }
 
 - (IBAction)tappedCloseModal:(id)sender {
-//    [self.navigationController popViewControllerAnimated:YES];
-    [self dismissModalViewControllerAnimated: YES];
+   [self.navigationController popViewControllerAnimated:YES];
+    //[self dismissModalViewControllerAnimated: YES];
+    //[self presentViewController:vc animated:NO completion:nil];
 }
 @end
