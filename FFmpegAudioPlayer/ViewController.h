@@ -17,6 +17,7 @@
 #define MMS_LIVENESS_CHECK_TIMER 1  // Seconds
 #define AUDIO_BUFFER_TIME 10 // Seconds
 
+//ADBannerViewDelegate
 @interface ViewController : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource>
 {
 	AVFormatContext *pFormatCtx;    
@@ -44,4 +45,10 @@
 - (IBAction)VolumeBarPressed:(id)sender;
 - (IBAction)PlayAudio:(id)sender;
 - (void)ProcessJsonDataForBroadCastURL:(NSData *)pJsonData;
+
+// 20130903 albert.liao modified start
+@property BOOL bRecordStart;
+- (IBAction)VideoRecordPressed:(id)sender;
+// 20130903 albert.liao modified end
+
 @end

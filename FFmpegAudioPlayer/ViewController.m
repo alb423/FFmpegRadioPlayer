@@ -8,12 +8,13 @@
 
 
 #import "ViewController.h"
-#import "iAd/ADBannerView.h"
 #import "AudioPlayer.h"
 #import "AudioUtilities.h"
-#import "GetRadioProgram.h"
-#define WAV_FILE_NAME @"1.wav"
 
+#import "iAd/ADBannerView.h"
+#import "GetRadioProgram.h"
+
+#define WAV_FILE_NAME @"1.wav"
 
 // If we read too fast, the size of aqQueue will increased quickly.
 // If we read too slow, .
@@ -93,7 +94,13 @@
 #endif
 }
 
+// 20130903 albert.liao modified start
+@synthesize bRecordStart;
+// 20130903 albert.liao modified end
+
 @synthesize URLListData, URLNameToDisplay, VolumeBar;
+
+
 
 // 20130828 albert.liao modified start
 -(void)reConnectMMSServer:(NSTimer *)timer {
@@ -307,19 +314,15 @@
     //[visualizer deinit];
 }
 
-
-
-
-
-
-
 - (IBAction)PlayAudio:(id)sender {
     
     UIButton *vBn = (UIButton *)sender;
     if(vBn==nil)
        vBn = _PlayAudioButton;
 #if 0
-    [AudioUtilities initForDecodeAudioFile:AUDIO_TEST_PATH ToPCMFile:@"/Users/liaokuohsun/1.wav"];
+    NSString *pAudioInPath;
+    pAudioInPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:AUDIO_TEST_PATH];
+    [AudioUtilities initForDecodeAudioFile:pAudioInPath ToPCMFile:@"/Users/liaokuohsun/1.wav"];
     NSLog(@"Save file to /Users/liaokuohsun/1.wav");
     return;
 #endif
@@ -373,27 +376,10 @@
             
             // TODO: Currently We set sleep 5 seconds for buffer data
             // We should caculate the audio timestamp to make sure the buffer duration.            
-            
-#if 1
-            sleep(AUDIO_BUFFER_TIME);
-#else
-            if((pAudioCodecCtx->bit_rate!=0) && (pAudioCodecCtx->channels!=0))
-            {
-                while(1)
-                {
-                    int vSeconds = 0;
-                    usleep(500*1000);
-                    vSeconds = ([aPlayer getSize]/(pAudioCodecCtx->bit_rate/pAudioCodecCtx->channels));
-                    NSLog(@"%d seconds, size %d bits %d", vSeconds, [aPlayer getSize], pAudioCodecCtx->bit_rate);
-                    if(vSeconds >= 2)
-                        break;
-                }
-            }
-            else
+            if(IsLocalFile!=true)
             {
                 sleep(AUDIO_BUFFER_TIME);
             }
-#endif
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 [self stopAlertView:nil];
             });
@@ -423,15 +409,18 @@
                 // 20130828 albert.liao modified end
                 }
             }
+            
 #else
             //[visualizer setSampleRate:pAudioCodecCtx->sample_rate];
             // Dismiss alertview in main thread
             // Run Audio Player in main thread
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 [self stopAlertView:nil];
-                
-
+                if(IsLocalFile!=true)
+                {
+                    NSLog(@"sleep 5 seconds");
                 sleep(AUDIO_BUFFER_TIME);
+                }
  
                 if([aPlayer getStatus]!=eAudioRunning)
                 {
@@ -453,6 +442,14 @@
                 
             });
             
+            
+            // Test only 20130908
+//            bRecordStart = true;
+//            [aPlayer RecordingSetAudioFormat:kAudioFormatMPEG4AAC];
+//            [aPlayer RecordingStart:@"/Users/liaokuohsun/Audio3.mp4"];
+            
+            
+            
             // Read ffmpeg audio packet in another thread
             [self readFFmpegAudioFrameAndDecode];
             
@@ -468,8 +465,6 @@
             [vBn setTitle:@"Play" forState:UIControlStateNormal];
         });
     }
-    
-
 }
 
 
@@ -478,6 +473,7 @@
     
     NSString *pAudioInPath;
     AVCodec  *pAudioCodec;
+    AVDictionary *opts = 0;
     
     // 20130428 Test here
     {
@@ -500,11 +496,13 @@
         
     if( strncmp([pAudioInPath UTF8String], "rtsp", 4)==0)
     {
+        av_dict_set(&opts, "rtsp_transport", "tcp", 0); // can set "udp", "tcp", "http"
         IsLocalFile = FALSE;
     }
     else if( strncmp([pAudioInPath UTF8String], "mms:", 4)==0)
     {
         //replace "mms:" to "mmsh:" or "mmst:"
+        av_dict_set(&opts, "rtsp_transport", "http", 0); // can set "udp", "tcp", "http"
         pAudioInPath = [pAudioInPath stringByReplacingOccurrencesOfString:@"mms:" withString:@"mmsh:"];
 //pAudioInPath = [pAudioInPath stringByReplacingOccurrencesOfString:@"mms:" withString:@"mmst:"];
         //NSLog(@"pAudioPath=%@", pAudioInPath);
@@ -512,21 +510,19 @@
     }
     else if( strncmp([pAudioInPath UTF8String], "mmsh", 4)==0)
     {
+        av_dict_set(&opts, "rtsp_transport", "http", 0);
         IsLocalFile = FALSE;
     }
     else
     {
+        av_dict_set(&opts, "rtsp_transport", "udp", 0);
         pAudioInPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:AUDIO_TEST_PATH];
         IsLocalFile = TRUE;
     }
         
     avcodec_register_all();
     av_register_all();
-    
-    // 20130829 albert.liao modified start
     av_log_set_level(AV_LOG_VERBOSE);
-    // 20130829 albert.liao modified end
-    
     if(IsLocalFile!=TRUE)
     {
         avformat_network_init();
@@ -538,8 +534,7 @@
     }
     
 #if 1 // TCP
-    AVDictionary *opts = 0;
-    av_dict_set(&opts, "rtsp_transport", "tcp", 0);
+    //av_dict_set(&opts, "rtsp_transport", "tcp", 0);
     NSLog(@"pAudioInPath=%@", pAudioInPath);
     
     // Open video file
@@ -739,6 +734,32 @@
     NSLog(@"Leave ReadFrame");
 }
 
+#pragma mark - Recording Control 
+- (IBAction)VideoRecordPressed:(id)sender {
+    
+    if(bRecordStart==true)
+    {
+        bRecordStart = false;
+        [aPlayer RecordingStop];
+    }
+    else
+    {
+        // set recording format
+        //vRecordingAudioFormat = kAudioFormatLinearPCM;// (Test ok)
+        //vRecordingAudioFormat = kAudioFormatMPEG4AAC; //(need Test)
+        bRecordStart = true;
+#if 0
+        [aPlayer RecordingSetAudioFormat:kAudioFormatLinearPCM];        
+        [aPlayer RecordingStart:@"/Users/liaokuohsun/2.wav"];
+#else
+        [aPlayer RecordingSetAudioFormat:kAudioFormatMPEG4AAC];
+        [aPlayer RecordingStart:@"/Users/liaokuohsun/Audio2.mp4"];
+        //[aPlayer RecordingStart:@"/Users/liaokuohsun/Audio2.m4a"];
+#endif
+    }
+    
+    //[self startRecordingAlertView];
+}
 
 #pragma mark - URL_list TableView
 
@@ -914,7 +935,7 @@
 #if 1
 - (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
 {
-    ;
+      NSLog(@"didFailToReceiveAdWithError");
 }
 
 - (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner willLeaveApplication:(BOOL)willLeave

@@ -106,9 +106,9 @@
 }
 
 -(void)freeAVPacket:(AVPacket *) pPacket{
-    //[pLock  lock];
+    [pLock  lock];
     av_free_packet(pPacket);
-    //[pLock unlock];
+    [pLock unlock];
 }
 
 

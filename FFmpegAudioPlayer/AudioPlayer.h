@@ -25,6 +25,12 @@
         eAudioStop = 2
     };
     
+    enum eAudioRecordingStatus {
+        eRecordInit = 1,
+        eRecordRecording = 2,
+        eRecordStop = 3
+    };
+    
                              // 1
     AudioStreamBasicDescription   mDataFormat;                    // 2
     AudioQueueRef                 mQueue;                         // 3
@@ -37,6 +43,7 @@
     bool                          mIsRunning;                     // 10
     
     bool isFormatVBR;
+
     AVCodecContext   *aCodecCtx;
     AudioPacketQueue *audioPacketQueue;
     AVFrame          *pAudioFrame;
@@ -44,6 +51,15 @@
     
     long LastStartTime;
     
+    // For audio recording
+    AVFormatContext *pRecordingAudioFC;
+    AVCodecContext  *pOutputCodecContext;
+    bool   enableRecording;
+    UInt32 vRecordingAudioStreamIdx;
+    UInt32 vRecordingAudioFormat;
+    UInt32 vRecordingStatus;
+    UInt32 vAudioOutputFileSize;
+    FILE * pAudioOutputFile;
     //NSMutableArray *pSampleQueue;
 }
 
@@ -58,6 +74,9 @@
 -(int) getAVPacket :(AVPacket *) pkt;
 -(void)freeAVPacket:(AVPacket *) pkt;
 -(int) getSize;
+- (void) RecordingStart:(NSString *)pRecordingFile;
+- (void) RecordingStop;
+- (void) RecordingSetAudioFormat:(int)vAudioFormat;
 @property BOOL bIsADTSAAS;
 //@property NSMutableArray *pSampleQueue;
 
