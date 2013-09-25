@@ -11,7 +11,8 @@
 #import "AudioPlayer.h"
 #import "AudioUtilities.h"
 
-#import "iAd/ADBannerView.h"
+#import "iAd/iAd.h"
+//#import "iAd/ADBannerView.h"
 #import "GetRadioProgram.h"
 
 #define WAV_FILE_NAME @"1.wav"
@@ -69,7 +70,7 @@
 #define _UNITTEST_FOR_ALL_URL_ 0
 #define _UNITTEST_PLAY_INTERVAL_ 30
 
-@interface ViewController (){
+@interface ViewController () <ADBannerViewDelegate>{
     UIAlertView *pLoadRtspAlertView;
     UIActivityIndicatorView *pIndicator;
     NSTimer *vLoadRtspAlertViewTimer;
@@ -227,6 +228,8 @@
     #endif
     
     
+    // For new iOS 7.0 only
+    //self.canDisplayBannerAds = YES;
     [super viewDidLoad];
     return;
 }
@@ -661,9 +664,24 @@
             if(vErr>=0)
             {
                 if(vxPacket.stream_index==audioStream) {
+                    
+#if 0
+                    AVPacket vxPacket2;
+                    vxPacket2.size = vxPacket.size;
+                    vxPacket2.data = malloc(vxPacket2.size+1);
+                    memset(vxPacket2.data, 0, vxPacket2.size+1);
+                    memcpy(vxPacket2.data, vxPacket.data, vxPacket2.size);
+                    int ret = [aPlayer putAVPacket:&vxPacket2];
+                    if(ret <= 0)
+                        NSLog(@"Put Audio Packet Error!!");
+                    av_free_packet(&vxPacket);
+#else
                     int ret = [aPlayer putAVPacket:&vxPacket];
                     if(ret <= 0)
                         NSLog(@"Put Audio Packet Error!!");
+#endif
+
+                    
                     
                     // TODO: use pts/dts to decide the delay time 
                     usleep(1000*LOCAL_FILE_DELAY_MS);

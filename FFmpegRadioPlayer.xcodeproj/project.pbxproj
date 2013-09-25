@@ -299,6 +299,11 @@
 			attributes = {
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Liao KuoHsun";
+				TargetAttributes = {
+					9A66747D1721133300FB478C = {
+						DevelopmentTeam = V89796HXWH;
+					};
+				};
 			};
 			buildConfigurationList = 9A6674791721133300FB478C /* Build configuration list for PBXProject "FFmpegRadioPlayer" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -503,6 +508,8 @@
 		9A6674BA1721133400FB478C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FFmpegAudioPlayer/FFmpegRadioPlayer-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(inheriented)";
@@ -518,6 +525,7 @@
 				"LIBRARY_SEARCH_PATHS[arch=armv7s]" = "\"$(SRCROOT)/ffmpeg/compiled/armv7s-neon/lib\"";
 				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = "\"$(SRCROOT)/ffmpeg/compiled/i386/lib\"";
 				PRODUCT_NAME = FFmpegRadioPlayer;
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -525,6 +533,8 @@
 		9A6674BB1721133400FB478C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FFmpegAudioPlayer/FFmpegRadioPlayer-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(inheriented)";
@@ -537,6 +547,7 @@
 					"\"$(SRCROOT)/ffmpeg/compiled/i386/lib\"",
 				);
 				PRODUCT_NAME = FFmpegRadioPlayer;
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
