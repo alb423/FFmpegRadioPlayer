@@ -147,15 +147,15 @@ void HandleOutputBuffer (
             int pktSize;
             int len=0;
             AVCodecContext   *pAudioCodecCtx = aCodecCtx;
-            AVFrame *pAVFrame1 = pAudioFrame;
             pktData=AudioPacket.data;
             pktSize=AudioPacket.size;
                       
             while(pktSize>0)
             {
+                AVFrame *pAVFrame1 = avcodec_alloc_frame();
                 avcodec_get_frame_defaults(pAVFrame1);
                 
-                @synchronized(self)
+                //@synchronized(self)
                 {
                     len = avcodec_decode_audio4(pAudioCodecCtx, pAVFrame1, &gotFrame, &AudioPacket);
                 //}
@@ -225,7 +225,9 @@ void HandleOutputBuffer (
                                             bIsADTSAAS = [AudioUtilities parseAACADTSHeader:pHeader ToHeader:(tAACADTSHeaderInfo *) &vxADTSHeader];
                                     
                                             AVPacket Pkt={0};
-
+                                            
+                                            av_init_packet(&AudioPacket);
+                                            
                                             if(bIsADTSAAS)
                                             {
                                                 Pkt.size = pktSize-7;
@@ -302,10 +304,10 @@ void HandleOutputBuffer (
                                             while(vSamples - vSplitSamples > 0)
                                             {
                                                 AVPacket Pkt2={0};
-                                                
                                                 AVFrame *pAVFrame2 = avcodec_alloc_frame();
+                                                
                                                 avcodec_get_frame_defaults(pAVFrame2);
-                                                av_init_packet(&Pkt2);
+                                                
                                                 
                                                 pAVFrame2->channel_layout = pAVFrame1->channel_layout;
                                                 pAVFrame2->channels = pAVFrame1->channels;
@@ -347,7 +349,9 @@ void HandleOutputBuffer (
                                                         {
                                                             NSLog(@"%d avcodec_fill_audio_frame() error %d", __LINE__, vRet);
                                                         }
-                                                        vSplitSamples = vSamples;
+                                                        //vSplitSamples = vSamples;
+                                                        vCopySize += buf_size;
+                                                        vSplitSamples += pAVFrame2->nb_samples;
                                                     }
                                                     else
                                                     {
@@ -362,11 +366,14 @@ void HandleOutputBuffer (
                                                         {
                                                             NSLog(@"%d avcodec_fill_audio_frame() error %d", __LINE__, vRet);
                                                         }
-                                                        vSplitSamples = vSamples;
+                                                        //vSplitSamples = vSamples;
+                                                        vSplitSamples += pAVFrame2->nb_samples;
 
                                                     }
                                                 }
                                                 
+                                                //av_new_packet(&Pkt2, pAVFrame2->nb_samples);
+                                                av_init_packet(&Pkt2);
                                                 
                                                 vRet = avcodec_encode_audio2(pOutputCodecContext, &Pkt2, pAVFrame2, &gotFrame);
                                                 if(vRet==0)
@@ -396,8 +403,10 @@ void HandleOutputBuffer (
                                                     NSLog(@"nb_samples=%d, sample_rate=%d",pAVFrame1->nb_samples,pAVFrame1->sample_rate);
                                                     
                                                 }
+                                                
                                                 av_free_packet(&Pkt2);
-                                                avcodec_free_frame(&pAVFrame2);
+                                                if(pAVFrame2) avcodec_free_frame(&pAVFrame2);
+                                                
                                             }
                                             
                                             
@@ -461,6 +470,8 @@ void HandleOutputBuffer (
                 pktSize-=len;
                 pktData+=len;
                 }
+                
+                if (pAVFrame1)    avcodec_free_frame(&pAVFrame1);
             }
         }
                 
@@ -548,7 +559,6 @@ void HandleOutputBuffer (
         audioPacketQueue = [[AudioPacketQueue alloc]initQueue];
     }
     aCodecCtx = pAudioCodecCtx;
-    pAudioFrame = avcodec_alloc_frame();
     
     if (audio_index >= 0)
     {
@@ -817,8 +827,6 @@ void HandleOutputBuffer (
     AudioQueueDispose(mQueue, bStopImmediatelly);
     
     if (pSwrCtx)   swr_free(&pSwrCtx);
-    if (pAudioFrame)    avcodec_free_frame(&pAudioFrame);
-    
     NSLog(@"Dispose Apple Audio Queue");
 }
 

@@ -46,7 +46,6 @@
 
     AVCodecContext   *aCodecCtx;
     AudioPacketQueue *audioPacketQueue;
-    AVFrame          *pAudioFrame;
     SwrContext       *pSwrCtx;
     
     long LastStartTime;

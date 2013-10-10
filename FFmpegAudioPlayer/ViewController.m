@@ -771,7 +771,8 @@
         [aPlayer RecordingStart:@"/Users/liaokuohsun/2.wav"];
 #else
         [aPlayer RecordingSetAudioFormat:kAudioFormatMPEG4AAC];
-        [aPlayer RecordingStart:@"/Users/liaokuohsun/Audio2.mp4"];
+        //[aPlayer RecordingStart:@"/Users/liaokuohsun/Audio2.mp4"];
+        [aPlayer RecordingStart:@"/Users/miuki001/Audio2.mp4"];
         //[aPlayer RecordingStart:@"/Users/liaokuohsun/Audio2.m4a"];
 #endif
     }

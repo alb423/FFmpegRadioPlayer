@@ -37,13 +37,13 @@
 		9A6674E1172119AA00FB478C /* libbz2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674DB1721195700FB478C /* libbz2.1.0.dylib */; };
 		9A6674E317211FCB00FB478C /* AudioPacketQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A6674C0172113AC00FB478C /* AudioPacketQueue.m */; };
 		9A6674E517211FCB00FB478C /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A6674C2172113AC00FB478C /* AudioPlayer.m */; };
-		9A87A154175DA51B00C91DA6 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9A87A150175DA51B00C91DA6 /* MainStoryboard_iPad.storyboard */; };
-		9A87A155175DA51B00C91DA6 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9A87A152175DA51B00C91DA6 /* MainStoryboard_iPhone.storyboard */; };
 		9AB634261763182D00D6B177 /* hinet_radio_json.json in Resources */ = {isa = PBXBuildFile; fileRef = 9AB634251763182D00D6B177 /* hinet_radio_json.json */; };
 		9ADF204E1761D4D80018ACF3 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ADF204D1761D4D80018ACF3 /* AVFoundation.framework */; };
 		9AF84B1C172FB95700A56189 /* output.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 9AF84B1B172FB95700A56189 /* output.pcm */; };
 		B20543361726DC6700BC6067 /* Visualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A305E6717264BA7008A747D /* Visualizer.m */; };
 		B2070F42172D766C00745C49 /* AudioUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = B2070F41172D766C00745C49 /* AudioUtilities.m */; };
+		B21B735C1805A9FB0019497C /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B21B73581805A9FB0019497C /* MainStoryboard_iPad.storyboard */; };
+		B21B735D1805A9FB0019497C /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B21B735A1805A9FB0019497C /* MainStoryboard_iPhone.storyboard */; };
 		B227CE8B1776CB0A00CAF8F7 /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B227CE8A1776CB0A00CAF8F7 /* SecondViewController.m */; };
 		B2CA3198177360B9004261DF /* GetRadioProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = B2CA3197177360B9004261DF /* GetRadioProgram.m */; };
 /* End PBXBuildFile section */
@@ -94,13 +94,14 @@
 		9A6674D9172115B600FB478C /* libiconv.2.4.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.2.4.0.dylib; path = usr/lib/libiconv.2.4.0.dylib; sourceTree = SDKROOT; };
 		9A6674DB1721195700FB478C /* libbz2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.1.0.dylib; path = usr/lib/libbz2.1.0.dylib; sourceTree = SDKROOT; };
 		9A6674DD1721196B00FB478C /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		9A87A151175DA51B00C91DA6 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
-		9A87A153175DA51B00C91DA6 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
-		9AB634251763182D00D6B177 /* hinet_radio_json.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = hinet_radio_json.json; sourceTree = "<group>"; };
+		9AB634251763182D00D6B177 /* hinet_radio_json.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = hinet_radio_json.json; sourceTree = "<group>"; };
 		9ADF204D1761D4D80018ACF3 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		9AF84B1B172FB95700A56189 /* output.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = output.pcm; sourceTree = "<group>"; };
 		B2070F40172D766C00745C49 /* AudioUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioUtilities.h; sourceTree = "<group>"; };
 		B2070F41172D766C00745C49 /* AudioUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioUtilities.m; sourceTree = "<group>"; };
+		B21B73571805A9CD0019497C /* GetRadioProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetRadioProgram.h; sourceTree = "<group>"; };
+		B21B73591805A9FB0019497C /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
+		B21B735B1805A9FB0019497C /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
 		B227CE891776CB0A00CAF8F7 /* SecondViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SecondViewController.h; path = ../SecondViewController.h; sourceTree = "<group>"; };
 		B227CE8A1776CB0A00CAF8F7 /* SecondViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SecondViewController.m; path = ../SecondViewController.m; sourceTree = "<group>"; };
 		B2CA3196177360B9004261DF /* GetRadioProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetRadioProgram.h; sourceTree = "<group>"; };
@@ -182,9 +183,10 @@
 		9A6674871721133300FB478C /* FFmpegAudioPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				B21B73581805A9FB0019497C /* MainStoryboard_iPad.storyboard */,
+				B21B735A1805A9FB0019497C /* MainStoryboard_iPhone.storyboard */,
+				B21B73571805A9CD0019497C /* GetRadioProgram.h */,
 				9AB634251763182D00D6B177 /* hinet_radio_json.json */,
-				9A87A150175DA51B00C91DA6 /* MainStoryboard_iPad.storyboard */,
-				9A87A152175DA51B00C91DA6 /* MainStoryboard_iPhone.storyboard */,
 				9AF84B1B172FB95700A56189 /* output.pcm */,
 				9A305E6617264BA7008A747D /* Visualizer.h */,
 				9A305E6717264BA7008A747D /* Visualizer.m */,
@@ -328,12 +330,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B21B735C1805A9FB0019497C /* MainStoryboard_iPad.storyboard in Resources */,
 				9A66748C1721133300FB478C /* InfoPlist.strings in Resources */,
 				9A6674941721133300FB478C /* Default.png in Resources */,
+				B21B735D1805A9FB0019497C /* MainStoryboard_iPhone.storyboard in Resources */,
 				9A6674961721133300FB478C /* Default@2x.png in Resources */,
 				9A6674981721133300FB478C /* Default-568h@2x.png in Resources */,
-				9A87A154175DA51B00C91DA6 /* MainStoryboard_iPad.storyboard in Resources */,
-				9A87A155175DA51B00C91DA6 /* MainStoryboard_iPhone.storyboard in Resources */,
 				9AB634261763182D00D6B177 /* hinet_radio_json.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -410,18 +412,18 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		9A87A150175DA51B00C91DA6 /* MainStoryboard_iPad.storyboard */ = {
+		B21B73581805A9FB0019497C /* MainStoryboard_iPad.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				9A87A151175DA51B00C91DA6 /* en */,
+				B21B73591805A9FB0019497C /* en */,
 			);
 			name = MainStoryboard_iPad.storyboard;
 			sourceTree = "<group>";
 		};
-		9A87A152175DA51B00C91DA6 /* MainStoryboard_iPhone.storyboard */ = {
+		B21B735A1805A9FB0019497C /* MainStoryboard_iPhone.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				9A87A153175DA51B00C91DA6 /* en */,
+				B21B735B1805A9FB0019497C /* en */,
 			);
 			name = MainStoryboard_iPhone.storyboard;
 			sourceTree = "<group>";
@@ -508,7 +510,7 @@
 		9A6674BA1721133400FB478C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: kuo hsun Liao (LW6ABB7S99)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FFmpegAudioPlayer/FFmpegRadioPlayer-Prefix.pch";
@@ -533,7 +535,7 @@
 		9A6674BB1721133400FB478C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: kuo hsun Liao (LW6ABB7S99)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FFmpegAudioPlayer/FFmpegRadioPlayer-Prefix.pch";
