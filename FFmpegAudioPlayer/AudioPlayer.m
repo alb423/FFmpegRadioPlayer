@@ -146,10 +146,17 @@ void HandleOutputBuffer (
             int gotFrame = 0;            
             int pktSize;
             int len=0;
+            int bRecording = 0;
             AVCodecContext   *pAudioCodecCtx = aCodecCtx;
             pktData=AudioPacket.data;
             pktSize=AudioPacket.size;
-                      
+            
+            // Enable/Disable recording
+            if(vRecordingStatus==eRecordRecording)
+            {
+                bRecording = 1;
+            }
+            
             while(pktSize>0)
             {
                 AVFrame *pAVFrame1 = avcodec_alloc_frame();
@@ -209,7 +216,8 @@ void HandleOutputBuffer (
                                 
                                     buffer->mAudioDataByteSize += data_size;
                                 
-                                if(vRecordingStatus==eRecordRecording)
+                                //if(vRecordingStatus==eRecordRecording)
+                                if(bRecording==1)
                                 {
                                     if(vRecordingAudioFormat!=kAudioFormatLinearPCM)
                                     {
@@ -267,12 +275,12 @@ void HandleOutputBuffer (
                                             // http://ffmpeg.org/doxygen/0.6/output-example_8c-source.html
                                             static int64_t vInitPts=0, vInitDts=0;
                                             int64_t vSamples = 0, vSplitSamples = 0, vCopySize=0;
-                                            int buf_size = 0, i=0 ,vBytesPerSample=0;
+                                            int buf_size = 0, i=1 ,vBytesPerSample=0;
 
                                             
                                             vBytesPerSample = av_get_bytes_per_sample(pOutputCodecContext->sample_fmt);
                                             vSamples = pAVFrame1->nb_samples;
-                                            buf_size = pOutputCodecContext->frame_size  *vBytesPerSample* pOutputCodecContext->channels;
+                                            
                                             
 //                                            int vBufLen=0;
 //                                            int8_t *pTmpBuffer = NULL;
@@ -303,6 +311,7 @@ void HandleOutputBuffer (
 
                                             while(vSamples - vSplitSamples > 0)
                                             {
+                                                int gotFrame2=0;
                                                 AVPacket Pkt2={0};
                                                 AVFrame *pAVFrame2 = avcodec_alloc_frame();
                                                 
@@ -315,7 +324,9 @@ void HandleOutputBuffer (
                                                 pAVFrame2->sample_rate = pAVFrame1->sample_rate;
                                                 pAVFrame2->sample_aspect_ratio = pAVFrame1->sample_aspect_ratio;
                                                 
-                                                if(vSamples - vSplitSamples > pOutputCodecContext->frame_size)
+                                                
+                                                
+                                                if(vSamples - vSplitSamples >= pOutputCodecContext->frame_size)
                                                 {
                                                     NSLog(@"line:%d %d vSplitSamples=%lld",__LINE__, i++, vSplitSamples);
 
@@ -323,6 +334,7 @@ void HandleOutputBuffer (
                                                     pAVFrame2->nb_samples = pOutputCodecContext->frame_size;
                                                     
                                                     //pAVFrame2->linesize[0] = pAVFrame1->linesize[0];
+                                                    buf_size = pOutputCodecContext->frame_size  *vBytesPerSample* pOutputCodecContext->channels;
                                                     
                                                     // This function fills in frame->data, frame->extended_data, frame->linesize[0].
                                                     vRet = avcodec_fill_audio_frame(pAVFrame2, pAVFrame1->channels,pOutputCodecContext->sample_fmt, &pAVFrame1->extended_data[0][vCopySize], buf_size, 0);
@@ -359,7 +371,7 @@ void HandleOutputBuffer (
 
                                                         //pAVFrame2->linesize[0] = pAVFrame2->linesize[0];
 
-                                                        //buf_size = vSamples * pOutputCodecContext->channels *av_get_bytes_per_sample(pOutputCodecContext->sample_fmt);
+                                                        buf_size = vSamples * vBytesPerSample *pOutputCodecContext->channels;
                                                         
                                                         vRet = avcodec_fill_audio_frame(pAVFrame2, pAVFrame1->channels,pOutputCodecContext->sample_fmt, &pAVFrame1->data[0][0], buf_size, 0);
                                                         if(vRet!=0)
@@ -375,20 +387,21 @@ void HandleOutputBuffer (
                                                 //av_new_packet(&Pkt2, pAVFrame2->nb_samples);
                                                 av_init_packet(&Pkt2);
                                                 
-                                                vRet = avcodec_encode_audio2(pOutputCodecContext, &Pkt2, pAVFrame2, &gotFrame);
+                                                vRet = avcodec_encode_audio2(pOutputCodecContext, &Pkt2, pAVFrame2, &gotFrame2);
                                                 if(vRet==0)
                                                 {
-                                                    if(gotFrame>0)
+                                                    if(gotFrame2>0)
                                                     {
+                                                        Pkt2.flags |= AV_PKT_FLAG_KEY;
                                                         vRet = av_interleaved_write_frame( pRecordingAudioFC, &Pkt2 );
                                                         if(vRet!=0)
                                                         {
-                                                            NSLog(@"write frame error %d", vRet);
+                                                            NSLog(@"write frame error %s", av_err2str(vRet));
                                                         }
                                                     }
                                                     else
                                                     {
-                                                        NSLog(@"gotFrame %d", gotFrame);
+                                                        NSLog(@"gotFrame %d", gotFrame2);
                                                     }
                                                 }
                                                 else
