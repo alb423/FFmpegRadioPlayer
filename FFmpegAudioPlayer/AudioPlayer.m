@@ -7,20 +7,42 @@
 //
 #import "AVFoundation/AVAudioSession.h"
 #import "AudioPlayer.h"
-#import "ViewController.h"
 #import "AudioUtilities.h"
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
-
 #include "libavutil/common.h"
+
+
+#if 0
+#import "mydef.h" // for DECODE_AUDIO_BY_FFMPEG definition
+#else
+#import "ViewController.h"
+#define DECODE_AUDIO_BY_FFMPEG 1
+#endif
 
 @implementation AudioPlayer
 
 #define AUDIO_BUFFER_SECONDS 1
 #define AUDIO_BUFFER_QUANTITY 3
-#define DECODE_AUDIO_BY_FFMPEG 1
+
+
+// If we want to enable DECODE_AUDIO_BY_FFMPEG, we should set correct AVCodecContext
+// For VSaaS project, we only need support 2 codec, ADTS AAC and PCMA.
+// So DECODE_AUDIO_BY_FFMPEG is unnecessary
+// #define DECODE_AUDIO_BY_FFMPEG 0
+
+
+// Feartue list
+// 1. We should enlarge the voice volume (ok)
+// 2. How to know the correct setting of AudioStreamBasicDescription from ffmpeg info??
+//    If the file is ADTS AAC, we can get them from ADTS header.
+//    Otherwise, get them from RTSP SDP.
+
+// TODO: recoder voice and packed as an ADTS AAC format
+// TODO: record the audio from streaming to a file (what kind of format??)
 
 // TODO: how to know the correct setting of AudioStreamBasicDescription from ffmpeg info??
+// =========== Test Sample =========== 
 // 1. Remote AAC (BlackBerry.mp4)
 //    can be decoded by FFMPEG(ok) or APPLE Hardware (ok)
 
@@ -32,10 +54,13 @@
 // 3. Local PCM (PCM_MULAW) (test_mono_8000Hz_8bit_PCM.wav)
 //    can be decoded by FFMPEG (ok) or APPLE Hardware (ok)
 
-// 4. Remote PCM (should ok) need test??
+// 4. Remote PCM (PCM_ALAW) need test??
+//    can be decoded by FFMPEG (ok) or APPLE Hardware (ok)
+
 
 //@synthesize pSampleQueue;
 @synthesize bIsADTSAAS;
+@synthesize vAACType;
 
 -(int) getSize
 {
@@ -57,6 +82,14 @@
 {
     [audioPacketQueue freeAVPacket:pkt];
 }
+
+-(void)dealloc
+{
+    // TODO: check here for resource release
+    [audioPacketQueue destroyQueue];
+    audioPacketQueue = nil;
+}
+
 
 void HandleOutputBuffer (
                                 void                 *aqData,                 // 1
@@ -95,7 +128,7 @@ void HandleOutputBuffer (
     // We should try to reconnect again 
     if([audioPacketQueue count]==0)
     {
-        int err, vSilenceDataSize = 1024*64;
+        int err, vSilenceDataSize = 1024*4;
 #if 0
         if(vSlienceCount>20)
         {
@@ -490,33 +523,45 @@ void HandleOutputBuffer (
                 
 #else
 
-        if (buffer->mAudioDataBytesCapacity - buffer->mAudioDataByteSize >= AudioPacket.size)
-        {
-            int vOffsetOfADTS=0;
-            uint8_t *pHeader = &(AudioPacket.data[0]);
-            
+      if (buffer->mAudioDataBytesCapacity - buffer->mAudioDataByteSize >= AudioPacket.size)
+      {
+         int vRedudantHeaderOfAAC=0;
+         uint8_t *pHeader = &(AudioPacket.data[0]);
+                                 
+         // If User didn't assign AAC encapsulate format, we should guess ourself.
+         if(vAACType==eAAC_UNDEFINED)
+         {   
             // 20130603
             // Parse audio data to see if there is ADTS header
             tAACADTSHeaderInfo vxADTSHeader={0};
             bIsADTSAAS = [AudioUtilities parseAACADTSHeader:pHeader ToHeader:(tAACADTSHeaderInfo *) &vxADTSHeader];
-
+                           
+            // If header has the syncword of adts_fixed_header
+            // syncword = 0xFFF
             if(bIsADTSAAS)
             {
-                // Remove ADTS Header
-                vOffsetOfADTS = 7;
+               vAACType=eAAC_ADTS;
             }
             else
             {
-                ; // do nothing
+               vAACType=eAAC_RAW;
             }
-            
-            memcpy((uint8_t *)buffer->mAudioData + buffer->mAudioDataByteSize, AudioPacket.data + vOffsetOfADTS, AudioPacket.size - vOffsetOfADTS);
-            buffer->mPacketDescriptions[buffer->mPacketDescriptionCount].mStartOffset = buffer->mAudioDataByteSize;
-            buffer->mPacketDescriptions[buffer->mPacketDescriptionCount].mDataByteSize = AudioPacket.size - vOffsetOfADTS;
-            buffer->mPacketDescriptions[buffer->mPacketDescriptionCount].mVariableFramesInPacket = aCodecCtx->frame_size;
-            buffer->mAudioDataByteSize += (AudioPacket.size-vOffsetOfADTS);
-            buffer->mPacketDescriptionCount++;
-        }
+         }
+         
+         // remove ADTS or LATM header of AAC data
+         if(vAACType==eAAC_ADTS)
+         {
+            vRedudantHeaderOfAAC = 7;
+         }
+         
+         // Remove ADTS Header
+         memcpy((uint8_t *)buffer->mAudioData + buffer->mAudioDataByteSize, AudioPacket.data + vRedudantHeaderOfAAC, AudioPacket.size - vRedudantHeaderOfAAC);
+         buffer->mPacketDescriptions[buffer->mPacketDescriptionCount].mStartOffset = buffer->mAudioDataByteSize;
+         buffer->mPacketDescriptions[buffer->mPacketDescriptionCount].mDataByteSize = AudioPacket.size - vRedudantHeaderOfAAC;
+         buffer->mPacketDescriptions[buffer->mPacketDescriptionCount].mVariableFramesInPacket = aCodecCtx->frame_size;
+         buffer->mAudioDataByteSize += (AudioPacket.size-vRedudantHeaderOfAAC);
+         buffer->mPacketDescriptionCount++;
+      }        
 #endif
         
         [audioPacketQueue freeAVPacket:&AudioPacket];
@@ -543,7 +588,7 @@ void HandleOutputBuffer (
                                                              NULL)))
 #endif
             {
-                NSLog(@"Error enqueuing audio buffer: %d", err);
+                //NSLog(@"Error enqueuing audio buffer: %d", err);
             }
     }
     return 0;
@@ -556,11 +601,15 @@ void HandleOutputBuffer (
     int vBufferSize=0;    
     int err;
     
+#if 1
     // support audio play when screen is locked
     NSError *setCategoryErr = nil;
     NSError *activationErr  = nil;
     [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error:&setCategoryErr];
     [[AVAudioSession sharedInstance] setActive:YES error:&activationErr];
+#endif
+    
+    vAACType = eAAC_UNDEFINED;
     
     //pSampleQueue = [[NSMutableArray alloc] init];
     if(pInQueue)
@@ -619,7 +668,7 @@ void HandleOutputBuffer (
             audioFormat.mFramesPerPacket = 1;
             audioFormat.mReserved = 0;
 
-            NSLog(@"sample_rate=%d, channels=%d, channel_layout=%lld",pAudioCodecCtx->sample_rate, pAudioCodecCtx->channels, pAudioCodecCtx->channel_layout);
+            //NSLog(@"sample_rate=%d, channels=%d, channel_layout=%lld",pAudioCodecCtx->sample_rate, pAudioCodecCtx->channels, pAudioCodecCtx->channel_layout);
             // The default audio data defined by APPLE is 16bits.
             // If we got 32 or 8, we should covert it to 16bits
             if(pAudioCodecCtx->sample_fmt==AV_SAMPLE_FMT_FLTP) 
@@ -714,7 +763,9 @@ void HandleOutputBuffer (
                 audioFormat.mBitsPerChannel = pAudioCodecCtx->bits_per_coded_sample;
                 audioFormat.mReserved = 0;
             }
-            else if(audioFormat.mFormatID == kAudioFormatLinearPCM)
+            else if((audioFormat.mFormatID == kAudioFormatLinearPCM)||
+                    (audioFormat.mFormatID == kAudioFormatALaw)||
+                     (audioFormat.mFormatID == kAudioFormatULaw))            
             {   
                 // TODO: The flag should be assigned according different file type
                 // Current setting is used for AV_CODEC_ID_PCM_U8
@@ -752,7 +803,7 @@ void HandleOutputBuffer (
                 // When I test, sometimes the data from network may loss information
                 // Below 2 checks if for CHT ipcam only
                 
-                NSLog(@"bit_rate=%d, frame_size=%d",pAudioCodecCtx->bit_rate,pAudioCodecCtx->frame_size);
+                //NSLog(@"bit_rate=%d, frame_size=%d",pAudioCodecCtx->bit_rate,pAudioCodecCtx->frame_size);
                 if(pAudioCodecCtx->bit_rate==0) {
                     pAudioCodecCtx->bit_rate=0x100000;//0x50000;
                 }
@@ -796,6 +847,8 @@ void HandleOutputBuffer (
     
     int i;
 
+    if(mIsRunning==true) return -1;
+    
     mIsRunning = true;
     LastStartTime = 0;
     
