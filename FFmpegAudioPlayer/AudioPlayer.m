@@ -108,7 +108,7 @@ void HandleOutputBuffer (
     AudioTimeStamp bufferStartTime={0};
     AVPacket AudioPacket={0};
     static int vSlienceCount=0;
-    
+    int bRecording = 0;
     AudioQueueBufferRef buffer=audioQueueBuffer;
     
     av_init_packet(&AudioPacket);    
@@ -166,6 +166,11 @@ void HandleOutputBuffer (
     }
     vSlienceCount = 0;
     
+    // Enable/Disable recording
+    if(vRecordingStatus==eRecordRecording)
+    {
+        bRecording = 1;
+    }
     
 //    while (([audioPacketQueue count]>0) && (buffer->mPacketDescriptionCount < buffer->mPacketDescriptionCapacity))
     if(buffer->mPacketDescriptionCount < buffer->mPacketDescriptionCapacity)
@@ -180,17 +185,10 @@ void HandleOutputBuffer (
             int gotFrame = 0;            
             int pktSize;
             int len=0;
-            int bRecording = 0;
             AVCodecContext   *pAudioCodecCtx = aCodecCtx;
             pktData=AudioPacket.data;
             pktSize=AudioPacket.size;
             
-            //NSLog(@"pktSize = %d", pktSize);
-            // Enable/Disable recording
-            if(vRecordingStatus==eRecordRecording)
-            {
-                bRecording = 1;
-            }
             
             while(pktSize>0)
             {
@@ -204,10 +202,7 @@ void HandleOutputBuffer (
                 if(len<0){
                     gotFrame = 0;
                     printf("Error while decoding\n");
-                    // 20130609 modified start
                     return -1;
-                    //break;
-                    // 20130609 modified end
                 }
                 if(gotFrame>0) {
                     int outCount=0;
@@ -251,7 +246,6 @@ void HandleOutputBuffer (
                                 
                                     buffer->mAudioDataByteSize += data_size;
                                 
-                                //if(vRecordingStatus==eRecordRecording)
                                 if(bRecording==1)
                                 {
                                     if(vRecordingAudioFormat!=kAudioFormatLinearPCM)
@@ -281,7 +275,7 @@ void HandleOutputBuffer (
                                                 Pkt.size = AudioPacket.size;
                                                 Pkt.data = AudioPacket.data;
                                             }
-                                            Pkt.stream_index = 1;//AudioPacket.stream_index;
+                                            //Pkt.stream_index = 1;//AudioPacket.stream_index;
                                             Pkt.flags |= AV_PKT_FLAG_KEY;
                                     
                                             // TODO: test this feature in AudipPlayer
