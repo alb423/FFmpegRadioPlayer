@@ -78,9 +78,6 @@
     // Direct bits mapping is hard....  we should implement a parser ourself.
 
     return TRUE;
-    
-    
-        ;
 }
 
 // TODO in the future for audio recording
