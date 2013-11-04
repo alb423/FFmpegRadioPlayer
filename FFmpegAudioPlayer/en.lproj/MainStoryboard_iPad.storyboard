@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="13A603" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="2">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="2">
     <dependencies>
         <deployment defaultVersion="1552" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3746"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -17,8 +17,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HHf-sU-bSV">
-                                <rect key="frame" x="76" y="90" width="62" height="43"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HHf-sU-bSV">
+                                <rect key="frame" x="37" y="72" width="107" height="30"/>
                                 <state key="normal" title="PLAY">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -26,8 +26,8 @@
                                     <action selector="PlayAudio:" destination="2" eventType="touchUpInside" id="fjg-g8-6EQ"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XWp-1Y-yUH">
-                                <rect key="frame" x="519" y="103" width="73" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XWp-1Y-yUH">
+                                <rect key="frame" x="680" y="103" width="39" height="30"/>
                                 <state key="normal" title="Timer">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -35,31 +35,40 @@
                                     <action selector="PlayTimerButtonPressed:" destination="2" eventType="touchUpInside" id="DX0-jt-blb"/>
                                 </connections>
                             </button>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="uNz-Va-baR">
-                                <rect key="frame" x="0.0" y="251" width="768" height="686"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="uNz-Va-baR">
+                                <rect key="frame" x="0.0" y="272" width="768" height="686"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <outlet property="dataSource" destination="2" id="oWa-jF-Q7l"/>
                                     <outlet property="delegate" destination="2" id="AaN-eV-dPf"/>
                                 </connections>
                             </tableView>
-                            <adBannerView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RFp-Jg-wqn">
+                            <adBannerView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="RFp-Jg-wqn">
                                 <rect key="frame" x="0.0" y="958" width="480" height="66"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="66" id="fzl-Bo-lqt"/>
+                                </constraints>
                             </adBannerView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="exL-ZC-I8N">
-                                <rect key="frame" x="173" y="20" width="312" height="103"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="exL-ZC-I8N">
+                                <rect key="frame" x="228" y="26" width="312" height="103"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="312" id="d06-Ef-8Zh"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="iFq-1D-Ou0">
-                                <rect key="frame" x="119" y="161" width="252" height="34"/>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="iFq-1D-Ou0">
+                                <rect key="frame" x="126" y="161" width="517" height="34"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="513" id="6pY-hq-qe7"/>
+                                </constraints>
                                 <connections>
                                     <action selector="VolumeBarPressed:" destination="2" eventType="valueChanged" id="gKh-53-7NK"/>
                                 </connections>
                             </slider>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ol3-dD-jhA">
-                                <rect key="frame" x="519" y="33" width="80" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ol3-dD-jhA">
+                                <rect key="frame" x="672" y="33" width="50" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Record">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -70,6 +79,28 @@
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="HHf-sU-bSV" firstAttribute="top" secondItem="d5D-Es-ejg" secondAttribute="bottom" constant="52" id="2rM-ce-TcJ"/>
+                            <constraint firstAttribute="bottom" secondItem="RFp-Jg-wqn" secondAttribute="bottom" id="3Ag-TU-AjT"/>
+                            <constraint firstItem="uNz-Va-baR" firstAttribute="leading" secondItem="5" secondAttribute="leading" id="8Qh-A9-aFg"/>
+                            <constraint firstItem="uNz-Va-baR" firstAttribute="top" secondItem="iFq-1D-Ou0" secondAttribute="bottom" constant="78" id="90g-Pn-kw0"/>
+                            <constraint firstAttribute="centerX" secondItem="RFp-Jg-wqn" secondAttribute="centerX" id="H3c-GC-ZUp"/>
+                            <constraint firstAttribute="centerX" secondItem="iFq-1D-Ou0" secondAttribute="centerX" id="Nga-YQ-ej1"/>
+                            <constraint firstItem="Ol3-dD-jhA" firstAttribute="top" secondItem="d5D-Es-ejg" secondAttribute="bottom" constant="13" id="Oiq-wa-KkO"/>
+                            <constraint firstItem="XWp-1Y-yUH" firstAttribute="top" secondItem="Ol3-dD-jhA" secondAttribute="bottom" constant="40" id="S6N-pS-B1B"/>
+                            <constraint firstAttribute="trailing" secondItem="Ol3-dD-jhA" secondAttribute="trailing" constant="46" id="UOD-vi-qNm"/>
+                            <constraint firstAttribute="trailing" secondItem="XWp-1Y-yUH" secondAttribute="trailing" constant="49" id="VCD-lC-VrJ"/>
+                            <constraint firstAttribute="centerX" secondItem="exL-ZC-I8N" secondAttribute="centerX" id="VI2-t0-V0R"/>
+                            <constraint firstItem="exL-ZC-I8N" firstAttribute="top" secondItem="d5D-Es-ejg" secondAttribute="bottom" constant="6" id="Vho-dk-qKE"/>
+                            <constraint firstAttribute="trailing" secondItem="uNz-Va-baR" secondAttribute="trailing" id="Vmr-Gb-CGa"/>
+                            <constraint firstItem="RFp-Jg-wqn" firstAttribute="top" secondItem="uNz-Va-baR" secondAttribute="bottom" id="aWr-n7-xYJ"/>
+                            <constraint firstItem="exL-ZC-I8N" firstAttribute="leading" secondItem="HHf-sU-bSV" secondAttribute="trailing" constant="84" id="bOg-Ri-gbM"/>
+                            <constraint firstItem="iFq-1D-Ou0" firstAttribute="top" secondItem="exL-ZC-I8N" secondAttribute="bottom" constant="32" id="eNe-rA-tMq"/>
+                            <constraint firstItem="uNz-Va-baR" firstAttribute="leading" secondItem="RFp-Jg-wqn" secondAttribute="leading" id="g3M-gn-CGA"/>
+                            <constraint firstItem="uNz-Va-baR" firstAttribute="top" secondItem="5" secondAttribute="top" constant="272" id="mQS-DK-yvg"/>
+                            <constraint firstItem="exL-ZC-I8N" firstAttribute="baseline" secondItem="XWp-1Y-yUH" secondAttribute="baseline" id="qdr-kX-ZNN"/>
+                            <constraint firstItem="HHf-sU-bSV" firstAttribute="leading" secondItem="5" secondAttribute="leading" constant="37" id="sXY-Ri-NZx"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="PlayAudioButton" destination="HHf-sU-bSV" id="4mz-UC-vr2"/>
