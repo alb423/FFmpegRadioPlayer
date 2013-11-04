@@ -465,7 +465,7 @@
             // 20130828 albert.liao modified end
 #endif
             
-            [vBn setTitle:@"Play" forState:UIControlStateNormal];
+            //[vBn setTitle:@"Play" forState:UIControlStateNormal];
         });
     }
 }
