@@ -210,10 +210,10 @@ void HandleOutputBuffer (
             // Stop fill silence, since the data may be eof or error happen
             //[self Stop:false];
             //AudioQueuePause(mQueue);
-            AudioStatus = eAudioPause;
-            NSLog(@"audioPacketQueue is empty for a long time!! restart it");
-            AudioQueueStop(mQueue, true);
-            return 1;
+            //AudioStatus = eAudioPause;
+            NSLog(@"audioPacketQueue is empty for a long time!! may need restart it");
+            //AudioQueueStop(mQueue, true);
+            //return 1;
         }
 #endif
         vSlienceCount++;
@@ -413,7 +413,7 @@ void HandleOutputBuffer (
                                         {
                                             // This part can record ok
                                             int vRet=0;
-                                            AVPacket Pkt={0};
+                                            //AVPacket Pkt={0};
                       
                                             // nb_samples =
                                             // buf_size * 8 / (avctx->channels * av_get_bits_per_sample(avctx->codec_id))
@@ -427,7 +427,7 @@ void HandleOutputBuffer (
                                             // Test wit WMA ok
                                             // Reference:
                                             // http://ffmpeg.org/doxygen/0.6/output-example_8c-source.html
-                                            static int64_t vInitPts=0, vInitDts=0;
+                                            //static int64_t vInitPts=0, vInitDts=0;
                                             int64_t vSamples = 0, vSplitSamples = 0, vCopySize=0;
                                             int buf_size = 0, i=1 ,vBytesPerSample=0;
 

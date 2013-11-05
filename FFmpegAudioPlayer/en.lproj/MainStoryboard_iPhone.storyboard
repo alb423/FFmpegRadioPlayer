@@ -24,8 +24,8 @@
                                     <constraint firstAttribute="height" constant="50" id="J4v-BR-7d3"/>
                                 </constraints>
                             </adBannerView>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8hS-i2-uGb">
-                                <rect key="frame" x="12" y="13" width="47" height="44"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8hS-i2-uGb">
+                                <rect key="frame" x="12" y="13" width="48" height="44"/>
                                 <state key="normal" title="PLAY">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -41,8 +41,8 @@
                                     <outlet property="delegate" destination="2" id="wp6-JI-oFN"/>
                                 </connections>
                             </tableView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" misplaced="YES" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="156" translatesAutoresizingMaskIntoConstraints="NO" id="73a-BC-1o4">
-                                <rect key="frame" x="82" y="13" width="156" height="94"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="155" translatesAutoresizingMaskIntoConstraints="NO" id="73a-BC-1o4">
+                                <rect key="frame" x="83" y="13" width="155" height="94"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
@@ -53,8 +53,11 @@
                                     <action selector="VolumeBarPressed:" destination="2" eventType="valueChanged" id="xt3-8Z-ISZ"/>
                                 </connections>
                             </slider>
-                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Adp-hw-BvA">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Adp-hw-BvA">
                                 <rect key="frame" x="262" y="13" width="52" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="52" id="rdg-Hb-bny"/>
+                                </constraints>
                                 <state key="normal" title="Rec">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -66,6 +69,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Adp-hw-BvA" secondAttribute="trailing" constant="6" id="8Qn-pq-9Co"/>
                             <constraint firstItem="Adp-hw-BvA" firstAttribute="top" secondItem="1dh-DP-mEL" secondAttribute="bottom" constant="13" id="Ab7-Iu-OBF"/>
                             <constraint firstItem="Cza-X0-krT" firstAttribute="leading" secondItem="CVH-Ul-EUE" secondAttribute="leading" id="B90-wd-xVl"/>
                             <constraint firstItem="lA6-5W-rt0" firstAttribute="top" secondItem="8hS-i2-uGb" secondAttribute="bottom" constant="44" id="DOq-Y5-wdc"/>
@@ -80,6 +84,7 @@
                             <constraint firstItem="8hS-i2-uGb" firstAttribute="top" secondItem="1dh-DP-mEL" secondAttribute="bottom" constant="13" id="ek5-u1-1ev"/>
                             <constraint firstItem="lA6-5W-rt0" firstAttribute="top" secondItem="73a-BC-1o4" secondAttribute="bottom" constant="-7" id="sVo-la-hGd" userLabel="Vertical Space -  Horizontal Slider - (5) -  Label"/>
                             <constraint firstItem="Cza-X0-krT" firstAttribute="leading" secondItem="3" secondAttribute="leading" id="vKg-uo-637"/>
+                            <constraint firstItem="Adp-hw-BvA" firstAttribute="leading" secondItem="73a-BC-1o4" secondAttribute="trailing" constant="24" id="xEs-0O-F8Q"/>
                             <constraint firstAttribute="centerX" secondItem="73a-BC-1o4" secondAttribute="centerX" id="yGV-FF-URf"/>
                             <constraint firstItem="Cza-X0-krT" firstAttribute="top" secondItem="CVH-Ul-EUE" secondAttribute="bottom" constant="2" id="z5j-h2-BbO"/>
                             <constraint firstItem="Cza-X0-krT" firstAttribute="centerX" secondItem="lA6-5W-rt0" secondAttribute="centerX" id="zqg-wv-x6e"/>

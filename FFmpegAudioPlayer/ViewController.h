@@ -28,8 +28,8 @@
     int audioStream;
 
     AudioPlayer *aPlayer;
-    BOOL IsStop;
-    BOOL IsLocalFile;
+    BOOL bIsStop;
+    BOOL bIsLocalFile;
     
     //Visualizer *visualizer;
 
