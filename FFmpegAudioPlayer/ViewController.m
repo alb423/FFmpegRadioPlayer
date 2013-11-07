@@ -108,12 +108,15 @@
     //NSLog(@"func:%s line %d",__func__, __LINE__);
     if(timer!=nil)
     {
+        [timer invalidate];
+        timer = nil;
+        
         //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
             // check the status of audio queue
-            // if([aPlayer getStatus]!=eAudioRunning)
+            if([aPlayer getStatus]!=eAudioRunning)
         
-            // check the status of ffmpeg streaming
-            if(bIsStop==TRUE)
+            // check the status of ffmpeg streaming, ?????
+            // if(bIsStop==TRUE)
             {
                 NSLog(@"func:%s line %d",__func__, __LINE__);
                 // Stop Audio
@@ -304,13 +307,12 @@
     [vReConnectMMSServerTimer invalidate];
     vReConnectMMSServerTimer = nil;
     
-    // Stop Producer
-    [self stopFFmpegAudioStream];
-    
     // Stop Consumer
     [aPlayer Stop:TRUE];
-    //aPlayer = nil;    
+    aPlayer = nil;
     
+    // Stop Producer
+    [self stopFFmpegAudioStream];
     [self destroyFFmpegAudioStream];
 
 
@@ -361,23 +363,24 @@
             {
                 NSLog(@"initFFmpegAudio fail");
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
-                [vBn setTitle:@"Play" forState:UIControlStateNormal];
-                [self stopAlertView:nil];
+                    [vBn setTitle:@"Play" forState:UIControlStateNormal];
+                    [self stopAlertView:nil];
 #if _UNITTEST_FOR_ALL_URL_ == 1
-                pTestLog = [pTestLog stringByAppendingString:@" RTSP Fail\n"];
+                    pTestLog = [pTestLog stringByAppendingString:@" RTSP Fail\n"];
 #else
-                UIAlertView *pErrAlertView = [[UIAlertView alloc] initWithTitle:@"\n\nRTSP error"
-                                                                message:nil delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-                [pErrAlertView show];
+                    UIAlertView *pErrAlertView = [[UIAlertView alloc] initWithTitle:@"\n\nRTSP error"
+                                                                            message:nil delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                    [pErrAlertView show];
 #endif
                 });
                 return;
             }
             
+            // pAudioCodecCtx is active only when initFFmpegAudioStream is success
+            if(aPlayer==nil)
+                aPlayer = [[AudioPlayer alloc]initAudio:nil withCodecCtx:(AVCodecContext *) pAudioCodecCtx];
+            
 
-            aPlayer = [[AudioPlayer alloc]initAudio:nil withCodecCtx:(AVCodecContext *) pAudioCodecCtx];
-
-#if 1
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
                 [self readFFmpegAudioFrameAndDecode];
             });
@@ -417,60 +420,6 @@
                 // 20130828 albert.liao modified end
                 }
             }
-            
-#else
-            //[visualizer setSampleRate:pAudioCodecCtx->sample_rate];
-            // Dismiss alertview in main thread
-            // Run Audio Player in main thread
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                [self stopAlertView:nil];
-                if(bIsLocalFile!=true)
-                {
-                    NSLog(@"sleep 5 seconds");
-                    sleep(AUDIO_BUFFER_TIME);
-                }
- 
-                if([aPlayer getStatus]!=eAudioRunning)
-                {
-                    int vRet = 0;
-                    vRet = [aPlayer Play];
-                    if(vRet<0)
-                    {
-#if _UNITTEST_FOR_ALL_URL_ == 1
-                        pTestLog = [pTestLog stringByAppendingString:@" decode Fail\n"];
-#endif
-                        NSLog(@"[aPlayer Play] error");
-                        
-                    }
-                }
-                
-//                vVisualizertimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self
-//                                                       selector:@selector(timerFired:) userInfo:nil repeats:YES];
-                
-                
-            });
-            
-            
-            // Test only 20130908
-//            bRecordStart = true;
-//            [aPlayer RecordingSetAudioFormat:kAudioFormatMPEG4AAC];
-//            [aPlayer RecordingStart:@"/Users/liaokuohsun/Audio3.mp4"];
-            
-            
-            
-            // Read ffmpeg audio packet in another thread
-            [self readFFmpegAudioFrameAndDecode];
-            
-            // 20130828 albert.liao modified start
-            vReConnectMMSServerTimer = [NSTimer scheduledTimerWithTimeInterval:MMS_LIVENESS_CHECK_TIMER
-                                                                        target:self
-                                                                      selector:@selector(reConnectMMSServer:)
-                                                                      userInfo:nil
-                                                                       repeats:YES];
-            // 20130828 albert.liao modified end
-#endif
-            
-            //[vBn setTitle:@"Play" forState:UIControlStateNormal];
         });
     }
 }
@@ -628,7 +577,10 @@
 }
 
 -(void) stopFFmpegAudioStream{
+    @synchronized(self)
+    {
     bIsStop = TRUE;
+    }
     NSLog(@"stopFFmpegAudioStream");
 }
 
@@ -636,22 +588,24 @@
     bIsStop = TRUE;
     NSLog(@"destroyFFmpegAudioStream");
 
-    avformat_network_deinit();
+avformat_network_deinit();
+    //pFormatCtx = nil;
     
 // When bIsStop == TRUE,
 // the pFormatCtx and pAudioCodecCtx will be released in readFFmpegFrame automatically
 //    @synchronized(self)
 //    {
-//        if (pAudioCodecCtx) {
-//            avcodec_close(pAudioCodecCtx);
-//            pAudioCodecCtx = NULL;
-//        }
-//        if (pFormatCtx) {
-//            avformat_close_input(&pFormatCtx);
-//            //av_close_input_file(pFormatCtx);
-//        }
+        if (pAudioCodecCtx) {
+            avcodec_close(pAudioCodecCtx);
+            pAudioCodecCtx = NULL;
+        }
+        if (pFormatCtx) {
+            avformat_close_input(&pFormatCtx);
+            //av_close_input_file(pFormatCtx);
+        }
 //    }
-    
+
+    //avformat_network_deinit();
 }
 
 
@@ -684,6 +638,7 @@
                     int ret = [aPlayer putAVPacket:&vxPacket];
                     if(ret <= 0)
                         NSLog(@"Put Audio Packet Error!!");
+                    av_free_packet(&vxPacket);
 #endif
 
                     
@@ -701,6 +656,7 @@
             {
                 NSLog(@"av_read_frame error :%s", av_err2str(vErr));
                 bIsStop = TRUE;
+                break;
             }
         }
     }
@@ -708,9 +664,17 @@
     {
         // NOTE: some url may have dual audio stream,
         // For example: mmsh://bcr.media.hinet.net/RA000038
-        while(bIsStop==FALSE)
+        while(1)
         {
-            vErr = av_read_frame(pFormatCtx, &vxPacket);
+            @synchronized(self)
+            {
+                if(bIsStop==TRUE)
+                {
+                    av_free_packet(&vxPacket);
+                    break;
+                }
+                vErr = av_read_frame(pFormatCtx, &vxPacket);
+            }
             
             if(vErr==AVERROR_EOF)
             {
@@ -744,17 +708,11 @@
             {
                 NSLog(@"av_read_frame error :%s", av_err2str(vErr));
                 bIsStop = TRUE;
+                break;
             }
         }
     }
     
-//    if (pAudioCodecCtx) {
-//        avcodec_close(pAudioCodecCtx);
-//        pAudioCodecCtx = NULL;
-//    }
-//    if (pFormatCtx) {
-//        avformat_close_input(&pFormatCtx);
-//    }
     NSLog(@"Leave ReadFrame");
 }
 

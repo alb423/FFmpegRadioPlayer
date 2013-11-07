@@ -210,7 +210,7 @@ void HandleOutputBuffer (
             // Stop fill silence, since the data may be eof or error happen
             //[self Stop:false];
             //AudioQueuePause(mQueue);
-            //AudioStatus = eAudioPause;
+            AudioStatus = eAudioStop;//eAudioPause;
             NSLog(@"audioPacketQueue is empty for a long time!! may need restart it");
             //AudioQueueStop(mQueue, true);
             //return 1;
@@ -1184,6 +1184,11 @@ withFrameLength:(int)vFrameLength{
     AudioStatus = eAudioStop;
     [vReConnectTimer invalidate];
     vReConnectTimer = nil;
+    
+    AudioQueueRemovePropertyListener(mQueue,
+                                     kAudioQueueProperty_IsRunning,
+                                     CheckAudioQueueRunningStatus,
+                                     (__bridge void *)(self));
     
     AudioQueueStop(mQueue, bStopImmediatelly);
     
