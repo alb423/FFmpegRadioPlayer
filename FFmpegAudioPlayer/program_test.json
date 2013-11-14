@@ -1,0 +1,149 @@
+{
+    canOpenPlayer = 0;
+    program =     (
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "Midnight You and Me";
+            timeRange = "00:00~01:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "Midnight You and Me";
+            timeRange = "01:00~02:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "Midnight You and Me";
+            timeRange = "02:00~03:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U862d\U8431\U6642\U9593(\U91cd\U64ad)";
+            timeRange = "03:00~04:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U6587\U831c\U7684\U7570\U60f3\U4e16\U754c(\U91cd\U64ad)";
+            timeRange = "04:00~05:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U6587\U831c\U7684\U7570\U60f3\U4e16\U754c(\U91cd\U64ad)";
+            timeRange = "05:00~06:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U6668\U5149\U5e8f\U66f2";
+            timeRange = "06:00~07:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U862d\U8431\U6642\U9593";
+            timeRange = "07:00~08:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U862d\U8431\U6642\U9593";
+            timeRange = "08:00~09:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U8d99\U5c11\U5eb7\U6642\U9593";
+            timeRange = "09:00~10:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U5e78\U798f\U597d\U6642\U5149";
+            timeRange = "10:00~11:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U5433\U6069\U6587\U7684\U5feb\U6a02\U5eda\U623f";
+            timeRange = "11:00~12:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U4e2d\U5ee3\U5348\U9910\U65b0\U805e";
+            timeRange = "12:00~13:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U7406\U8ca1\U751f\U6d3b\U901a";
+            timeRange = "13:00~14:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U7406\U8ca1\U751f\U6d3b\U901a";
+            timeRange = "14:00~15:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U7dba\U9e97\U4e16\U754c";
+            timeRange = "15:00~16:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U5a92\U4e8b\U4f86\U54c8\U5566";
+            timeRange = "16:00~17:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U6587\U831c\U7684\U7570\U60f3\U4e16\U754c";
+            timeRange = "17:00~18:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U6587\U831c\U7684\U7570\U60f3\U4e16\U754c";
+            timeRange = "18:00~19:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U4eba\U4f86\U760b";
+            timeRange = "19:00~20:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U4eba\U4f86\U760b";
+            timeRange = "20:00~21:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U4eba\U4f86\U760b";
+            timeRange = "21:00~22:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U5a1b\U6a02\Uff25\U4e16\U4ee3";
+            timeRange = "22:00~23:00";
+        },
+                {
+            on = 0;
+            programDay = "\U661f\U671f\U4e8c";
+            programName = "\U5a1b\U6a02\Uff25\U4e16\U4ee3";
+            timeRange = "23:00~24:00";
+        }
+    );
+}

@@ -19,8 +19,19 @@
 //- (IBAction)GetRequest:(id)sender {
 + (void) GetRequest {
     dispatch_async(GLOBAL_QUEUE, ^{
-        NSData* data = [NSData dataWithContentsOfURL: [NSURL URLWithString:BROADCAST_PROGRAM]];
-        [self performSelectorOnMainThread:@selector(fetchedDataForHttpGet:) withObject:data waitUntilDone:YES];
+        @autoreleasepool {
+            NSData* data = [NSData dataWithContentsOfURL: [NSURL URLWithString:BROADCAST_PROGRAM]];
+            [self performSelectorOnMainThread:@selector(fetchedDataForHttpGet:) withObject:data waitUntilDone:YES];
+        }
+    });
+}
+
++ (void) GetRequest: (NSString *)URL {
+    dispatch_async(GLOBAL_QUEUE, ^{
+        @autoreleasepool {
+            NSData* data = [NSData dataWithContentsOfURL: [NSURL URLWithString:URL]];
+            [self performSelectorOnMainThread:@selector(fetchedDataForHttpGet:) withObject:data waitUntilDone:YES];
+        }
     });
 }
 

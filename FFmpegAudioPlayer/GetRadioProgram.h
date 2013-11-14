@@ -22,4 +22,5 @@ typedef enum  {
 
 //- (IBAction)GetRequest:(id)sender;
 + (void) GetRequest;
++ (void) GetRequest: (NSString *)URL;
 @end

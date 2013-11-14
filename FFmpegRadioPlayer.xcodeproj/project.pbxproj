@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		9A22811417640C2F00BB4CED /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A22811317640C2F00BB4CED /* iAd.framework */; };
-		9A305E6817264BA7008A747D /* Visualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A305E6717264BA7008A747D /* Visualizer.m */; };
 		9A6674821721133300FB478C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674811721133300FB478C /* UIKit.framework */; };
 		9A6674841721133300FB478C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674831721133300FB478C /* Foundation.framework */; };
 		9A6674861721133300FB478C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674851721133300FB478C /* CoreGraphics.framework */; };
@@ -38,9 +37,10 @@
 		9A6674E317211FCB00FB478C /* AudioPacketQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A6674C0172113AC00FB478C /* AudioPacketQueue.m */; };
 		9A6674E517211FCB00FB478C /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A6674C2172113AC00FB478C /* AudioPlayer.m */; };
 		9AB634261763182D00D6B177 /* hinet_radio_json.json in Resources */ = {isa = PBXBuildFile; fileRef = 9AB634251763182D00D6B177 /* hinet_radio_json.json */; };
+		9ACD2AFF1830A66300DEBAD9 /* MyUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ACD2AFE1830A66300DEBAD9 /* MyUtilities.m */; };
+		9ACD2B011830A69700DEBAD9 /* Default-iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 9ACD2B001830A69700DEBAD9 /* Default-iphone.png */; };
 		9ADF204E1761D4D80018ACF3 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ADF204D1761D4D80018ACF3 /* AVFoundation.framework */; };
 		9AF84B1C172FB95700A56189 /* output.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 9AF84B1B172FB95700A56189 /* output.pcm */; };
-		B20543361726DC6700BC6067 /* Visualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A305E6717264BA7008A747D /* Visualizer.m */; };
 		B2070F42172D766C00745C49 /* AudioUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = B2070F41172D766C00745C49 /* AudioUtilities.m */; };
 		B21B735C1805A9FB0019497C /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B21B73581805A9FB0019497C /* MainStoryboard_iPad.storyboard */; };
 		B21B735D1805A9FB0019497C /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B21B735A1805A9FB0019497C /* MainStoryboard_iPhone.storyboard */; };
@@ -60,8 +60,6 @@
 
 /* Begin PBXFileReference section */
 		9A22811317640C2F00BB4CED /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
-		9A305E6617264BA7008A747D /* Visualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Visualizer.h; sourceTree = "<group>"; };
-		9A305E6717264BA7008A747D /* Visualizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Visualizer.m; sourceTree = "<group>"; };
 		9A66747E1721133300FB478C /* FFmpegRadioPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FFmpegRadioPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A6674811721133300FB478C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		9A6674831721133300FB478C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -95,11 +93,13 @@
 		9A6674DB1721195700FB478C /* libbz2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.1.0.dylib; path = usr/lib/libbz2.1.0.dylib; sourceTree = SDKROOT; };
 		9A6674DD1721196B00FB478C /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		9AB634251763182D00D6B177 /* hinet_radio_json.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = hinet_radio_json.json; sourceTree = "<group>"; };
+		9ACD2AFD1830A66300DEBAD9 /* MyUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyUtilities.h; sourceTree = "<group>"; };
+		9ACD2AFE1830A66300DEBAD9 /* MyUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyUtilities.m; sourceTree = "<group>"; };
+		9ACD2B001830A69700DEBAD9 /* Default-iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-iphone.png"; sourceTree = "<group>"; };
 		9ADF204D1761D4D80018ACF3 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		9AF84B1B172FB95700A56189 /* output.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = output.pcm; sourceTree = "<group>"; };
 		B2070F40172D766C00745C49 /* AudioUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioUtilities.h; sourceTree = "<group>"; };
 		B2070F41172D766C00745C49 /* AudioUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioUtilities.m; sourceTree = "<group>"; };
-		B21B73571805A9CD0019497C /* GetRadioProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetRadioProgram.h; sourceTree = "<group>"; };
 		B21B73591805A9FB0019497C /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
 		B21B735B1805A9FB0019497C /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
 		B227CE891776CB0A00CAF8F7 /* SecondViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SecondViewController.h; path = ../SecondViewController.h; sourceTree = "<group>"; };
@@ -183,13 +183,12 @@
 		9A6674871721133300FB478C /* FFmpegAudioPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				9ACD2AFD1830A66300DEBAD9 /* MyUtilities.h */,
+				9ACD2AFE1830A66300DEBAD9 /* MyUtilities.m */,
 				B21B73581805A9FB0019497C /* MainStoryboard_iPad.storyboard */,
 				B21B735A1805A9FB0019497C /* MainStoryboard_iPhone.storyboard */,
-				B21B73571805A9CD0019497C /* GetRadioProgram.h */,
 				9AB634251763182D00D6B177 /* hinet_radio_json.json */,
 				9AF84B1B172FB95700A56189 /* output.pcm */,
-				9A305E6617264BA7008A747D /* Visualizer.h */,
-				9A305E6717264BA7008A747D /* Visualizer.m */,
 				9A6674C61721156200FB478C /* ffmpeg */,
 				B227CE881776C49F00CAF8F7 /* Radio */,
 				9A6674C5172113B300FB478C /* AudioPlay */,
@@ -207,6 +206,7 @@
 		9A6674881721133300FB478C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				9ACD2B001830A69700DEBAD9 /* Default-iphone.png */,
 				9A6674891721133300FB478C /* FFmpegRadioPlayer-Info.plist */,
 				9A66748A1721133300FB478C /* InfoPlist.strings */,
 				9A66748D1721133300FB478C /* main.m */,
@@ -332,6 +332,7 @@
 			files = (
 				B21B735C1805A9FB0019497C /* MainStoryboard_iPad.storyboard in Resources */,
 				9A66748C1721133300FB478C /* InfoPlist.strings in Resources */,
+				9ACD2B011830A69700DEBAD9 /* Default-iphone.png in Resources */,
 				9A6674941721133300FB478C /* Default.png in Resources */,
 				B21B735D1805A9FB0019497C /* MainStoryboard_iPhone.storyboard in Resources */,
 				9A6674961721133300FB478C /* Default@2x.png in Resources */,
@@ -371,8 +372,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B20543361726DC6700BC6067 /* Visualizer.m in Sources */,
 				9A6674E317211FCB00FB478C /* AudioPacketQueue.m in Sources */,
+				9ACD2AFF1830A66300DEBAD9 /* MyUtilities.m in Sources */,
 				9A6674E517211FCB00FB478C /* AudioPlayer.m in Sources */,
 				9A66748E1721133300FB478C /* main.m in Sources */,
 				9A6674921721133300FB478C /* AppDelegate.m in Sources */,
@@ -389,7 +390,6 @@
 			files = (
 				9A6674C3172113AC00FB478C /* AudioPacketQueue.m in Sources */,
 				9A6674C4172113AC00FB478C /* AudioPlayer.m in Sources */,
-				9A305E6817264BA7008A747D /* Visualizer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -573,6 +573,8 @@ void HandleOutputBuffer (
                                                     
                                                 }
                                                 
+                                                if (Pkt2.data)
+                                                    av_freep(Pkt2.data);
                                                 av_free_packet(&Pkt2);
                                                 if(pAVFrame2) avcodec_free_frame(&pAVFrame2);
                                                 
@@ -1119,6 +1121,11 @@ withFrameLength:(int)vFrameLength{
         pAudioCodecCtx->bit_rate = 12000; // may useless
         pAudioCodecCtx->frame_size = 1; // may useless
     }
+    else{
+        pAudioCodecCtx->sample_rate = vSampleRate;
+        pAudioCodecCtx->channels = vChannels;
+        pAudioCodecCtx->frame_size = vFrameLength;
+    }
     
 #if DECODE_AUDIO_BY_FFMPEG==1
     // If we want to decode audio by ffmpeg, we should open codec here.
@@ -1160,14 +1167,14 @@ withFrameLength:(int)vFrameLength{
     // 20130427 Test temparally    
     // Decodes enqueued buffers in preparation for playback
 
-#if DECODE_AUDIO_BY_FFMPEG == 0
+//#if DECODE_AUDIO_BY_FFMPEG == 0
     eErr=AudioQueuePrime(mQueue, 0, NULL);
     if(eErr!=noErr)
     {
         NSLog(@"AudioQueuePrime() error %ld", eErr);
         return -1;
     }
-#endif
+//#endif
     
     eErr=AudioQueueStart(mQueue, nil);
     if(eErr!=noErr)
@@ -1195,6 +1202,7 @@ withFrameLength:(int)vFrameLength{
     // Disposing of the audio queue also disposes of all its resources, including its buffers.
     AudioQueueDispose(mQueue, bStopImmediatelly);
     
+    [audioPacketQueue destroyQueue];
     if (pSwrCtx)   swr_free(&pSwrCtx);
     NSLog(@"Dispose Apple Audio Queue");
 }

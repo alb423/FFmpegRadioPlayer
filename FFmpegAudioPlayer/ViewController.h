@@ -11,14 +11,14 @@
 #include "libswscale/swscale.h"
 #import "AudioPacketQueue.h"
 #import "AudioPlayer.h"
-//#import "Visualizer.h"
+#import "MyUtilities.h"
 
 #define DEFAULT_BROADCAST_URL @"hinet_radio_json.json"
 #define MMS_LIVENESS_CHECK_TIMER 1  // Seconds
 #define AUDIO_BUFFER_TIME 1 //10 // Seconds
 
 //ADBannerViewDelegate
-@interface ViewController : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource>
+@interface ViewController : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource, UIAlertViewDelegate>
 {
 	AVFormatContext *pFormatCtx;    
     AVCodecContext *pAudioCodecCtx;
@@ -30,8 +30,6 @@
     AudioPlayer *aPlayer;
     BOOL bIsStop;
     BOOL bIsLocalFile;
-    
-    //Visualizer *visualizer;
 
 }
 
