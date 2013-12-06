@@ -291,18 +291,18 @@
     return;
 #endif
     
-    CGRect vxRect;
-    vxRect.origin.x = 10;
-    vxRect.origin.y = 10;
-    vxRect.size.height = 300;
-    vxRect.size.width = 300;
+//    CGRect vxRect;
+//    vxRect.origin.x = 10;
+//    vxRect.origin.y = 10;
+//    vxRect.size.height = 300;
+//    vxRect.size.width = 300;
     
     if(bIsStop==false)
     {
         [vBn setTitle:@"Play" forState:UIControlStateNormal];
         //dispatch_async(dispatch_get_main_queue(), ^(void){
         //dispatch_async(ffmpegDispatchQueue, ^(void) {
-            //@autoreleasepool
+        //    @autoreleasepool
             {
                 [self StopPlayAudio:nil];
             }
@@ -315,7 +315,7 @@
         
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             @autoreleasepool {
-                [MyUtilities showWaiting:self.view];
+                //[MyUtilities showWaiting:self.view];
             }
         });
         
@@ -363,10 +363,11 @@
                 
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     @autoreleasepool {
-                        [MyUtilities hideWaiting:self.view];
+                       // [MyUtilities hideWaiting:self.view];
                     }
                 });
-                    
+                
+                sleep(1);
                 [self readFFmpegAudioFrameAndDecode];
             }
         });
@@ -390,12 +391,14 @@
     AVDictionary *opts = 0;
     
     // 20130428 Test here
+#if 0
     {
         // Test sample :http://m.oschina.net/blog/89784
         uint8_t pInput[] = {0x0ff,0x0f9,0x058,0x80,0,0x1f,0xfc};
         tAACADTSHeaderInfo vxADTSHeader={0};        
         [AudioUtilities parseAACADTSHeader:pInput ToHeader:(tAACADTSHeaderInfo *) &vxADTSHeader];
     }
+#endif
     
     // The pAudioInPath should be set when user select a url
     if(pUserSelectedURL==nil)
@@ -506,9 +509,13 @@
         NSLog(@"name = %s, stream_num = %d",pAudioCodec->name, audioStream);
         NSLog(@"sample_fmts = %d",*(pAudioCodec->sample_fmts));
         if(pAudioCodec->profiles)
+        {
             NSLog(@"profiles = %s",pAudioCodec->name);
+        }
         else
+        {
             NSLog(@"profiles = NULL");
+        }
         
         // Get a pointer to the codec context for the video stream
         pAudioCodecCtx = pFormatCtx->streams[audioStream]->codec;
@@ -579,12 +586,12 @@
 #if 1
                     AVPacket vxPacket2;
                     vxPacket2.size = vxPacket.size;
-                    vxPacket2.data = malloc(vxPacket2.size+1);
-                    memset(vxPacket2.data, 0, vxPacket2.size+1);
+                    vxPacket2.data = malloc(vxPacket2.size+FF_INPUT_BUFFER_PADDING_SIZE);
+                    memset(vxPacket2.data, 0, vxPacket2.size+FF_INPUT_BUFFER_PADDING_SIZE);
                     memcpy(vxPacket2.data, vxPacket.data, vxPacket2.size);
                     int ret = [aPlayer putAVPacket:&vxPacket2];
                     if(ret <= 0)
-                        NSLog(@"Put Audio Packet Error!!");
+                        NSLog(@"Put Audio Packet Error 1!!");
                     
 //                    if (vxPacket.data)
 //                        av_freep(vxPacket.data);
@@ -592,7 +599,7 @@
 #else
                     int ret = [aPlayer putAVPacket:&vxPacket];
                     if(ret <= 0)
-                        NSLog(@"Put Audio Packet Error!!");
+                        NSLog(@"Put Audio Packet Error 2!!");
                     if (vxPacket.data)
                         av_freep(vxPacket.data);
                     av_free_packet(&vxPacket);
@@ -647,9 +654,19 @@
             else if(vErr==0)
             {
                 if(vxPacket.stream_index==audioStream) {
+                    
+//                    AVPacket vxPacket2;
+//                    vxPacket2.size = vxPacket.size;
+//                    vxPacket2.data = malloc(vxPacket2.size+FF_INPUT_BUFFER_PADDING_SIZE);
+//                    memset(vxPacket2.data, 0, vxPacket2.size+FF_INPUT_BUFFER_PADDING_SIZE);
+//                    memcpy(vxPacket2.data, vxPacket.data, vxPacket.size);
                     int ret = [aPlayer putAVPacket:&vxPacket];
                     if(ret <= 0)
-                        NSLog(@"Put Audio Packet Error!!");
+                    {
+                        NSLog(@"Put Audio Packet Error 3!!");
+                    }
+                    
+                    //av_free_packet(&vxPacket);
                 }
                 else
                 {
@@ -679,7 +696,7 @@
             
             // audio play callback
             //NSLog(@"vPktCount=%d",vPktCount);
-            if(vPktCount<5) //<10 // The voice is listened after image is rendered
+            if(vPktCount<10) //<10 // The voice is listened after image is rendered
             {
                 vPktCount++;
             }
@@ -748,6 +765,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:tableIdentifier];
     if(cell == nil){
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:tableIdentifier];
+        //NSLog(@"cell size %ld",sizeof(cell));
     }
     
     NSDictionary *URLDict = [URLListData objectAtIndex:indexPath.row];
@@ -761,19 +779,20 @@
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSDictionary *URLDict = [URLListData objectAtIndex:indexPath.row];
-    cell.textLabel.text = [URLDict valueForKey:@"title"];
-    URLDict = nil;
-}
+//-(void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+//    NSDictionary *URLDict = [URLListData objectAtIndex:indexPath.row];
+//    cell.textLabel.text = [URLDict valueForKey:@"title"];
+//    URLDict = nil;
+//}
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Set the URL_TO_PLAY to the url user select
     NSDictionary *URLDict = [URLListData objectAtIndex:indexPath.row];
+    pUserSelectedURL = nil;
     pUserSelectedURL = [URLDict valueForKey:@"url"];
-    URLNameToDisplay.text = [URLDict valueForKey:@"title"];
-    URLNameToDisplay.textAlignment = NSTextAlignmentCenter;
+//    URLNameToDisplay.text = [URLDict valueForKey:@"title"];
+//    URLNameToDisplay.textAlignment = NSTextAlignmentCenter;
     
     URLDict = nil;
     
@@ -807,8 +826,13 @@
     
     //"http://hichannel.hinet.net/ajax/radio/program.do?id=205&date=2013-06-25"
     
+
     [GetRadioProgram GetRequest:pUrl];
-    
+
+    dateFormatter = nil;
+    now = nil;
+    pUrl = nil;
+    pMyDateString = nil;
 //        NSInteger row = indexPath.row;
 //    nextControlView = [[NextControlView alloc] initWithNibName:@"NextControlView" bundle:nil];
 //    nextControlView.Page=row;

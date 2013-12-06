@@ -13,6 +13,139 @@
 @synthesize count;
 @synthesize size;
 
+#if AUDIO_QUEUE_METHOD == AUDIO_QUEUE_IMPL_BY_C
+
+
+tMI_DLIST vxAQList;
+int initMemRecFlag = 0;
+
+typedef struct pktrec
+{
+    tMI_DLNODE Node;
+    void *p;
+    int idx;
+} pktrec;
+
+
+- (id) initQueue
+{
+    self = [self init];
+    if(self != nil)
+    {
+        pLock = [[NSLock alloc]init];
+        count = 0;
+        size = 0;
+        
+        MI_DlInit(&vxAQList);
+        
+        initMemRecFlag = 1;
+    }
+    return self;
+}
+
+
+- (void) destroyQueue {
+    
+    tMI_DLNODE * vpNode = NULL;
+    pktrec *vpPR=NULL;
+    
+    [pLock lock];
+    vpNode = MI_DlPopHead(&vxAQList);
+    
+    while (vpNode)
+    {
+        vpPR = MI_NODEENTRY(vpNode, pktrec, Node);
+        
+        if (initMemRecFlag)
+        {
+            AVPacket *vp = vpPR->p;
+            vp -= sizeof(pktrec);
+            if(vp)
+              av_free_packet(vp);
+        }
+        else
+        {
+            free(vpPR->p);
+        }
+        
+        vpPR->p = NULL;
+        
+        vpNode = MI_DlPopHead(&vxAQList);
+    }
+    
+    count = 0;
+    size = 0;
+    [pLock unlock];
+    
+    NSLog(@"Release Audio Packet Queue");
+    if(pLock) pLock = nil;
+    
+}
+
+-(int) putAVPacket: (AVPacket *) pPacket{
+    
+    NSLog(@"putAVPacket %d", count);
+    // memory leakage is related to pPacket
+    if ((av_dup_packet(pPacket)) < 0) {
+        NSLog(@"Error duplicating packet");
+    }
+    
+    [pLock lock];
+    
+    typedef struct pktrec
+    {
+        tMI_DLNODE Node;
+        void *p;
+        int idx;
+    } pktrec;
+    
+    pktrec * newrec = (pktrec *) malloc(sizeof(pktrec));
+    
+    newrec->p = (void *)pPacket;
+    size += pPacket->size;
+    
+    MI_DlPushTail(&vxAQList, &newrec->Node);
+
+    count ++;
+    [pLock unlock];
+    
+    return 1;
+}
+
+-(int ) getAVPacket :(AVPacket *) pPacket{
+    
+    NSLog(@"getAVPacket %d", count);
+    [pLock  lock];
+    
+    tMI_DLNODE * vpNode = NULL;
+    pktrec * vpPR = NULL;
+    
+    vpNode = MI_DlPopHead(&vxAQList);
+    
+    vpPR = MI_NODEENTRY(vpNode, pktrec, Node);
+    pPacket = (AVPacket *) vpPR->p;
+    free(vpPR);
+
+    if(vpNode)
+    {
+        count--;
+        [pLock unlock];
+        return 1;
+    }
+    else
+    {
+        [pLock unlock];
+        return 0;
+    }
+}
+
+-(void)freeAVPacket:(AVPacket *) pPacket{
+    [pLock  lock];
+    av_free_packet(pPacket);
+    [pLock unlock];
+}
+
+#else
 - (id) initQueue
 {
     self = [self init];
@@ -110,6 +243,7 @@
     av_free_packet(pPacket);
     [pLock unlock];
 }
+#endif
 
 
 @end

@@ -265,7 +265,7 @@ void HandleOutputBuffer (
 #endif
         
         
-        vSilenceDataSize = sizeof(SilenceAAC);
+        vSilenceDataSize = sizeof(SilenceAAC) + FF_INPUT_BUFFER_PADDING_SIZE;
 
         memset(buffer->mAudioData,0,vSilenceDataSize);
         memcpy(buffer->mAudioData,SilenceAAC,vSilenceDataSize);
@@ -405,9 +405,13 @@ void HandleOutputBuffer (
                                     
 
                                             if(pRecordingAudioFC)
+                                            {
                                                 av_interleaved_write_frame( pRecordingAudioFC, &Pkt );
+                                            }
                                             else
+                                            {
                                                 NSLog(@" %s:%d pRecordingAudioFC is NULL!!", __FILE__, __LINE__);
+                                            }
                                         }
                                         else
                                         {
