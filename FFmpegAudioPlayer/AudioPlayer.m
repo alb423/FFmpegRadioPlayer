@@ -1039,7 +1039,8 @@ void HandleOutputBuffer (
             }
             
 #endif
-            if ((err = AudioQueueNewOutput(&audioFormat, HandleOutputBuffer, (__bridge void *)(self), NULL, NULL, 0, &mQueue))!=noErr) {
+            if ((err = AudioQueueNewOutput(&audioFormat, HandleOutputBuffer, (__bridge void *)(self), NULL, NULL, 0, &mQueue))!=noErr)
+            {
                 NSLog(@"Error creating audio output queue: %d", err);
             }
             else

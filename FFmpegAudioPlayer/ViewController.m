@@ -89,6 +89,8 @@
 
     dispatch_queue_t    ffmpegDispatchQueue;
     dispatch_queue_t    aPlayerDispatchQueue;
+    __block dispatch_semaphore_t vDispatchQueueSem;
+    
 #if _UNITTEST_FOR_ALL_URL_==1
     NSInteger vTestCase;
     NSString *pTestLog;
@@ -283,6 +285,8 @@
     if(!aPlayerDispatchQueue)
         aPlayerDispatchQueue  = dispatch_queue_create("aPlayerDispatchQueue", DISPATCH_QUEUE_SERIAL);
     
+    vDispatchQueueSem = dispatch_semaphore_create(0);
+    
 #if 0
     NSString *pAudioInPath;
     pAudioInPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:AUDIO_TEST_PATH];
@@ -290,12 +294,6 @@
     NSLog(@"Save file to /Users/liaokuohsun/1.wav");
     return;
 #endif
-    
-//    CGRect vxRect;
-//    vxRect.origin.x = 10;
-//    vxRect.origin.y = 10;
-//    vxRect.size.height = 300;
-//    vxRect.size.width = 300;
     
     if(bIsStop==false)
     {
@@ -313,11 +311,11 @@
     {
         [vBn setTitle:@"Stop" forState:UIControlStateNormal];
         
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            @autoreleasepool {
-                //[MyUtilities showWaiting:self.view];
-            }
-        });
+//        dispatch_async(dispatch_get_main_queue(), ^(void) {
+//            @autoreleasepool {
+//                [MyUtilities showWaiting:self.view];
+//            }
+//        });
         
         dispatch_async(ffmpegDispatchQueue, ^(void) {
             @autoreleasepool
@@ -341,44 +339,50 @@
         #endif
                         }
                     });
+                    dispatch_semaphore_signal(vDispatchQueueSem);
                     return;
                 }
-                
-                // pAudioCodecCtx is active only when initFFmpegAudioStream is success
-                dispatch_async(aPlayerDispatchQueue, ^(void) {
-                    @autoreleasepool
-                    {
-                        if(aPlayer==nil)
-                        {
-                            aPlayer = [[AudioPlayer alloc]initAudio:nil withCodecCtx:(AVCodecContext *) pAudioCodecCtx];
-    //                        aPlayer = [[AudioPlayer alloc]initAudio:nil
-    //                                                    withCodecId:pAudioCodecCtx->codec_id
-    //                                                 withSampleRate:pAudioCodecCtx->sample_rate
-    //                                                   withChannels:pAudioCodecCtx->channels
-    //                                                withFrameLength:pAudioCodecCtx->frame_size];
+                dispatch_semaphore_signal(vDispatchQueueSem);
+            }
+        });
+        
+        
+        dispatch_semaphore_wait(vDispatchQueueSem, DISPATCH_TIME_FOREVER);
+        
+        // pAudioCodecCtx is active only when initFFmpegAudioStream is success
+        dispatch_async(aPlayerDispatchQueue, ^(void) {
+            //@autoreleasepool
+            {
+                if(aPlayer==nil)
+                {
+                    aPlayer = [[AudioPlayer alloc]initAudio:nil withCodecCtx:(AVCodecContext *) pAudioCodecCtx];
+//                        aPlayer = [[AudioPlayer alloc]initAudio:nil
+//                                                    withCodecId:pAudioCodecCtx->codec_id
+//                                                 withSampleRate:pAudioCodecCtx->sample_rate
+//                                                   withChannels:pAudioCodecCtx->channels
+//                                                withFrameLength:pAudioCodecCtx->frame_size];
 
-                        }
-                    }
-                });
-                
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    @autoreleasepool {
-                       // [MyUtilities hideWaiting:self.view];
-                    }
-                });
-                
-                sleep(1);
+                }
+                dispatch_semaphore_signal(vDispatchQueueSem);
+                NSLog(@"== AudioPlayer alloc");
+            }
+        });
+        
+        
+//        dispatch_async(dispatch_get_main_queue(), ^(void) {
+//            @autoreleasepool {
+//               [MyUtilities hideWaiting:self.view];
+//            }
+//        });
+
+        dispatch_semaphore_wait(vDispatchQueueSem, DISPATCH_TIME_FOREVER);        
+        dispatch_async(ffmpegDispatchQueue, ^(void) {
+            @autoreleasepool
+            {
+                NSLog(@"== readFFmpegAudioFrameAndDecode");
                 [self readFFmpegAudioFrameAndDecode];
             }
         });
-
-        // TODO: Currently We set sleep 5 seconds for buffer data
-        // We should caculate the audio timestamp to make sure the buffer duration.            
-//        if(bIsLocalFile!=true)
-//        {
-//            sleep(AUDIO_BUFFER_TIME);
-//        }
-        
     }
 }
 
