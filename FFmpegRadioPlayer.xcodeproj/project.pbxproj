@@ -37,6 +37,7 @@
 		9A6674E1172119AA00FB478C /* libbz2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674DB1721195700FB478C /* libbz2.1.0.dylib */; };
 		9A6674E317211FCB00FB478C /* AudioPacketQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A6674C0172113AC00FB478C /* AudioPacketQueue.m */; };
 		9A6674E517211FCB00FB478C /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A6674C2172113AC00FB478C /* AudioPlayer.m */; };
+		9AB0F84D187A7EFA004D9192 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AB0F84C187A7EFA004D9192 /* MediaPlayer.framework */; };
 		9AB634261763182D00D6B177 /* hinet_radio_json.json in Resources */ = {isa = PBXBuildFile; fileRef = 9AB634251763182D00D6B177 /* hinet_radio_json.json */; };
 		9ACD2AFF1830A66300DEBAD9 /* MyUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ACD2AFE1830A66300DEBAD9 /* MyUtilities.m */; };
 		9ACD2B011830A69700DEBAD9 /* Default-iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 9ACD2B001830A69700DEBAD9 /* Default-iphone.png */; };
@@ -95,6 +96,7 @@
 		9A6674D9172115B600FB478C /* libiconv.2.4.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.2.4.0.dylib; path = usr/lib/libiconv.2.4.0.dylib; sourceTree = SDKROOT; };
 		9A6674DB1721195700FB478C /* libbz2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.1.0.dylib; path = usr/lib/libbz2.1.0.dylib; sourceTree = SDKROOT; };
 		9A6674DD1721196B00FB478C /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		9AB0F84C187A7EFA004D9192 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		9AB634251763182D00D6B177 /* hinet_radio_json.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = hinet_radio_json.json; sourceTree = "<group>"; };
 		9ACD2AFD1830A66300DEBAD9 /* MyUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyUtilities.h; sourceTree = "<group>"; };
 		9ACD2AFE1830A66300DEBAD9 /* MyUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyUtilities.m; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9AB0F84D187A7EFA004D9192 /* MediaPlayer.framework in Frameworks */,
 				9A22811417640C2F00BB4CED /* iAd.framework in Frameworks */,
 				9ADF204E1761D4D80018ACF3 /* AVFoundation.framework in Frameworks */,
 				9A6674E1172119AA00FB478C /* libbz2.1.0.dylib in Frameworks */,
@@ -169,6 +172,7 @@
 		9A6674801721133300FB478C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9AB0F84C187A7EFA004D9192 /* MediaPlayer.framework */,
 				9A22811317640C2F00BB4CED /* iAd.framework */,
 				9ADF204D1761D4D80018ACF3 /* AVFoundation.framework */,
 				9A6674DD1721196B00FB478C /* libz.dylib */,
@@ -516,7 +520,7 @@
 		9A6674BA1721133400FB478C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: kuo hsun Liao (LW6ABB7S99)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FFmpegAudioPlayer/FFmpegRadioPlayer-Prefix.pch";
@@ -525,6 +529,7 @@
 				"HEADER_SEARCH_PATHS[arch=armv7s]" = "\"$(SRCROOT)/ffmpeg/compiled/armv7s-neon/include\"";
 				"HEADER_SEARCH_PATHS[sdk=iphonesimulator*]" = "\"$(SRCROOT)/ffmpeg/compiled/i386/include\"";
 				INFOPLIST_FILE = "FFmpegAudioPlayer/FFmpegRadioPlayer-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/ffmpeg/compiled/i386/lib\"",
@@ -534,6 +539,7 @@
 				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = "\"$(SRCROOT)/ffmpeg/compiled/i386/lib\"";
 				PRODUCT_NAME = FFmpegRadioPlayer;
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -541,7 +547,7 @@
 		9A6674BB1721133400FB478C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: kuo hsun Liao (LW6ABB7S99)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FFmpegAudioPlayer/FFmpegRadioPlayer-Prefix.pch";
@@ -550,12 +556,14 @@
 				"HEADER_SEARCH_PATHS[arch=armv7s]" = "\"$(SRCROOT)/ffmpeg/compiled/armv7s-neon/include\"";
 				"HEADER_SEARCH_PATHS[sdk=iphonesimulator*]" = "\"$(SRCROOT)/ffmpeg/compiled/i386/include\"";
 				INFOPLIST_FILE = "FFmpegAudioPlayer/FFmpegRadioPlayer-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/ffmpeg/compiled/i386/lib\"",
 				);
 				PRODUCT_NAME = FFmpegRadioPlayer;
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
