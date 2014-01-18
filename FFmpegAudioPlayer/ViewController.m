@@ -248,13 +248,15 @@
     vReConnectMMSServerTimer = nil;
     
     // Stop Consumer
-    if(aPlayerDispatchQueue)
-    {
-        dispatch_async(aPlayerDispatchQueue, ^(void) {
-            [aPlayer Stop:TRUE];
-            aPlayer = nil;
-        });
-    }
+    [aPlayer Stop:TRUE];
+    aPlayer= nil;
+//    if(aPlayerDispatchQueue)
+//    {
+//        dispatch_async(aPlayerDispatchQueue, ^(void) {
+//            [aPlayer Stop:TRUE];
+//            aPlayer = nil;
+//        });
+//    }
     
     // Stop Producer
     [self stopFFmpegAudioStream];
@@ -268,8 +270,9 @@
 //        });
 //    }
 
-//    ffmpegDispatchQueue = nil;
-//    aPlayerDispatchQueue=nil;
+    ffmpegDispatchQueue = nil;
+    aPlayerDispatchQueue= nil;
+    vDispatchQueueSem = nil;
     
 }
 
@@ -297,7 +300,6 @@
     
     if(bIsStop==false)
     {
-        [vBn setTitle:@"Play" forState:UIControlStateNormal];
         //dispatch_async(dispatch_get_main_queue(), ^(void){
         //dispatch_async(ffmpegDispatchQueue, ^(void) {
         //    @autoreleasepool
@@ -306,6 +308,7 @@
             }
         //});
         //[self StopPlayAudio:nil];
+        [vBn setTitle:@"Play" forState:UIControlStateNormal];
     }
     else
     {
@@ -318,7 +321,7 @@
 //        });
         
         dispatch_async(ffmpegDispatchQueue, ^(void) {
-            @autoreleasepool
+            //@autoreleasepool
             {
                 if([self initFFmpegAudioStream]==FALSE)
                 {
@@ -327,7 +330,7 @@
                         @autoreleasepool
                         {
                             [vBn setTitle:@"Play" forState:UIControlStateNormal];
-                            [MyUtilities hideWaiting:self.view];
+                            //[MyUtilities hideWaiting:self.view];
         #if _UNITTEST_FOR_ALL_URL_ == 1
                             pTestLog = [pTestLog stringByAppendingString:@" RTSP Fail\n"];
         #else
@@ -339,35 +342,32 @@
         #endif
                         }
                     });
-                    dispatch_semaphore_signal(vDispatchQueueSem);
+                    //dispatch_semaphore_signal(vDispatchQueueSem);
                     return;
                 }
-                dispatch_semaphore_signal(vDispatchQueueSem);
+                
+                // pAudioCodecCtx is active only when initFFmpegAudioStream is success
+                //dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    if(aPlayer==nil)
+                    {
+                        aPlayer = [[AudioPlayer alloc]initAudio:nil withCodecCtx:(AVCodecContext *) pAudioCodecCtx];
+                        
+                    }
+                    
+                
+                //});
+                
+                NSLog(@"== readFFmpegAudioFrameAndDecode");
+                [self readFFmpegAudioFrameAndDecode];
+                //dispatch_semaphore_signal(vDispatchQueueSem);
             }
         });
         
         
-        dispatch_semaphore_wait(vDispatchQueueSem, DISPATCH_TIME_FOREVER);
+        //dispatch_semaphore_wait(vDispatchQueueSem, DISPATCH_TIME_FOREVER);
         
-        // pAudioCodecCtx is active only when initFFmpegAudioStream is success
-        dispatch_async(aPlayerDispatchQueue, ^(void) {
-            //@autoreleasepool
-            {
-                if(aPlayer==nil)
-                {
-                    aPlayer = [[AudioPlayer alloc]initAudio:nil withCodecCtx:(AVCodecContext *) pAudioCodecCtx];
-//                        aPlayer = [[AudioPlayer alloc]initAudio:nil
-//                                                    withCodecId:pAudioCodecCtx->codec_id
-//                                                 withSampleRate:pAudioCodecCtx->sample_rate
-//                                                   withChannels:pAudioCodecCtx->channels
-//                                                withFrameLength:pAudioCodecCtx->frame_size];
+        
 
-                }
-                dispatch_semaphore_signal(vDispatchQueueSem);
-                NSLog(@"== AudioPlayer alloc");
-            }
-        });
-        
         
 //        dispatch_async(dispatch_get_main_queue(), ^(void) {
 //            @autoreleasepool {
@@ -375,14 +375,14 @@
 //            }
 //        });
 
-        dispatch_semaphore_wait(vDispatchQueueSem, DISPATCH_TIME_FOREVER);        
-        dispatch_async(ffmpegDispatchQueue, ^(void) {
-            @autoreleasepool
-            {
-                NSLog(@"== readFFmpegAudioFrameAndDecode");
-                [self readFFmpegAudioFrameAndDecode];
-            }
-        });
+//        dispatch_semaphore_wait(vDispatchQueueSem, DISPATCH_TIME_FOREVER);
+//        dispatch_async(ffmpegDispatchQueue, ^(void) {
+//            @autoreleasepool
+//            {
+//                NSLog(@"== readFFmpegAudioFrameAndDecode");
+//                [self readFFmpegAudioFrameAndDecode];
+//            }
+//        });
     }
 }
 
@@ -572,7 +572,6 @@
 
 
 -(void) readFFmpegAudioFrameAndDecode {
-    static int vPktCount=0;
     int vErr;
     AVPacket vxPacket;
     av_init_packet(&vxPacket);    
@@ -625,7 +624,6 @@
             else
             {
                 NSLog(@"av_read_frame error :%s", av_err2str(vErr));
-                vPktCount = 0;
                 bIsStop = TRUE;
                 break;
             }
@@ -643,7 +641,6 @@
                 {
                     // If vxPacket is read from ffmpeg. av_free_packet() will free vxPacket.data too.
                     av_free_packet(&vxPacket);
-                    vPktCount = 0;
                     break;
                 }
                 vErr = av_read_frame(pFormatCtx, &vxPacket);
@@ -653,7 +650,6 @@
             {
                 NSLog(@"av_read_frame error :%s", av_err2str(vErr));
                 bIsStop = TRUE;
-                vPktCount = 0;
             }
             else if(vErr==0)
             {
@@ -664,6 +660,9 @@
 //                    vxPacket2.data = malloc(vxPacket2.size+FF_INPUT_BUFFER_PADDING_SIZE);
 //                    memset(vxPacket2.data, 0, vxPacket2.size+FF_INPUT_BUFFER_PADDING_SIZE);
 //                    memcpy(vxPacket2.data, vxPacket.data, vxPacket.size);
+                    if(aPlayer==nil)
+                        break;
+                    
                     int ret = [aPlayer putAVPacket:&vxPacket];
                     if(ret <= 0)
                     {
@@ -694,28 +693,33 @@
             {
                 NSLog(@"av_read_frame error :%s", av_err2str(vErr));
                 bIsStop = TRUE;
-                vPktCount = 0;
                 break;
             }
             
             // audio play callback
-            //NSLog(@"vPktCount=%d",vPktCount);
-            if(vPktCount<10) //<10 // The voice is listened after image is rendered
+            //if(vPktCount<10) //<10 // The voice is listened after image is rendered
+            if([aPlayer getCount]<10)
             {
-                vPktCount++;
+                // TODO: remove below test log
+                // use a progress bar to replace the log
+                NSLog(@"[aPlayer getCount]=%d",[aPlayer getCount]);
             }
             else
             {
-                if([aPlayer getStatus]!=eAudioRunning)
+                if(aPlayer!=nil)
                 {
-                    //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
-                    dispatch_async(aPlayerDispatchQueue, ^(void) {
-                        @autoreleasepool
-                        {
-                            NSLog(@"aPlayer start play");
-                            [aPlayer Play];
-                        }
-                    });
+                    if([aPlayer getStatus]!=eAudioRunning)
+                    {
+                        [aPlayer Play];
+//                        dispatch_async(dispatch_get_main_queue(), ^(void) {
+//                        //dispatch_async(aPlayerDispatchQueue, ^(void) {
+//                            //@autoreleasepool
+//                            {
+//                                NSLog(@"aPlayer start play");
+//                                [aPlayer Play];
+//                            }
+//                        });
+                    }
                 }
             }
         }
@@ -801,8 +805,8 @@
     URLDict = nil;
     
     // Start Play when user select the row
-//    if([aPlayer getStatus]!=eAudioStop)
-//        [self StopPlayAudio:_PlayAudioButton];
+    if([aPlayer getStatus]!=eAudioStop)
+        [self StopPlayAudio:_PlayAudioButton];
     [self PlayAudio:_PlayAudioButton];
     
 }

@@ -90,8 +90,8 @@
 
 -(void)dealloc
 {
-    [audioPacketQueue destroyQueue];
-    audioPacketQueue = nil;
+//    [audioPacketQueue destroyQueue];
+//    audioPacketQueue = nil;
 }
 
 // 20131101 albert.liao modified start
@@ -321,248 +321,282 @@ void HandleOutputBuffer (
                 AVFrame *pAVFrame1 = avcodec_alloc_frame();
                 avcodec_get_frame_defaults(pAVFrame1);
                 
-                //@synchronized(self)
+                @synchronized(self)
                 {
                     len = avcodec_decode_audio4(pAudioCodecCtx, pAVFrame1, &gotFrame, &AudioPacket);
-                //}
-                if(len<0){
-                    gotFrame = 0;
-                    printf("Error while decoding\n");
-                    return -1;
                 }
-                if(gotFrame>0) {
-                    int outCount=0;
-                    
-                    // For broadcast (WMA), av_samples_get_buffer_size() may get incorrect size
-                    // pAVFrame1->nb_samples may incorrect, too large;
-                    int data_size = av_samples_get_buffer_size(pAVFrame1->linesize, pAudioCodecCtx->channels,
-                                                               pAVFrame1->nb_samples,AV_SAMPLE_FMT_S16, 0);
+                
+                {
+                    if(len<0){
+                        gotFrame = 0;
+                        printf("Error while decoding\n");
+                        return -1;
+                    }
+                    if(gotFrame>0) {
+                        int outCount=0;
+                        
+                        // For broadcast (WMA), av_samples_get_buffer_size() may get incorrect size
+                        // pAVFrame1->nb_samples may incorrect, too large;
+                        int data_size = av_samples_get_buffer_size(pAVFrame1->linesize, pAudioCodecCtx->channels,
+                                                                   pAVFrame1->nb_samples,AV_SAMPLE_FMT_S16, 0);
 
-                    if (buffer->mAudioDataBytesCapacity - buffer->mAudioDataByteSize >= data_size)
-                    {
-                        //@synchronized(self)
+                        if (buffer->mAudioDataBytesCapacity - buffer->mAudioDataByteSize >= data_size)
                         {
+                            //@synchronized(self)
                             {
-                                //uint8_t pTemp[8][data_size];
-                                uint8_t pTemp[data_size];
-                                uint8_t *pOut = (uint8_t *)&pTemp;
-                                int in_samples = pAVFrame1->nb_samples;
-                                //if (buffer->mPacketDescriptionCount == 0)
                                 {
-                                    bufferStartTime.mSampleTime = LastStartTime+in_samples;
-                                    bufferStartTime.mFlags = kAudioTimeStampSampleTimeValid;
-                                    LastStartTime = bufferStartTime.mSampleTime;
-                                }
-                                    
-                                outCount = swr_convert(pSwrCtx,
-                                                       (uint8_t **)(&pOut),
-                                                       in_samples,
-                                                       (const uint8_t **)pAVFrame1->extended_data,
-                                                       in_samples);
-
-                                //NSLog(@"in_samples=%d, data_size=%d, outCount=%d", in_samples, data_size, outCount);
-                                if(outCount<0)
-                                    NSLog(@"swr_convert fail");
-                                
-                                    memcpy((uint8_t *)buffer->mAudioData + buffer->mAudioDataByteSize, pOut, data_size);
-                                    buffer->mPacketDescriptions[buffer->mPacketDescriptionCount].mStartOffset = buffer->mAudioDataByteSize;
-                                    buffer->mPacketDescriptions[buffer->mPacketDescriptionCount].mDataByteSize = data_size;
-                                    buffer->mPacketDescriptions[buffer->mPacketDescriptionCount].mVariableFramesInPacket
-                                    = 1;
-                                
-                                    buffer->mAudioDataByteSize += data_size;
-                                
-                                if(bRecording==1)
-                                {
-                                    if(vRecordingAudioFormat!=kAudioFormatLinearPCM)
+                                    //uint8_t pTemp[8][data_size];
+                                    uint8_t pTemp[data_size];
+                                    uint8_t *pOut = (uint8_t *)&pTemp;
+                                    int in_samples = pAVFrame1->nb_samples;
+                                    //if (buffer->mPacketDescriptionCount == 0)
                                     {
-                                        if(aCodecCtx->codec_id==AV_CODEC_ID_AAC)
-                                        {
-                                            // no ffmpeg decodec
-                                            
-                                            uint8_t *pHeader = &(AudioPacket.data[0]);
-                                            // Parse audio data to see if there is ADTS header
-                                            tAACADTSHeaderInfo vxADTSHeader={0};
-                                            bIsADTSAAS = [AudioUtilities parseAACADTSHeader:pHeader ToHeader:(tAACADTSHeaderInfo *) &vxADTSHeader];
+                                        bufferStartTime.mSampleTime = LastStartTime+in_samples;
+                                        bufferStartTime.mFlags = kAudioTimeStampSampleTimeValid;
+                                        LastStartTime = bufferStartTime.mSampleTime;
+                                    }
+                                        
+                                    outCount = swr_convert(pSwrCtx,
+                                                           (uint8_t **)(&pOut),
+                                                           in_samples,
+                                                           (const uint8_t **)pAVFrame1->extended_data,
+                                                           in_samples);
+
+                                    //NSLog(@"in_samples=%d, data_size=%d, outCount=%d", in_samples, data_size, outCount);
+                                    if(outCount<0)
+                                        NSLog(@"swr_convert fail");
                                     
-                                            AVPacket Pkt={0};
-                                            
-                                            av_init_packet(&Pkt);
-                                            
-                                            if(bIsADTSAAS)
-                                            {
-                                                Pkt.size = AudioPacket.size-7;
-                                                Pkt.data = AudioPacket.data+7;
-                                            }
-                                            else
-                                            {
-                                                // This will produce error message
-                                                // "malformated aac bitstream, use -absf aac_adtstoasc"
-                                                Pkt.size = AudioPacket.size;
-                                                Pkt.data = AudioPacket.data;
-                                            }
-                                            //Pkt.stream_index = 1;//AudioPacket.stream_index;
-                                            Pkt.flags |= AV_PKT_FLAG_KEY;
+                                        memcpy((uint8_t *)buffer->mAudioData + buffer->mAudioDataByteSize, pOut, data_size);
+                                        buffer->mPacketDescriptions[buffer->mPacketDescriptionCount].mStartOffset = buffer->mAudioDataByteSize;
+                                        buffer->mPacketDescriptions[buffer->mPacketDescriptionCount].mDataByteSize = data_size;
+                                        buffer->mPacketDescriptions[buffer->mPacketDescriptionCount].mVariableFramesInPacket
+                                        = 1;
                                     
-
-                                            if(pRecordingAudioFC)
-                                            {
-                                                av_interleaved_write_frame( pRecordingAudioFC, &Pkt );
-                                            }
-                                            else
-                                            {
-                                                NSLog(@" %s:%d pRecordingAudioFC is NULL!!", __FILE__, __LINE__);
-                                            }
-                                        }
-                                        else
+                                        buffer->mAudioDataByteSize += data_size;
+                                    
+                                    if(bRecording==1)
+                                    {
+                                        if(vRecordingAudioFormat!=kAudioFormatLinearPCM)
                                         {
-                                            // This part can record ok
-                                            int vRet=0;
-                                            //AVPacket Pkt={0};
-                      
-                                            // nb_samples =
-                                            // buf_size * 8 / (avctx->channels * av_get_bits_per_sample(avctx->codec_id))
-                                            // linesize[0] = nb_samples * pOutputCodecContext->Channels *av_get_bytes_per_sample(pOutputCodecContext->sample_fmt);
-                                            
-                                            // For my testing, linesize[0] = 4 * nb_samples
-                                            // pOutputCodecContext->frame_size=1024
-                                            // pAVFrame1->nb_samples is large then framesize, so encode will error
-                                            // We need split AVFrame
-#if 1
-                                            // Test wit WMA ok
-                                            // Reference:
-                                            // http://ffmpeg.org/doxygen/0.6/output-example_8c-source.html
-                                            //static int64_t vInitPts=0, vInitDts=0;
-                                            int64_t vSamples = 0, vSplitSamples = 0, vCopySize=0;
-                                            int buf_size = 0, i=1 ,vBytesPerSample=0;
-
-                                            
-                                            vBytesPerSample = av_get_bytes_per_sample(pOutputCodecContext->sample_fmt);
-                                            vSamples = pAVFrame1->nb_samples;
-                                            
-                                            
-//                                            int vBufLen=0;
-//                                            int8_t *pTmpBuffer = NULL;
-//                                            vBufLen = pAVFrame1->nb_samples * vBytesPerSample * pOutputCodecContext->channels;
-//                                            pTmpBuffer = malloc(vBufLen+1);
-//                                            memset(pTmpBuffer, 0, vBufLen);
-//                                            memcpy(pTmpBuffer, pAVFrame1->extended_data[0], vBufLen);
-                                            
-                                            NSLog(@"Save sample %lld, vBytesPerSample=%d, dts=%lld, %lld, %lld",vSamples, vBytesPerSample,pAVFrame1->pts, pAVFrame1->pkt_dts, pAVFrame1->pkt_pts);
-                                            
-//                                            if(vInitPts==0)
-//                                            {
-//                                                vInitPts = pAVFrame1->pkt_pts;
-//                                            }
-//                                            else
-//                                            {
-//                                                pAVFrame1->pkt_pts -= vInitPts ;
-//                                            }
-//                                            
-//                                            if(vInitDts==0)
-//                                            {
-//                                                vInitDts = pAVFrame1->pkt_dts;
-//                                            }
-//                                            else
-//                                            {
-//                                                pAVFrame1->pkt_dts -= vInitDts ;
-//                                            }
-
-                                            NSLog(@"line:%d vSamples=%lld, frame_size=%d",__LINE__, vSamples, pOutputCodecContext->frame_size);
-                                            
-                                            while(vSamples - vSplitSamples > 0)
+                                            if(aCodecCtx->codec_id==AV_CODEC_ID_AAC)
                                             {
-                                                int gotFrame2=0;
-                                                AVPacket Pkt2={0};
-                                                AVFrame *pAVFrame2 = avcodec_alloc_frame();
+                                                // no ffmpeg decodec
                                                 
-                                                avcodec_get_frame_defaults(pAVFrame2);
+                                                uint8_t *pHeader = &(AudioPacket.data[0]);
+                                                // Parse audio data to see if there is ADTS header
+                                                tAACADTSHeaderInfo vxADTSHeader={0};
+                                                bIsADTSAAS = [AudioUtilities parseAACADTSHeader:pHeader ToHeader:(tAACADTSHeaderInfo *) &vxADTSHeader];
+                                        
+                                                AVPacket Pkt={0};
                                                 
+                                                av_init_packet(&Pkt);
                                                 
-                                                pAVFrame2->channel_layout = pAVFrame1->channel_layout;
-                                                pAVFrame2->channels = pAVFrame1->channels;
-                                                
-                                                pAVFrame2->sample_rate = pAVFrame1->sample_rate;
-                                                pAVFrame2->sample_aspect_ratio = pAVFrame1->sample_aspect_ratio;
-                                                
-                                                
-                                                
-                                                if(vSamples - vSplitSamples >= pOutputCodecContext->frame_size)
+                                                if(bIsADTSAAS)
                                                 {
-                                                    NSLog(@"line:%d %d vSplitSamples=%lld",__LINE__, i++, vSplitSamples);
-
-                                                    // split AVFrame to smaller frame
-                                                    pAVFrame2->nb_samples = pOutputCodecContext->frame_size;
-                                                    
-                                                    //pAVFrame2->linesize[0] = pAVFrame1->linesize[0];
-                                                    buf_size = pOutputCodecContext->frame_size  *vBytesPerSample* pOutputCodecContext->channels;
-                                                    
-                                                    // This function fills in frame->data, frame->extended_data, frame->linesize[0].
-                                                    vRet = avcodec_fill_audio_frame(pAVFrame2, pAVFrame1->channels,pOutputCodecContext->sample_fmt, &pAVFrame1->extended_data[0][vCopySize], buf_size, 0);
-                                                    if(vRet!=0)
-                                                    {
-                                                        NSLog(@"%d avcodec_fill_audio_frame() error %d", __LINE__, vRet);
-                                                    }
-                                                    vCopySize += buf_size;
-                                                    vSplitSamples += pAVFrame2->nb_samples;
-                                                    
+                                                    Pkt.size = AudioPacket.size-7;
+                                                    Pkt.data = AudioPacket.data+7;
                                                 }
                                                 else
                                                 {
-                                                    if(vSplitSamples!=0)
+                                                    // This will produce error message
+                                                    // "malformated aac bitstream, use -absf aac_adtstoasc"
+                                                    Pkt.size = AudioPacket.size;
+                                                    Pkt.data = AudioPacket.data;
+                                                }
+                                                //Pkt.stream_index = 1;//AudioPacket.stream_index;
+                                                Pkt.flags |= AV_PKT_FLAG_KEY;
+                                        
+
+                                                if(pRecordingAudioFC)
+                                                {
+                                                    av_interleaved_write_frame( pRecordingAudioFC, &Pkt );
+                                                }
+                                                else
+                                                {
+                                                    NSLog(@" %s:%d pRecordingAudioFC is NULL!!", __FILE__, __LINE__);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                // This part can record ok
+                                                int vRet=0;
+                                                //AVPacket Pkt={0};
+                          
+                                                // nb_samples =
+                                                // buf_size * 8 / (avctx->channels * av_get_bits_per_sample(avctx->codec_id))
+                                                // linesize[0] = nb_samples * pOutputCodecContext->Channels *av_get_bytes_per_sample(pOutputCodecContext->sample_fmt);
+                                                
+                                                // For my testing, linesize[0] = 4 * nb_samples
+                                                // pOutputCodecContext->frame_size=1024
+                                                // pAVFrame1->nb_samples is large then framesize, so encode will error
+                                                // We need split AVFrame
+    #if 1
+                                                // Test wit WMA ok
+                                                // Reference:
+                                                // http://ffmpeg.org/doxygen/0.6/output-example_8c-source.html
+                                                //static int64_t vInitPts=0, vInitDts=0;
+                                                int64_t vSamples = 0, vSplitSamples = 0, vCopySize=0;
+                                                int buf_size = 0, i=1 ,vBytesPerSample=0;
+
+                                                
+                                                vBytesPerSample = av_get_bytes_per_sample(pOutputCodecContext->sample_fmt);
+                                                vSamples = pAVFrame1->nb_samples;
+                                                
+                                                
+    //                                            int vBufLen=0;
+    //                                            int8_t *pTmpBuffer = NULL;
+    //                                            vBufLen = pAVFrame1->nb_samples * vBytesPerSample * pOutputCodecContext->channels;
+    //                                            pTmpBuffer = malloc(vBufLen+1);
+    //                                            memset(pTmpBuffer, 0, vBufLen);
+    //                                            memcpy(pTmpBuffer, pAVFrame1->extended_data[0], vBufLen);
+                                                
+                                                NSLog(@"Save sample %lld, vBytesPerSample=%d, dts=%lld, %lld, %lld",vSamples, vBytesPerSample,pAVFrame1->pts, pAVFrame1->pkt_dts, pAVFrame1->pkt_pts);
+                                                
+    //                                            if(vInitPts==0)
+    //                                            {
+    //                                                vInitPts = pAVFrame1->pkt_pts;
+    //                                            }
+    //                                            else
+    //                                            {
+    //                                                pAVFrame1->pkt_pts -= vInitPts ;
+    //                                            }
+    //                                            
+    //                                            if(vInitDts==0)
+    //                                            {
+    //                                                vInitDts = pAVFrame1->pkt_dts;
+    //                                            }
+    //                                            else
+    //                                            {
+    //                                                pAVFrame1->pkt_dts -= vInitDts ;
+    //                                            }
+
+                                                NSLog(@"line:%d vSamples=%lld, frame_size=%d",__LINE__, vSamples, pOutputCodecContext->frame_size);
+                                                
+                                                while(vSamples - vSplitSamples > 0)
+                                                {
+                                                    int gotFrame2=0;
+                                                    AVPacket Pkt2={0};
+                                                    AVFrame *pAVFrame2 = avcodec_alloc_frame();
+                                                    
+                                                    avcodec_get_frame_defaults(pAVFrame2);
+                                                    
+                                                    
+                                                    pAVFrame2->channel_layout = pAVFrame1->channel_layout;
+                                                    pAVFrame2->channels = pAVFrame1->channels;
+                                                    
+                                                    pAVFrame2->sample_rate = pAVFrame1->sample_rate;
+                                                    pAVFrame2->sample_aspect_ratio = pAVFrame1->sample_aspect_ratio;
+                                                    
+                                                    
+                                                    
+                                                    if(vSamples - vSplitSamples >= pOutputCodecContext->frame_size)
                                                     {
                                                         NSLog(@"line:%d %d vSplitSamples=%lld",__LINE__, i++, vSplitSamples);
 
-                                                        pAVFrame2->nb_samples = vSamples - vSplitSamples;
+                                                        // split AVFrame to smaller frame
+                                                        pAVFrame2->nb_samples = pOutputCodecContext->frame_size;
                                                         
-                                                        buf_size = pAVFrame2->nb_samples *vBytesPerSample * pOutputCodecContext->channels;
+                                                        //pAVFrame2->linesize[0] = pAVFrame1->linesize[0];
+                                                        buf_size = pOutputCodecContext->frame_size  *vBytesPerSample* pOutputCodecContext->channels;
                                                         
+                                                        // This function fills in frame->data, frame->extended_data, frame->linesize[0].
                                                         vRet = avcodec_fill_audio_frame(pAVFrame2, pAVFrame1->channels,pOutputCodecContext->sample_fmt, &pAVFrame1->extended_data[0][vCopySize], buf_size, 0);
                                                         if(vRet!=0)
                                                         {
                                                             NSLog(@"%d avcodec_fill_audio_frame() error %d", __LINE__, vRet);
                                                         }
-                                                        //vSplitSamples = vSamples;
                                                         vCopySize += buf_size;
                                                         vSplitSamples += pAVFrame2->nb_samples;
+                                                        
                                                     }
                                                     else
                                                     {
-                                                        NSLog(@"line:%d %d vSplitSamples=%lld",__LINE__, i++, vSplitSamples);
-
-                                                        //pAVFrame2->linesize[0] = pAVFrame2->linesize[0];
-
-                                                        buf_size = vSamples * vBytesPerSample *pOutputCodecContext->channels;
-                                                        
-                                                        vRet = avcodec_fill_audio_frame(pAVFrame2, pAVFrame1->channels,pOutputCodecContext->sample_fmt, &pAVFrame1->data[0][0], buf_size, 0);
-                                                        if(vRet!=0)
+                                                        if(vSplitSamples!=0)
                                                         {
-                                                            NSLog(@"%d avcodec_fill_audio_frame() error %d", __LINE__, vRet);
-                                                        }
-                                                        //vSplitSamples = vSamples;
-                                                        vSplitSamples += pAVFrame2->nb_samples;
+                                                            NSLog(@"line:%d %d vSplitSamples=%lld",__LINE__, i++, vSplitSamples);
 
+                                                            pAVFrame2->nb_samples = vSamples - vSplitSamples;
+                                                            
+                                                            buf_size = pAVFrame2->nb_samples *vBytesPerSample * pOutputCodecContext->channels;
+                                                            
+                                                            vRet = avcodec_fill_audio_frame(pAVFrame2, pAVFrame1->channels,pOutputCodecContext->sample_fmt, &pAVFrame1->extended_data[0][vCopySize], buf_size, 0);
+                                                            if(vRet!=0)
+                                                            {
+                                                                NSLog(@"%d avcodec_fill_audio_frame() error %d", __LINE__, vRet);
+                                                            }
+                                                            //vSplitSamples = vSamples;
+                                                            vCopySize += buf_size;
+                                                            vSplitSamples += pAVFrame2->nb_samples;
+                                                        }
+                                                        else
+                                                        {
+                                                            NSLog(@"line:%d %d vSplitSamples=%lld",__LINE__, i++, vSplitSamples);
+
+                                                            //pAVFrame2->linesize[0] = pAVFrame2->linesize[0];
+
+                                                            buf_size = vSamples * vBytesPerSample *pOutputCodecContext->channels;
+                                                            
+                                                            vRet = avcodec_fill_audio_frame(pAVFrame2, pAVFrame1->channels,pOutputCodecContext->sample_fmt, &pAVFrame1->data[0][0], buf_size, 0);
+                                                            if(vRet!=0)
+                                                            {
+                                                                NSLog(@"%d avcodec_fill_audio_frame() error %d", __LINE__, vRet);
+                                                            }
+                                                            //vSplitSamples = vSamples;
+                                                            vSplitSamples += pAVFrame2->nb_samples;
+
+                                                        }
                                                     }
+                                                    
+                                                    //av_new_packet(&Pkt2, pAVFrame2->nb_samples);
+                                                    av_init_packet(&Pkt2);
+                                                    
+                                                    vRet = avcodec_encode_audio2(pOutputCodecContext, &Pkt2, pAVFrame2, &gotFrame2);
+                                                    if(vRet==0)
+                                                    {
+                                                        if(gotFrame2>0)
+                                                        {
+                                                            Pkt2.flags |= AV_PKT_FLAG_KEY;
+                                                            vRet = av_interleaved_write_frame( pRecordingAudioFC, &Pkt2 );
+                                                            if(vRet!=0)
+                                                            {
+                                                                NSLog(@"write frame error %s", av_err2str(vRet));
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            NSLog(@"gotFrame %d", gotFrame2);
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        char pErrBuf[1024];
+                                                        int  vErrBufLen = sizeof(pErrBuf);
+                                                        av_strerror(vRet, pErrBuf, vErrBufLen);
+                                                        
+                                                        NSLog(@"vRet=%d, Err=%s",vRet,pErrBuf);
+                                                        NSLog(@"data_size=%d,framesize=%d",data_size, pOutputCodecContext->frame_size);
+                                                        NSLog(@"linesize=%d channels=%d", pAVFrame1->linesize[0], pAudioCodecCtx->channels);
+                                                        NSLog(@"nb_samples=%d, sample_rate=%d",pAVFrame1->nb_samples,pAVFrame1->sample_rate);
+                                                        
+                                                    }
+                                                    
+                                                    if (Pkt2.data)
+                                                        av_freep(Pkt2.data);
+                                                    av_free_packet(&Pkt2);
+                                                    if(pAVFrame2) avcodec_free_frame(&pAVFrame2);
+                                                    
                                                 }
                                                 
-                                                //av_new_packet(&Pkt2, pAVFrame2->nb_samples);
-                                                av_init_packet(&Pkt2);
                                                 
-                                                vRet = avcodec_encode_audio2(pOutputCodecContext, &Pkt2, pAVFrame2, &gotFrame2);
+    #else
+                                                // Test with AAC ok
+                                                vRet = avcodec_encode_audio2(pOutputCodecContext, &Pkt, pAVFrame1, &gotFrame);
                                                 if(vRet==0)
                                                 {
-                                                    if(gotFrame2>0)
+                                                    vRet = av_interleaved_write_frame( pRecordingAudioFC, &Pkt );
+                                                    if(vRet!=0)
                                                     {
-                                                        Pkt2.flags |= AV_PKT_FLAG_KEY;
-                                                        vRet = av_interleaved_write_frame( pRecordingAudioFC, &Pkt2 );
-                                                        if(vRet!=0)
-                                                        {
-                                                            NSLog(@"write frame error %s", av_err2str(vRet));
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        NSLog(@"gotFrame %d", gotFrame2);
+                                                        NSLog(@"write frame error %d", vRet);
                                                     }
                                                 }
                                                 else
@@ -570,81 +604,49 @@ void HandleOutputBuffer (
                                                     char pErrBuf[1024];
                                                     int  vErrBufLen = sizeof(pErrBuf);
                                                     av_strerror(vRet, pErrBuf, vErrBufLen);
-                                                    
+
                                                     NSLog(@"vRet=%d, Err=%s",vRet,pErrBuf);
                                                     NSLog(@"data_size=%d,framesize=%d",data_size, pOutputCodecContext->frame_size);
                                                     NSLog(@"linesize=%d channels=%d", pAVFrame1->linesize[0], pAudioCodecCtx->channels);
                                                     NSLog(@"nb_samples=%d, sample_rate=%d",pAVFrame1->nb_samples,pAVFrame1->sample_rate);
                                                     
                                                 }
-                                                
-                                                if (Pkt2.data)
-                                                    av_freep(Pkt2.data);
-                                                av_free_packet(&Pkt2);
-                                                if(pAVFrame2) avcodec_free_frame(&pAVFrame2);
-                                                
+    #endif
                                             }
-                                            
-                                            
-#else
-                                            // Test with AAC ok
-                                            vRet = avcodec_encode_audio2(pOutputCodecContext, &Pkt, pAVFrame1, &gotFrame);
-                                            if(vRet==0)
-                                            {
-                                                vRet = av_interleaved_write_frame( pRecordingAudioFC, &Pkt );
-                                                if(vRet!=0)
-                                                {
-                                                    NSLog(@"write frame error %d", vRet);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                char pErrBuf[1024];
-                                                int  vErrBufLen = sizeof(pErrBuf);
-                                                av_strerror(vRet, pErrBuf, vErrBufLen);
-
-                                                NSLog(@"vRet=%d, Err=%s",vRet,pErrBuf);
-                                                NSLog(@"data_size=%d,framesize=%d",data_size, pOutputCodecContext->frame_size);
-                                                NSLog(@"linesize=%d channels=%d", pAVFrame1->linesize[0], pAudioCodecCtx->channels);
-                                                NSLog(@"nb_samples=%d, sample_rate=%d",pAVFrame1->nb_samples,pAVFrame1->sample_rate);
-                                                
-                                            }
-#endif
                                         }
-                                    }
-                                    else
-                                    {
-                                        if(pAudioOutputFile!=NULL)
+                                        else
                                         {
-                                            // WAVE file
-                                            fwrite(pOut,  1, data_size, pAudioOutputFile);
-                                            vAudioOutputFileSize += data_size;
+                                            if(pAudioOutputFile!=NULL)
+                                            {
+                                                // WAVE file
+                                                fwrite(pOut,  1, data_size, pAudioOutputFile);
+                                                vAudioOutputFileSize += data_size;
+                                            }
                                         }
                                     }
-                                }
-                                //20130424
-                                // waveform
-                                //                                1. Compute and cache a reduction, by extracting maxima/minima from blocks of (say) 256 samples.
-                                //                                2. Render this data by drawing a vertical line between each max/min pair.
-                                //                                3. Clip the drawing to the damaged region wherever possible.
-                                
-                                //                                int vTmp=0, vSample=0;
-                                //                                for(int j=0;j<in_samples;j+=2)
-                                //                                {
-                                //                                    vTmp += pTemp[0][j]<<8+pTemp[0][j+1];
-                                //                                }
-                                //                                vTmp = vTmp/in_samples;
-                                //                                
-                                //                                NSMutableData *pTmpData = [[NSMutableData alloc] initWithBytes:&vTmp length:sizeof(int)];
-                                //                                [pSampleQueue addObject: pTmpData];
-                            };
+                                    //20130424
+                                    // waveform
+                                    //                                1. Compute and cache a reduction, by extracting maxima/minima from blocks of (say) 256 samples.
+                                    //                                2. Render this data by drawing a vertical line between each max/min pair.
+                                    //                                3. Clip the drawing to the damaged region wherever possible.
+                                    
+                                    //                                int vTmp=0, vSample=0;
+                                    //                                for(int j=0;j<in_samples;j+=2)
+                                    //                                {
+                                    //                                    vTmp += pTemp[0][j]<<8+pTemp[0][j+1];
+                                    //                                }
+                                    //                                vTmp = vTmp/in_samples;
+                                    //                                
+                                    //                                NSMutableData *pTmpData = [[NSMutableData alloc] initWithBytes:&vTmp length:sizeof(int)];
+                                    //                                [pSampleQueue addObject: pTmpData];
+                                };
+                            }
+                            buffer->mPacketDescriptionCount++;
                         }
-                        buffer->mPacketDescriptionCount++;
+                        gotFrame = 0;
                     }
-                    gotFrame = 0;
-                }
-                pktSize-=len;
-                pktData+=len;
+                    pktSize-=len;
+                    pktData+=len;
                 }
                 
                 if (pAVFrame1)    avcodec_free_frame(&pAVFrame1);
@@ -1156,7 +1158,6 @@ withFrameLength:(int)vFrameLength{
     int i;
 
     if(AudioStatus==eAudioRunning) return -1;
-    
     AudioStatus = eAudioRunning;
     LastStartTime = 0;
     
@@ -1188,6 +1189,8 @@ withFrameLength:(int)vFrameLength{
         NSLog(@"AudioQueueStart() error %ld", eErr);
         return -1;
     }
+
+
     
     return 0;
 }
@@ -1210,7 +1213,7 @@ withFrameLength:(int)vFrameLength{
     
     // TODO: check here, destroyQueue will cause crash sometimes
     // Check here
-    //[audioPacketQueue destroyQueue];
+    [audioPacketQueue destroyQueue];
     
     
     if (pSwrCtx)   swr_free(&pSwrCtx);
