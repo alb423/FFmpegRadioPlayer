@@ -210,7 +210,8 @@ void HandleOutputBuffer (
             // Stop fill silence, since the data may be eof or error happen
             //[self Stop:false];
             //AudioQueuePause(mQueue);
-            AudioStatus = eAudioStop;//eAudioPause;
+            // 20140115
+            //AudioStatus = eAudioStop;//eAudioPause;
             NSLog(@"audioPacketQueue is empty for a long time!! may need restart it");
             //AudioQueueStop(mQueue, true);
             //return 1;
@@ -1207,7 +1208,11 @@ withFrameLength:(int)vFrameLength{
     // Disposing of the audio queue also disposes of all its resources, including its buffers.
     AudioQueueDispose(mQueue, bStopImmediatelly);
     
-    [audioPacketQueue destroyQueue];
+    // TODO: check here, destroyQueue will cause crash sometimes
+    // Check here
+    //[audioPacketQueue destroyQueue];
+    
+    
     if (pSwrCtx)   swr_free(&pSwrCtx);
     NSLog(@"Dispose Apple Audio Queue");
 }
