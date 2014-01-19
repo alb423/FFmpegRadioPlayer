@@ -8,12 +8,20 @@
 
 
 #import "ViewController.h"
+#import "Notifications.h"
+#import <AVFoundation/AVFoundation.h>
+#import "MediaPlayer/MPNowPlayingInfoCenter.h"
+#import "MediaPlayer/MPMediaItem.h"
+
+
 #import "AudioPlayer.h"
 #import "AudioUtilities.h"
 
 #import "iAd/iAd.h"
 //#import "iAd/ADBannerView.h"
 #import "GetRadioProgram.h"
+#import "DailyProgramViewController.h"
+
 
 #define WAV_FILE_NAME @"1.wav"
 
@@ -76,6 +84,10 @@
     NSTimer *vReConnectMMSServerTimer;
     
     NSString *pUserSelectedURL;
+    NSInteger vUserSelectedIndex;
+    
+    NSString *pSelectedRadioStation;
+    NSString *pCurrentRadioProgram;
     UIPickerView *PlayTimePickerView;
 }
 @end
@@ -88,7 +100,6 @@
     NSArray *PlayTimerMinuteOptions;
 
     dispatch_queue_t    ffmpegDispatchQueue;
-    dispatch_queue_t    aPlayerDispatchQueue;
     __block dispatch_semaphore_t vDispatchQueueSem;
     
 #if _UNITTEST_FOR_ALL_URL_==1
@@ -119,7 +130,6 @@
         
             // check the status of ffmpeg streaming, ?????
             // if(bIsStop==TRUE)
-            dispatch_async(aPlayerDispatchQueue, ^(void)
             {
                 NSLog(@"func:%s line %d",__func__, __LINE__);
                 // Stop Audio
@@ -128,7 +138,7 @@
             
                 NSLog(@"func:%s line %d reconnect %@",__func__, __LINE__, pUserSelectedURL);
                 [self PlayAudio:nil];
-    });
+            }
         //});
     }
 }
@@ -169,7 +179,9 @@
 
 
 - (void)viewDidLoad
-{    
+{
+    [super viewDidLoad];
+    
     // init 
     NSString *pAudioPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:DEFAULT_BROADCAST_URL];
     NSData *pJsonData = [[NSFileManager defaultManager] contentsAtPath:pAudioPath];
@@ -184,8 +196,11 @@
     // Show the default broadcast URL
     // TODO: the default broadcast URL should be assigned to the last used URL.
     NSDictionary *URLDict = [URLListData objectAtIndex:0];
+    vUserSelectedIndex = 0;
     pUserSelectedURL = [URLDict valueForKey:@"url"];
+    pSelectedRadioStation = [URLDict valueForKey:@"title"];
     URLNameToDisplay.text = [URLDict valueForKey:@"title"];
+
     
     // init Volumen Bar
     VolumeBar.maximumValue = 1.0;
@@ -220,9 +235,20 @@
     [GetRadioProgram GetRequest];
     #endif
     
+    /*
+     *  Listen for the appropriate notifications.
+     */
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:remoteControlPlayButtonTapped object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:remoteControlPauseButtonTapped object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:remoteControlStopButtonTapped object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:remoteControlForwardButtonTapped object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:remoteControlBackwardButtonTapped object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:remoteControlOtherButtonTapped object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:remoteControlShowMessage object:nil];
     // For new iOS 7.0 only
     //self.canDisplayBannerAds = YES;
-    [super viewDidLoad];
+    
     
     // TODO : use SCNetworkReachabilityRef to dectect 3G or WIFI
     return;
@@ -231,7 +257,6 @@
 - (void)dealloc
 {
     ffmpegDispatchQueue=nil;
-    aPlayerDispatchQueue=nil;
 }
 
 - (void)didReceiveMemoryWarning
@@ -247,33 +272,19 @@
     [vReConnectMMSServerTimer invalidate];
     vReConnectMMSServerTimer = nil;
     
+    // TODO: if rtsp connections is not connected
+    //
+    
     // Stop Consumer
     [aPlayer Stop:TRUE];
     aPlayer= nil;
-//    if(aPlayerDispatchQueue)
-//    {
-//        dispatch_async(aPlayerDispatchQueue, ^(void) {
-//            [aPlayer Stop:TRUE];
-//            aPlayer = nil;
-//        });
-//    }
     
     // Stop Producer
     [self stopFFmpegAudioStream];
     [self destroyFFmpegAudioStream];
-    
-//    if(ffmpegDispatchQueue)
-//    {
-//        dispatch_async(ffmpegDispatchQueue, ^(void) {
-//            [self stopFFmpegAudioStream];
-//            [self destroyFFmpegAudioStream];
-//        });
-//    }
 
     ffmpegDispatchQueue = nil;
-    aPlayerDispatchQueue= nil;
     vDispatchQueueSem = nil;
-    
 }
 
 - (IBAction)PlayAudio:(id)sender {
@@ -285,8 +296,6 @@
     
     if(!ffmpegDispatchQueue)
         ffmpegDispatchQueue  = dispatch_queue_create("ffmpegDispatchQueue", DISPATCH_QUEUE_SERIAL);
-    if(!aPlayerDispatchQueue)
-        aPlayerDispatchQueue  = dispatch_queue_create("aPlayerDispatchQueue", DISPATCH_QUEUE_SERIAL);
     
     vDispatchQueueSem = dispatch_semaphore_create(0);
     
@@ -300,19 +309,49 @@
     
     if(bIsStop==false)
     {
-        //dispatch_async(dispatch_get_main_queue(), ^(void){
-        //dispatch_async(ffmpegDispatchQueue, ^(void) {
-        //    @autoreleasepool
-            {
-                [self StopPlayAudio:nil];
-            }
-        //});
-        //[self StopPlayAudio:nil];
+        [self StopPlayAudio:nil];
         [vBn setTitle:@"Play" forState:UIControlStateNormal];
     }
     else
     {
         [vBn setTitle:@"Stop" forState:UIControlStateNormal];
+        
+        NSDictionary *URLDict = [URLListData objectAtIndex:vUserSelectedIndex];
+        NSString *pRaidoId = [URLDict valueForKey:@"id"];
+        NSString *pMyDateString;
+        NSDate *now = [NSDate date];
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+        pMyDateString = [dateFormatter stringFromDate:now];
+        
+        // For different country, the program URL may be different
+        // This is for taiwan only
+        NSString *pRadioProgramUrl = [[NSString alloc]initWithFormat:@"http://hichannel.hinet.net/ajax/radio/program.do?id=%s&date=%s",
+                          [pRaidoId UTF8String],
+                          [pMyDateString UTF8String]];
+        
+        
+        NSArray *pProgram=[NSArray alloc];
+        NSData* pJsonData;
+        
+        if(pUserSelectedURL==nil)
+        {
+            pUserSelectedURL = AUDIO_TEST_PATH;
+        }
+        pJsonData = [NSData dataWithContentsOfURL: [NSURL URLWithString:pRadioProgramUrl]];
+        pProgram = [GetRadioProgram parseJsonData:pJsonData];
+
+        // Get the current active program
+        int i;
+        for(i=0;i<[pProgram count];i++)
+        {
+            NSDictionary *pItem = [pProgram objectAtIndex:i];
+            NSString *pOn = [[NSString alloc] initWithFormat:@"%@",[pItem valueForKey:@"on"]] ;
+            if( [pOn integerValue] == 1)
+                pCurrentRadioProgram = [pItem valueForKey:@"programName"];
+        }
+        
+        //[self performSelectorOnMainThread:@selector(parseJsonData:) w waitUntilDone:YES];
         
 //        dispatch_async(dispatch_get_main_queue(), ^(void) {
 //            @autoreleasepool {
@@ -320,8 +359,7 @@
 //            }
 //        });
         
-        dispatch_async(ffmpegDispatchQueue, ^(void) {
-            //@autoreleasepool
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void) {
             {
                 if([self initFFmpegAudioStream]==FALSE)
                 {
@@ -342,47 +380,20 @@
         #endif
                         }
                     });
-                    //dispatch_semaphore_signal(vDispatchQueueSem);
                     return;
                 }
                 
                 // pAudioCodecCtx is active only when initFFmpegAudioStream is success
-                //dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    if(aPlayer==nil)
-                    {
-                        aPlayer = [[AudioPlayer alloc]initAudio:nil withCodecCtx:(AVCodecContext *) pAudioCodecCtx];
-                        
-                    }
+                if(aPlayer==nil)
+                {
+                    aPlayer = [[AudioPlayer alloc]initAudio:nil withCodecCtx:(AVCodecContext *) pAudioCodecCtx];
                     
-                
-                //});
+                }
                 
                 NSLog(@"== readFFmpegAudioFrameAndDecode");
                 [self readFFmpegAudioFrameAndDecode];
-                //dispatch_semaphore_signal(vDispatchQueueSem);
             }
         });
-        
-        
-        //dispatch_semaphore_wait(vDispatchQueueSem, DISPATCH_TIME_FOREVER);
-        
-        
-
-        
-//        dispatch_async(dispatch_get_main_queue(), ^(void) {
-//            @autoreleasepool {
-//               [MyUtilities hideWaiting:self.view];
-//            }
-//        });
-
-//        dispatch_semaphore_wait(vDispatchQueueSem, DISPATCH_TIME_FOREVER);
-//        dispatch_async(ffmpegDispatchQueue, ^(void) {
-//            @autoreleasepool
-//            {
-//                NSLog(@"== readFFmpegAudioFrameAndDecode");
-//                [self readFFmpegAudioFrameAndDecode];
-//            }
-//        });
     }
 }
 
@@ -477,10 +488,9 @@
             return FALSE;
         }
     }
-
-
     
 	av_dict_free(&opts);
+    
 #else // UDP
     if(avformat_open_input(&pFormatCtx, [pAudioInPath cStringUsingEncoding:NSASCIIStringEncoding], NULL, NULL) != 0) {
         av_log(NULL, AV_LOG_ERROR, "Couldn't open file\n");
@@ -711,14 +721,6 @@
                     if([aPlayer getStatus]!=eAudioRunning)
                     {
                         [aPlayer Play];
-//                        dispatch_async(dispatch_get_main_queue(), ^(void) {
-//                        //dispatch_async(aPlayerDispatchQueue, ^(void) {
-//                            //@autoreleasepool
-//                            {
-//                                NSLog(@"aPlayer start play");
-//                                [aPlayer Play];
-//                            }
-//                        });
                     }
                 }
             }
@@ -736,9 +738,7 @@
     if(bRecordStart==true)
     {
         bRecordStart = false;
-        dispatch_async(aPlayerDispatchQueue, ^(void) {
-            [aPlayer RecordingStop];
-        });
+        [aPlayer RecordingStop];
     }
     else
     {
@@ -746,7 +746,6 @@
         //vRecordingAudioFormat = kAudioFormatLinearPCM;// (Test ok)
         //vRecordingAudioFormat = kAudioFormatMPEG4AAC; //(need Test)
         bRecordStart = true;
-        dispatch_async(aPlayerDispatchQueue, ^(void) {
 #if 0
         [aPlayer RecordingSetAudioFormat:kAudioFormatLinearPCM];        
         [aPlayer RecordingStart:@"/Users/liaokuohsun/2.wav"];
@@ -756,7 +755,6 @@
         [aPlayer RecordingStart:@"/Users/miuki001/Audio2.mp4"];
         //[aPlayer RecordingStart:@"/Users/liaokuohsun/Audio2.m4a"];
 #endif
-        });
     }
 }
 
@@ -797,29 +795,32 @@
 {
     // Set the URL_TO_PLAY to the url user select
     NSDictionary *URLDict = [URLListData objectAtIndex:indexPath.row];
+    
+    vUserSelectedIndex = indexPath.row;
     pUserSelectedURL = nil;
     pUserSelectedURL = [URLDict valueForKey:@"url"];
+    pSelectedRadioStation = [URLDict valueForKey:@"title"];
+    
 //    URLNameToDisplay.text = [URLDict valueForKey:@"title"];
 //    URLNameToDisplay.textAlignment = NSTextAlignmentCenter;
     
     URLDict = nil;
     
-    // Start Play when user select the row
-    if([aPlayer getStatus]!=eAudioStop)
-        [self StopPlayAudio:_PlayAudioButton];
-    [self PlayAudio:_PlayAudioButton];
-    
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        // Start Play when user select the row
+        if([aPlayer getStatus]!=eAudioStop)
+            [self StopPlayAudio:_PlayAudioButton];
+        [self PlayAudio:_PlayAudioButton];
+    });
 }
 
 -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
-    
+
     NSDictionary *URLDict = [URLListData objectAtIndex:indexPath.row];
     NSString *pRaidoId = [URLDict valueForKey:@"id"];
-    
     NSString *pMyDateString;
     NSDate *now = [NSDate date];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    //[dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS"];
     [dateFormatter setDateFormat:@"yyyy-MM-dd"];
     pMyDateString = [dateFormatter stringFromDate:now];
     
@@ -828,23 +829,22 @@
     NSString *pUrl = [[NSString alloc]initWithFormat:@"http://hichannel.hinet.net/ajax/radio/program.do?id=%s&date=%s",
                       [pRaidoId UTF8String],
                       [pMyDateString UTF8String]];
+#if 1
+    // Instantiating a Storyboard's View Controller Programmatically.
+    UIStoryboard *us = [UIStoryboard storyboardWithName:@"MainStoryboard_iPhone" bundle: nil];
+    DailyProgramViewController *pDailyProgram = [us instantiateViewControllerWithIdentifier:@"DailyProgram"];
+    id NextViewController = pDailyProgram;
     
-    NSLog(@"accessoryButton press %d", indexPath.row);
-    NSLog(@"pUrl %@", pUrl);
+    [NextViewController setValue:pUrl forKey:@"pRadioProgramUrl"];
     
-    //"http://hichannel.hinet.net/ajax/radio/program.do?id=205&date=2013-06-25"
+    [self presentViewController:pDailyProgram animated:YES completion:nil];
+#else
     
-
-    [GetRadioProgram GetRequest:pUrl];
-
-    dateFormatter = nil;
-    now = nil;
-    pUrl = nil;
-    pMyDateString = nil;
-//        NSInteger row = indexPath.row;
-//    nextControlView = [[NextControlView alloc] initWithNibName:@"NextControlView" bundle:nil];
-//    nextControlView.Page=row;
-//    [self.navigationController pushViewController:nextControlView animated:YES];
+    // Test for triggering a Segue Programmatically.
+    // performSegueWithIdentifier: the id should a segue rather than a storyboard identifier
+    [self performSegueWithIdentifier:@"ShowMiscView" sender:self.view];
+    
+#endif
 }
 
 #pragma mark - volume_bar Slider
@@ -1020,6 +1020,7 @@
         else
         {
             NSDictionary *URLDict = [URLListData objectAtIndex:vTestCase];
+            indexPath.row = vTestCase;
             pUserSelectedURL = [URLDict valueForKey:@"url"];
             pTestLog = [pTestLog stringByAppendingFormat:@"\ntest %@",pUserSelectedURL];
             [self PlayAudio:_PlayAudioButton];
@@ -1028,5 +1029,76 @@
 }
 #endif
 
+#pragma mark - Remote Handling
+
+/*  This method logs out when a
+ *  remote control button is pressed.
+ *
+ *  In some cases, it will also manipulate the stream.
+ */
+
+- (void)handleNotification:(NSNotification *)notification
+{
+    if ([notification.name isEqualToString:remoteControlPlayButtonTapped]) {
+        [self updateLogWithMessage:NSLocalizedString(@"Play remote event recieved.", @"A log event for play events.")];
+        [self PlayAudio:self];
+        
+    } else  if ([notification.name isEqualToString:remoteControlPauseButtonTapped]) {
+        [self updateLogWithMessage:NSLocalizedString(@"Pause remote event recieved.", @"A log event for pause events.")];
+        // TODO: if we destroy the audio queue, the play menu will destroy,too
+        [self StopPlayAudio:self];
+        
+    } else if ([notification.name isEqualToString:remoteControlStopButtonTapped]) {
+        [self updateLogWithMessage:NSLocalizedString(@"Stop remote event recieved.", @"A log event for stop events.")];
+        [self StopPlayAudio:self];
+        
+    } else if ([notification.name isEqualToString:remoteControlForwardButtonTapped]) {
+        [self updateLogWithMessage:NSLocalizedString(@"Forward remote event recieved.", @"A log event for next events.")];
+        
+    } else if ([notification.name isEqualToString:remoteControlBackwardButtonTapped]) {
+        [self updateLogWithMessage:NSLocalizedString(@"Back remote event recieved.", @"A log event for back events.")];
+    } else if ([notification.name isEqualToString:remoteControlShowMessage]) {
+        [self configNowPlayingInfoCenter];
+    }
+    else {
+        [self updateLogWithMessage:NSLocalizedString(@"Unknown remote event recieved.", @"A log event for unknown events.")];
+    }
+    
+}
+
+- (void)updateLogWithMessage:(NSString *)message
+{
+    NSLog(@"Log:%@",message);
+//    if ([self.log.text isEqualToString:self.initialText]) {
+//        self.log.text = [NSMutableString stringWithFormat:@"%@: %@", [NSDate date], message];
+//    }
+//    else {
+//        self.log.text = [NSMutableString stringWithFormat:@"%@\n%@: %@", self.log.text, [NSDate date], message];
+//    }
+}
+
+#pragma mark - playingInfoCenter
+
+- (void)configNowPlayingInfoCenter {
+    NSLog(@"configNowPlayingInfoCenter In");
+    Class playingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
+    if (playingInfoCenter) {
+        
+        MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
+        
+        // 当前播放歌曲的图片
+//        MPMediaItemArtwork *artwork = [[MPMediaItemArtwork alloc] initWithImage:[UIImage alloc]ini
+                                       //@"Default-iphone.png"];
+        
+        NSDictionary *songInfo = [NSDictionary dictionaryWithObjectsAndKeys:pSelectedRadioStation, MPMediaItemPropertyArtist,
+                                  pCurrentRadioProgram, MPMediaItemPropertyTitle,
+                                  nil, MPMediaItemPropertyArtwork,
+                                  nil, /*@"专辑名"*/ MPMediaItemPropertyAlbumTitle,
+                                  nil];
+        center.nowPlayingInfo = songInfo;
+        
+        //[artwork release];
+    }
+}
 
 @end

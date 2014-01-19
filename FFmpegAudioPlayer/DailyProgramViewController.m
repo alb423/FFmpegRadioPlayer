@@ -1,0 +1,130 @@
+//
+//  DailyProgramViewController.m
+//  TabelDemo
+//
+//  Created by albert on 2013/11/19.
+//  Copyright (c) 2013年 albert. All rights reserved.
+//
+
+#import "DailyProgramViewController.h"
+#import "ViewController.h"
+#import "GetRadioProgram.h"
+
+#define JSON_ERR_NOPROGRAM @"err_noprogram.json"
+
+@interface DailyProgramViewController ()
+{
+    NSArray *pRadioProgram;
+}
+@end
+
+
+
+@implementation DailyProgramViewController
+
+@synthesize pRadioProgramUrl, DailyProgramDayTable, pDailyProgramToday;
+
+- (void)fetchedDataForHttpGet:(NSData *)responseData {
+    NSError* error;
+    NSMutableDictionary* jsonDictionary = [NSJSONSerialization JSONObjectWithData:responseData //1
+                                                                          options:NSJSONReadingAllowFragments
+                                                                            error:&error];
+    if(error!=nil)
+    {
+        NSLog(@"json transfer error %@", error);
+        // TODO: make a fake jsonDictionary
+        // and show error message on the form
+        //parse out the json data
+        NSError* error;
+        
+        NSString *pJsonDataPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:JSON_ERR_NOPROGRAM];
+        NSData *pJsonData = [[NSFileManager defaultManager] contentsAtPath:pJsonDataPath];
+        
+        
+        NSLog(@"%@", [[NSString alloc] initWithData:pJsonData encoding:NSUTF8StringEncoding]);
+        jsonDictionary = [NSJSONSerialization JSONObjectWithData:pJsonData //1
+                                                         options:NSJSONReadingAllowFragments
+                                                           error:&error];
+        if(error!=nil)
+        {
+            NSLog(@"json transfer error %@", error);
+            return;
+            
+        }
+        //return;
+    }
+    
+    
+    NSLog(@"json : %@",jsonDictionary);
+    // 1) retrieve the URL list into NSArray
+    // A simple test of URLListData
+    pRadioProgram = [jsonDictionary objectForKey:@"program"];
+    if(pRadioProgram==nil)
+    {
+        NSLog(@"URLListData load error!!");
+        return;
+    }
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    NSDate *now = [NSDate date];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    [pDailyProgramToday setText:[dateFormatter stringFromDate:now]];
+    
+    NSData* pJsonData;
+    pJsonData = [NSData dataWithContentsOfURL: [NSURL URLWithString:self.pRadioProgramUrl]];
+    [self performSelectorOnMainThread:@selector(fetchedDataForHttpGet:) withObject:pJsonData waitUntilDone:YES];
+    
+    //[self fetchedDataForHttpGet:pJsonData];
+    
+    
+    // Uncomment the following line to preserve selection between presentations.
+    // self.clearsSelectionOnViewWillAppear = NO;
+    
+    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [pRadioProgram count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"Cell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if(cell == nil){
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
+    
+    NSDictionary *URLDict = [pRadioProgram objectAtIndex:indexPath.row];
+    
+    NSString *OutputText = [[NSString alloc]initWithFormat:@"%@  %@",
+                            [[URLDict valueForKey:@"timeRange"] substringToIndex:5],
+                            [URLDict valueForKey:@"programName"]];
+    cell.textLabel.text = OutputText;
+    
+    
+    return cell;
+}
+
+@end

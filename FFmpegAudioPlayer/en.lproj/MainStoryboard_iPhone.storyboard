@@ -177,6 +177,46 @@
             </objects>
             <point key="canvasLocation" x="-66" y="45"/>
         </scene>
+        <!--Daily Program View Controller-->
+        <scene sceneID="14u-cZ-vW6">
+            <objects>
+                <viewController storyboardIdentifier="DailyProgram" useStoryboardIdentifierAsRestorationIdentifier="YES" id="i8E-XN-ZNC" customClass="DailyProgramViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="xPA-gG-6yW"/>
+                        <viewControllerLayoutGuide type="bottom" id="jBy-n7-8GP"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Lav-Dd-HaX">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="yT8-as-jEk">
+                                <rect key="frame" x="0.0" y="84" width="320" height="415"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="i8E-XN-ZNC" id="uUj-N8-ycG"/>
+                                    <outlet property="delegate" destination="i8E-XN-ZNC" id="se2-wC-QJZ"/>
+                                </connections>
+                            </tableView>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="63Q-h3-E3Z">
+                                <rect key="frame" x="97" y="38" width="130" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <outlet property="DailyProgramDayTable" destination="yT8-as-jEk" id="XbZ-B8-HCJ"/>
+                        <outlet property="pDailyProgramToday" destination="63Q-h3-E3Z" id="J1s-qq-Lp5"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hyT-Ml-OCD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-74" y="722"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="DdU-lW-Mz1">
             <objects>

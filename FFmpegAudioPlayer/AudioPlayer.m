@@ -773,7 +773,7 @@ void HandleOutputBuffer (
     int vBufferSize=0;    
     int err;
     
-#if 1
+#if 0
     // support audio play when screen is locked
     NSError *setCategoryErr = nil;
     NSError *activationErr  = nil;
@@ -1205,6 +1205,8 @@ withFrameLength:(int)vFrameLength{
                                      kAudioQueueProperty_IsRunning,
                                      CheckAudioQueueRunningStatus,
                                      (__bridge void *)(self));
+    
+    //AudioQueuePause(mQueue);
     
     AudioQueueStop(mQueue, bStopImmediatelly);
     

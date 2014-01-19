@@ -12,6 +12,8 @@
 
 @implementation GetRadioProgram
 
+#define JSON_ERR_NOPROGRAM_2 @"err_noprogram.json"
+
 #define MAIN_QUEUE dispatch_get_main_queue()
 #define GLOBAL_QUEUE dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 
@@ -64,6 +66,50 @@
     NSLog(@"programDay: %@", [pProgram valueForKey:@"programDay"]);
     NSLog(@"programName: %@", [pProgram valueForKey:@"programName"]);
     NSLog(@"timeRange: %@", [pProgram valueForKey:@"timeRange"]);      
+}
+
++ (NSArray *) parseJsonData:(NSData *)pJsonData {
+    NSArray *pProgramArray;
+    NSError* error;
+    NSMutableDictionary* jsonDictionary = [NSJSONSerialization JSONObjectWithData:pJsonData //1
+                                                                          options:NSJSONReadingAllowFragments
+                                                                            error:&error];
+    if(error!=nil)
+    {
+        NSLog(@"json transfer error %@", error);
+        // TODO: make a fake jsonDictionary
+        // and show error message on the form
+        //parse out the json data
+        NSError* error;
+        
+        NSString *pJsonDataPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:JSON_ERR_NOPROGRAM_2];
+        NSData *pJsonData = [[NSFileManager defaultManager] contentsAtPath:pJsonDataPath];
+        
+        
+        NSLog(@"%@", [[NSString alloc] initWithData:pJsonData encoding:NSUTF8StringEncoding]);
+        jsonDictionary = [NSJSONSerialization JSONObjectWithData:pJsonData //1
+                                                         options:NSJSONReadingAllowFragments
+                                                           error:&error];
+        if(error!=nil)
+        {
+            NSLog(@"json transfer error %@", error);
+            return nil;
+            
+        }
+        //return;
+    }
+    
+    
+    NSLog(@"json : %@",jsonDictionary);
+    // 1) retrieve the URL list into NSArray
+    // A simple test of URLListData
+    pProgramArray = [jsonDictionary objectForKey:@"program"];
+    if(pProgramArray==nil)
+    {
+        NSLog(@"URLListData load error!!");
+        return nil;
+    }
+    return pProgramArray;
 }
 
 -(void) connection:(NSURLConnection *) connection didReceiveResponse:(NSURLResponse *)response
