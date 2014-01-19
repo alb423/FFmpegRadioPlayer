@@ -85,7 +85,7 @@
     
     NSString *pUserSelectedURL;
     NSInteger vUserSelectedIndex;
-    
+    NSInteger vAccessorySelected;
     NSString *pSelectedRadioStation;
     NSString *pCurrentRadioProgram;
     UIPickerView *PlayTimePickerView;
@@ -815,36 +815,41 @@
 }
 
 -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
+    
+    vAccessorySelected = indexPath.row;
+    [self performSegueWithIdentifier:@"ShowDailyProgram" sender:self.view];
+}
 
-    NSDictionary *URLDict = [URLListData objectAtIndex:indexPath.row];
-    NSString *pRaidoId = [URLDict valueForKey:@"id"];
-    NSString *pMyDateString;
-    NSDate *now = [NSDate date];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-    pMyDateString = [dateFormatter stringFromDate:now];
+-(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    NSLog(@"prepareForSegue");
     
-    // For different country, the program URL may be different
-    // This is for taiwan only
-    NSString *pUrl = [[NSString alloc]initWithFormat:@"http://hichannel.hinet.net/ajax/radio/program.do?id=%s&date=%s",
-                      [pRaidoId UTF8String],
-                      [pMyDateString UTF8String]];
-#if 1
-    // Instantiating a Storyboard's View Controller Programmatically.
-    UIStoryboard *us = [UIStoryboard storyboardWithName:@"MainStoryboard_iPhone" bundle: nil];
-    DailyProgramViewController *pDailyProgram = [us instantiateViewControllerWithIdentifier:@"DailyProgram"];
-    id NextViewController = pDailyProgram;
+    if([[segue identifier] isEqualToString:@"ShowDailyProgram"])
+    {
+        NSDictionary *URLDict = [URLListData objectAtIndex:vAccessorySelected];
+        NSString *pRaidoId = [URLDict valueForKey:@"id"];
+        NSString *pMyDateString;
+        NSDate *now = [NSDate date];
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+        pMyDateString = [dateFormatter stringFromDate:now];
+        
+        // For different country, the program URL may be different
+        // This is for taiwan only
+        NSString *pUrl = [[NSString alloc]initWithFormat:@"http://hichannel.hinet.net/ajax/radio/program.do?id=%s&date=%s",
+                          [pRaidoId UTF8String],
+                          [pMyDateString UTF8String]];
+        
+//        
+//        // Instantiating a Storyboard's View Controller Programmatically.
+//        UIStoryboard *us = [UIStoryboard storyboardWithName:@"MainStoryboard_iPhone" bundle: nil];
+//        DailyProgramViewController *pDailyProgram = [us instantiateViewControllerWithIdentifier:@"DailyProgram"];
+//        id NextViewController = pDailyProgram;
+        
+        DailyProgramViewController *pDailyProgramViewController = [segue destinationViewController];
+        [pDailyProgramViewController setValue:pUrl forKey:@"pRadioProgramUrl"];
+        
+    }
     
-    [NextViewController setValue:pUrl forKey:@"pRadioProgramUrl"];
-    
-    [self presentViewController:pDailyProgram animated:YES completion:nil];
-#else
-    
-    // Test for triggering a Segue Programmatically.
-    // performSegueWithIdentifier: the id should a segue rather than a storyboard identifier
-    [self performSegueWithIdentifier:@"ShowMiscView" sender:self.view];
-    
-#endif
 }
 
 #pragma mark - volume_bar Slider

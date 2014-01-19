@@ -64,6 +64,7 @@
 /* Begin PBXFileReference section */
 		9A19360E188C111100BAE3E0 /* DailyProgramViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DailyProgramViewController.h; path = FFmpegAudioPlayer/DailyProgramViewController.h; sourceTree = "<group>"; };
 		9A19360F188C111100BAE3E0 /* DailyProgramViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DailyProgramViewController.m; path = FFmpegAudioPlayer/DailyProgramViewController.m; sourceTree = "<group>"; };
+		9A193611188C189D00BAE3E0 /* MyMacro.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyMacro.h; sourceTree = "<group>"; };
 		9A22811317640C2F00BB4CED /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		9A29728C1851BFA900160B6E /* double_linklist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = double_linklist.c; sourceTree = "<group>"; };
 		9A29728E1851BFBB00160B6E /* double_linklist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = double_linklist.h; sourceTree = "<group>"; };
@@ -158,6 +159,7 @@
 		9A6674751721133300FB478C = {
 			isa = PBXGroup;
 			children = (
+				9A193611188C189D00BAE3E0 /* MyMacro.h */,
 				9A19360E188C111100BAE3E0 /* DailyProgramViewController.h */,
 				9A19360F188C111100BAE3E0 /* DailyProgramViewController.m */,
 				9A4CD83F1883C83800A2C962 /* Images.xcassets */,

@@ -9,7 +9,7 @@
 #import "DailyProgramViewController.h"
 #import "ViewController.h"
 #import "GetRadioProgram.h"
-
+#import "MyMacro.h"
 #define JSON_ERR_NOPROGRAM @"err_noprogram.json"
 
 @interface DailyProgramViewController ()
@@ -68,8 +68,6 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
-    
     NSDate *now = [NSDate date];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd"];
@@ -78,15 +76,19 @@
     NSData* pJsonData;
     pJsonData = [NSData dataWithContentsOfURL: [NSURL URLWithString:self.pRadioProgramUrl]];
     [self performSelectorOnMainThread:@selector(fetchedDataForHttpGet:) withObject:pJsonData waitUntilDone:YES];
-    
-    //[self fetchedDataForHttpGet:pJsonData];
-    
-    
+ 
+    [super viewDidLoad];    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    //self.navigationItem.backBarButtonItem
+    
+    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+    {
+        self.automaticallyAdjustsScrollViewInsets=false;
+    }
 }
 
 - (void)didReceiveMemoryWarning
