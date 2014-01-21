@@ -25,4 +25,7 @@
 
  NSString *remoteControlShowMessage = @"Show Message";
 
+ NSString *PlayButtonTapped = @"PlayButtonTapped";
+ NSString *StopButtonTapped = @"StopButtonTapped";
+
 #endif

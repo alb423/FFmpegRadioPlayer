@@ -270,6 +270,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:remoteControlBackwardButtonTapped object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:remoteControlOtherButtonTapped object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:remoteControlShowMessage object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:PlayButtonTapped object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:StopButtonTapped object:nil];
+
     // For new iOS 7.0 only
     //self.canDisplayBannerAds = YES;
     
@@ -374,11 +378,14 @@
     if(bIsStop==false)
     {
         [self StopPlayAudio:nil];
-        [vBn setTitle:@"Play" forState:UIControlStateNormal];
+        //[vBn setTitle:@"Play" forState:UIControlStateNormal];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"StopButtonTapped" object:self];
     }
     else
     {
-        [vBn setTitle:@"Stop" forState:UIControlStateNormal];
+        //[vBn setTitle:@"Stop" forState:UIControlStateNormal];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"PlayButtonTapped" object:self];
+        
         [self UpdateCurrentProgramName];
         
         //[self performSelectorOnMainThread:@selector(parseJsonData:) w waitUntilDone:YES];
@@ -397,7 +404,7 @@
                     dispatch_async(dispatch_get_main_queue(), ^(void) {
                         @autoreleasepool
                         {
-                            [vBn setTitle:@"Play" forState:UIControlStateNormal];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"StopButtonTapped" object:self];
                             //[MyUtilities hideWaiting:self.view];
         #if _UNITTEST_FOR_ALL_URL_ == 1
                             pTestLog = [pTestLog stringByAppendingString:@" RTSP Fail\n"];
@@ -1104,10 +1111,17 @@
         
     } else if ([notification.name isEqualToString:remoteControlBackwardButtonTapped]) {
         [self updateLogWithMessage:NSLocalizedString(@"Back remote event recieved.", @"A log event for back events.")];
+        
     } else if ([notification.name isEqualToString:remoteControlShowMessage]) {
         [self configNowPlayingInfoCenter];
-    }
-    else {
+
+    } else if ([notification.name isEqualToString:PlayButtonTapped]) {
+        [_PlayAudioButton setTitle:@"Stop" forState:UIControlStateNormal];
+
+    } else if ([notification.name isEqualToString:StopButtonTapped]) {
+        [_PlayAudioButton setTitle:@"Play" forState:UIControlStateNormal];
+        
+    } else {
         [self updateLogWithMessage:NSLocalizedString(@"Unknown remote event recieved.", @"A log event for unknown events.")];
     }
     
