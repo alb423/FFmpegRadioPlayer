@@ -36,7 +36,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *PlayAudioButton;
 @property (weak, nonatomic) IBOutlet UITableView *URLListView;
 @property (strong, nonatomic) NSArray *URLListData;
-@property (weak, nonatomic) IBOutlet UILabel *URLNameToDisplay;
+@property (weak, nonatomic) IBOutlet UILabel *StationNameToDisplay;
+@property (strong, nonatomic) IBOutlet UILabel *ProgramNameToDisplay;
 @property (weak, nonatomic) IBOutlet UISlider *VolumeBar;
 
 - (IBAction)PlayTimerButtonPressed:(id)sender;
@@ -46,7 +47,7 @@
 
 // 20130903 albert.liao modified start
 @property BOOL bRecordStart;
-- (IBAction)VideoRecordPressed:(id)sender;
+//- (IBAction)VideoRecordPressed:(id)sender;
 // 20130903 albert.liao modified end
 
 @end

@@ -21,7 +21,8 @@
 //#import "iAd/ADBannerView.h"
 #import "GetRadioProgram.h"
 #import "DailyProgramViewController.h"
-
+#import <Foundation/Foundation.h>
+//#import "NSCalendar.h"
 
 #define WAV_FILE_NAME @"1.wav"
 
@@ -82,6 +83,7 @@
 
     UIActivityIndicatorView *pIndicator;
     NSTimer *vReConnectMMSServerTimer;
+    NSTimer *vUpdateProgramTimer;
     
     NSString *pUserSelectedURL;
     NSInteger vUserSelectedIndex;
@@ -112,8 +114,30 @@
 @synthesize bRecordStart;
 // 20130903 albert.liao modified end
 
-@synthesize URLListData, URLNameToDisplay, VolumeBar;
+@synthesize URLListData, StationNameToDisplay, ProgramNameToDisplay, VolumeBar;
 
+-(NSInteger) getCurrentMinutes
+{
+    NSDate *today = [NSDate date];
+    NSCalendar *gregorianCal = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *dateComps = [gregorianCal components: (NSHourCalendarUnit | NSMinuteCalendarUnit)
+                                                  fromDate: today];
+    return (60 - [dateComps minute]);
+}
+
+-(void)UpdateProgramTimerFired:(NSTimer *)timer {
+    //NSLog(@"func:%s line %d",__func__, __LINE__);
+    if(timer!=nil)
+    {
+        NSLog(@"UpdateProgramTimerFired, setTimer to next hour");
+
+        [self UpdateCurrentProgramName];
+        vUpdateProgramTimer = [NSTimer scheduledTimerWithTimeInterval:3600                                                    target:self
+                                                             selector:@selector(UpdateProgramTimerFired:)
+                                                             userInfo:nil
+                                                              repeats:NO];
+    }
+}
 
 
 // 20130828 albert.liao modified start
@@ -199,8 +223,8 @@
     vUserSelectedIndex = 0;
     pUserSelectedURL = [URLDict valueForKey:@"url"];
     pSelectedRadioStation = [URLDict valueForKey:@"title"];
-    URLNameToDisplay.text = [URLDict valueForKey:@"title"];
-
+    StationNameToDisplay.text = [URLDict valueForKey:@"title"];
+    ProgramNameToDisplay.text = nil;
     
     // init Volumen Bar
     VolumeBar.maximumValue = 1.0;
@@ -270,8 +294,9 @@
 
     // The reconnect timer should stop earilier to avoid restart when stop play audio.
     [vReConnectMMSServerTimer invalidate];
+    [vUpdateProgramTimer invalidate];
     vReConnectMMSServerTimer = nil;
-    
+    vUpdateProgramTimer = nil;
     // TODO: if rtsp connections is not connected
     //
     
@@ -285,6 +310,45 @@
 
     ffmpegDispatchQueue = nil;
     vDispatchQueueSem = nil;
+}
+
+- (void) UpdateCurrentProgramName
+{
+    NSDictionary *URLDict = [URLListData objectAtIndex:vUserSelectedIndex];
+    NSString *pRaidoId = [URLDict valueForKey:@"id"];
+    NSString *pMyDateString;
+    NSDate *now = [NSDate date];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    pMyDateString = [dateFormatter stringFromDate:now];
+    
+    // For different country, the program URL may be different
+    // This is for taiwan only
+    NSString *pRadioProgramUrl = [[NSString alloc]initWithFormat:@"http://hichannel.hinet.net/ajax/radio/program.do?id=%s&date=%s",
+                                  [pRaidoId UTF8String],
+                                  [pMyDateString UTF8String]];
+    
+    
+    NSArray *pProgram=[NSArray alloc];
+    NSData* pJsonData;
+    
+    if(pUserSelectedURL==nil)
+    {
+        pUserSelectedURL = AUDIO_TEST_PATH;
+    }
+    pJsonData = [NSData dataWithContentsOfURL: [NSURL URLWithString:pRadioProgramUrl]];
+    pProgram = [GetRadioProgram parseJsonData:pJsonData];
+    
+    // Get the current active program
+    int i;
+    for(i=0;i<[pProgram count];i++)
+    {
+        NSDictionary *pItem = [pProgram objectAtIndex:i];
+        NSString *pOn = [[NSString alloc] initWithFormat:@"%@",[pItem valueForKey:@"on"]] ;
+        if( [pOn integerValue] == 1)
+            pCurrentRadioProgram = [pItem valueForKey:@"programName"];
+    }
+    ProgramNameToDisplay.text = pCurrentRadioProgram;
 }
 
 - (IBAction)PlayAudio:(id)sender {
@@ -315,41 +379,7 @@
     else
     {
         [vBn setTitle:@"Stop" forState:UIControlStateNormal];
-        
-        NSDictionary *URLDict = [URLListData objectAtIndex:vUserSelectedIndex];
-        NSString *pRaidoId = [URLDict valueForKey:@"id"];
-        NSString *pMyDateString;
-        NSDate *now = [NSDate date];
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-        pMyDateString = [dateFormatter stringFromDate:now];
-        
-        // For different country, the program URL may be different
-        // This is for taiwan only
-        NSString *pRadioProgramUrl = [[NSString alloc]initWithFormat:@"http://hichannel.hinet.net/ajax/radio/program.do?id=%s&date=%s",
-                          [pRaidoId UTF8String],
-                          [pMyDateString UTF8String]];
-        
-        
-        NSArray *pProgram=[NSArray alloc];
-        NSData* pJsonData;
-        
-        if(pUserSelectedURL==nil)
-        {
-            pUserSelectedURL = AUDIO_TEST_PATH;
-        }
-        pJsonData = [NSData dataWithContentsOfURL: [NSURL URLWithString:pRadioProgramUrl]];
-        pProgram = [GetRadioProgram parseJsonData:pJsonData];
-
-        // Get the current active program
-        int i;
-        for(i=0;i<[pProgram count];i++)
-        {
-            NSDictionary *pItem = [pProgram objectAtIndex:i];
-            NSString *pOn = [[NSString alloc] initWithFormat:@"%@",[pItem valueForKey:@"on"]] ;
-            if( [pOn integerValue] == 1)
-                pCurrentRadioProgram = [pItem valueForKey:@"programName"];
-        }
+        [self UpdateCurrentProgramName];
         
         //[self performSelectorOnMainThread:@selector(parseJsonData:) w waitUntilDone:YES];
         
@@ -389,6 +419,21 @@
                     aPlayer = [[AudioPlayer alloc]initAudio:nil withCodecCtx:(AVCodecContext *) pAudioCodecCtx];
                     
                 }
+                
+                NSDate *today = [NSDate date];
+                NSCalendar *gregorianCal = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+                NSDateComponents *dateComps = [gregorianCal components: (NSHourCalendarUnit | NSMinuteCalendarUnit)
+                                                              fromDate: today];
+                
+                
+                NSInteger checkTime = (60 - [dateComps minute])*60;
+
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                vUpdateProgramTimer = [NSTimer scheduledTimerWithTimeInterval:checkTime                                                    target:self
+                                               selector:@selector(UpdateProgramTimerFired:)
+                                               userInfo:nil
+                                                repeats:NO];
+                });
                 
                 NSLog(@"== readFFmpegAudioFrameAndDecode");
                 [self readFFmpegAudioFrameAndDecode];
@@ -733,6 +778,7 @@
 }
 
 #pragma mark - Recording Control
+#if 0
 - (IBAction)VideoRecordPressed:(id)sender {
     
     if(bRecordStart==true)
@@ -757,6 +803,7 @@
 #endif
     }
 }
+#endif
 
 #pragma mark - URL_list TableView
 
@@ -801,8 +848,8 @@
     pUserSelectedURL = [URLDict valueForKey:@"url"];
     pSelectedRadioStation = [URLDict valueForKey:@"title"];
     
-//    URLNameToDisplay.text = [URLDict valueForKey:@"title"];
-//    URLNameToDisplay.textAlignment = NSTextAlignmentCenter;
+    StationNameToDisplay.text = pSelectedRadioStation;
+    StationNameToDisplay.textAlignment = NSTextAlignmentCenter;
     
     URLDict = nil;
     
@@ -839,14 +886,9 @@
                           [pRaidoId UTF8String],
                           [pMyDateString UTF8String]];
         
-//        
-//        // Instantiating a Storyboard's View Controller Programmatically.
-//        UIStoryboard *us = [UIStoryboard storyboardWithName:@"MainStoryboard_iPhone" bundle: nil];
-//        DailyProgramViewController *pDailyProgram = [us instantiateViewControllerWithIdentifier:@"DailyProgram"];
-//        id NextViewController = pDailyProgram;
-        
         DailyProgramViewController *pDailyProgramViewController = [segue destinationViewController];
         [pDailyProgramViewController setValue:pUrl forKey:@"pRadioProgramUrl"];
+        [pDailyProgramViewController.navigationItem setTitle:pSelectedRadioStation];
         
     }
     

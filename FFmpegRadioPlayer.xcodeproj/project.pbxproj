@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9A193610188C111100BAE3E0 /* DailyProgramViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A19360F188C111100BAE3E0 /* DailyProgramViewController.m */; };
+		9A193613188C1B2700BAE3E0 /* err_noprogram.json in Resources */ = {isa = PBXBuildFile; fileRef = 9A193612188C1B2700BAE3E0 /* err_noprogram.json */; };
 		9A22811417640C2F00BB4CED /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A22811317640C2F00BB4CED /* iAd.framework */; };
 		9A29728D1851BFA900160B6E /* double_linklist.c in Sources */ = {isa = PBXBuildFile; fileRef = 9A29728C1851BFA900160B6E /* double_linklist.c */; };
 		9A4CD8401883C83800A2C962 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9A4CD83F1883C83800A2C962 /* Images.xcassets */; };
@@ -62,9 +63,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		9A19360E188C111100BAE3E0 /* DailyProgramViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DailyProgramViewController.h; path = FFmpegAudioPlayer/DailyProgramViewController.h; sourceTree = "<group>"; };
-		9A19360F188C111100BAE3E0 /* DailyProgramViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DailyProgramViewController.m; path = FFmpegAudioPlayer/DailyProgramViewController.m; sourceTree = "<group>"; };
-		9A193611188C189D00BAE3E0 /* MyMacro.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyMacro.h; sourceTree = "<group>"; };
+		9A19360E188C111100BAE3E0 /* DailyProgramViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DailyProgramViewController.h; sourceTree = "<group>"; };
+		9A19360F188C111100BAE3E0 /* DailyProgramViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DailyProgramViewController.m; sourceTree = "<group>"; };
+		9A193611188C189D00BAE3E0 /* MyMacro.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MyMacro.h; path = ../MyMacro.h; sourceTree = "<group>"; };
+		9A193612188C1B2700BAE3E0 /* err_noprogram.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = err_noprogram.json; sourceTree = "<group>"; };
 		9A22811317640C2F00BB4CED /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		9A29728C1851BFA900160B6E /* double_linklist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = double_linklist.c; sourceTree = "<group>"; };
 		9A29728E1851BFBB00160B6E /* double_linklist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = double_linklist.h; sourceTree = "<group>"; };
@@ -156,12 +158,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9A193614188C1B2A00BAE3E0 /* jsonData */ = {
+			isa = PBXGroup;
+			children = (
+				9A193612188C1B2700BAE3E0 /* err_noprogram.json */,
+				9AB634251763182D00D6B177 /* hinet_radio_json.json */,
+			);
+			name = jsonData;
+			sourceTree = "<group>";
+		};
 		9A6674751721133300FB478C = {
 			isa = PBXGroup;
 			children = (
-				9A193611188C189D00BAE3E0 /* MyMacro.h */,
-				9A19360E188C111100BAE3E0 /* DailyProgramViewController.h */,
-				9A19360F188C111100BAE3E0 /* DailyProgramViewController.m */,
 				9A4CD83F1883C83800A2C962 /* Images.xcassets */,
 				9A6674871721133300FB478C /* FFmpegAudioPlayer */,
 				9A6674801721133300FB478C /* Frameworks */,
@@ -199,11 +207,12 @@
 		9A6674871721133300FB478C /* FFmpegAudioPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				9A193614188C1B2A00BAE3E0 /* jsonData */,
+				9A193611188C189D00BAE3E0 /* MyMacro.h */,
 				9ACD2AFD1830A66300DEBAD9 /* MyUtilities.h */,
 				9A299D84188BE3FB00629C58 /* Notifications.h */,
 				9ACD2AFE1830A66300DEBAD9 /* MyUtilities.m */,
 				B21B735A1805A9FB0019497C /* MainStoryboard_iPhone.storyboard */,
-				9AB634251763182D00D6B177 /* hinet_radio_json.json */,
 				9AF84B1B172FB95700A56189 /* output.pcm */,
 				9A6674C61721156200FB478C /* ffmpeg */,
 				B227CE881776C49F00CAF8F7 /* Radio */,
@@ -266,6 +275,8 @@
 		B227CE881776C49F00CAF8F7 /* Radio */ = {
 			isa = PBXGroup;
 			children = (
+				9A19360E188C111100BAE3E0 /* DailyProgramViewController.h */,
+				9A19360F188C111100BAE3E0 /* DailyProgramViewController.m */,
 				B2CA3196177360B9004261DF /* GetRadioProgram.h */,
 				B2CA3197177360B9004261DF /* GetRadioProgram.m */,
 			);
@@ -350,6 +361,7 @@
 			files = (
 				9A66748C1721133300FB478C /* InfoPlist.strings in Resources */,
 				9A4CD8401883C83800A2C962 /* Images.xcassets in Resources */,
+				9A193613188C1B2700BAE3E0 /* err_noprogram.json in Resources */,
 				9ACD2B011830A69700DEBAD9 /* Default-iphone.png in Resources */,
 				9A6674941721133300FB478C /* Default.png in Resources */,
 				B21B735D1805A9FB0019497C /* MainStoryboard_iPhone.storyboard in Resources */,
@@ -524,7 +536,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: kuohsun liao (6B99YHMHBR)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FFmpegAudioPlayer/FFmpegRadioPlayer-Prefix.pch";
@@ -553,7 +565,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: kuohsun liao (6B99YHMHBR)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FFmpegAudioPlayer/FFmpegRadioPlayer-Prefix.pch";

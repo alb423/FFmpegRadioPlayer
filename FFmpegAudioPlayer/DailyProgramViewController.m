@@ -42,6 +42,7 @@
         
         
         NSLog(@"%@", [[NSString alloc] initWithData:pJsonData encoding:NSUTF8StringEncoding]);
+        
         jsonDictionary = [NSJSONSerialization JSONObjectWithData:pJsonData //1
                                                          options:NSJSONReadingAllowFragments
                                                            error:&error];
@@ -53,8 +54,7 @@
         }
         //return;
     }
-    
-    
+
     NSLog(@"json : %@",jsonDictionary);
     // 1) retrieve the URL list into NSArray
     // A simple test of URLListData
@@ -64,6 +64,7 @@
         NSLog(@"URLListData load error!!");
         return;
     }
+
 }
 
 - (void)viewDidLoad
