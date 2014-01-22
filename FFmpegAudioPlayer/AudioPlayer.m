@@ -1190,7 +1190,48 @@ withFrameLength:(int)vFrameLength{
         return -1;
     }
 
+    eErr = AudioQueueCreateTimeline(mQueue, &timelineRef);
+    if(eErr!=noErr)
+    {
+        NSLog(@"AudioQueueStart() error %ld", eErr);
+        return -1;
+    }
+    
+    return 0;
+}
 
+// TODO: support pause
+// Reference http://www.videolan.org/developers/vlc/modules/audio_output/audioqueue.c
+-(void)Pause:(BOOL)bStopImmediatelly{
+    NSError *activationErr;
+    
+    if(1)
+    {
+        AudioQueuePause(mQueue);
+        [[AVAudioSession sharedInstance] setActive:NO error:&activationErr];
+    }
+    else
+    {
+        AudioQueueStart(mQueue,NULL);
+        [[AVAudioSession sharedInstance] setActive:YES error:&activationErr];
+    }
+}
+
+- (int) TimeGet
+{
+    AudioTimeStamp outTimeStamp;
+    Boolean b_discontinuity;
+    
+    OSStatus status = AudioQueueGetCurrentTime(
+                                               mQueue,
+                                               timelineRef,
+                                               &outTimeStamp,
+                                               &b_discontinuity);
+    
+    if(status != noErr)
+        return -1;
+    
+    
     
     return 0;
 }

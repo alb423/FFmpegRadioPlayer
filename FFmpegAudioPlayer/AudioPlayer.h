@@ -51,6 +51,8 @@ typedef enum eAACType {
     UInt32                        mNumPacketsToRead;              // 8
     AudioStreamPacketDescription  *mPacketDescs;                  // 9
     int                          AudioStatus;                     // 10
+
+    AudioQueueTimelineRef timelineRef;
     
     bool isFormatVBR;
 

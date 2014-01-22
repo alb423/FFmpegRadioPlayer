@@ -221,6 +221,9 @@ All Rights Reserved.</string>
                                 <state key="normal" title="Email Me">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="EmailSuggestionPressed:" destination="arA-ie-XCH" eventType="touchUpInside" id="jLn-SZ-8nu"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
