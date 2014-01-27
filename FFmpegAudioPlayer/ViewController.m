@@ -114,7 +114,7 @@
 @synthesize bRecordStart;
 // 20130903 albert.liao modified end
 
-@synthesize URLListData, StationNameToDisplay, ProgramNameToDisplay, VolumeBar;
+@synthesize URLListData, StationNameToDisplay, ProgramNameToDisplay, VolumeBar, URLListView;
 
 -(NSInteger) getCurrentMinutes
 {
@@ -274,6 +274,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:PlayButtonTapped object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:StopButtonTapped object:nil];
 
+    URLListView.pagingEnabled = false;
     // For new iOS 7.0 only
     //self.canDisplayBannerAds = YES;
     
@@ -362,10 +363,10 @@
     if(vBn==nil)
        vBn = _PlayAudioButton;
     
-    if(!ffmpegDispatchQueue)
-        ffmpegDispatchQueue  = dispatch_queue_create("ffmpegDispatchQueue", DISPATCH_QUEUE_SERIAL);
+    //if(!ffmpegDispatchQueue)
+    //    ffmpegDispatchQueue  = dispatch_queue_create("ffmpegDispatchQueue", DISPATCH_QUEUE_SERIAL);
     
-    vDispatchQueueSem = dispatch_semaphore_create(0);
+    //vDispatchQueueSem = dispatch_semaphore_create(0);
     
 #if 0
     NSString *pAudioInPath;
