@@ -45,7 +45,7 @@
                                                                    options:NSJSONReadingAllowFragments
                                                                      error:&error];
     
-    NSLog(@"json : %@", jsonDictionary);
+    //NSLog(@"json : %@", jsonDictionary);
     
     // 1) Set the label appropriately
     //_Response.text = [NSString stringWithFormat:@"Get Response \n %@",jsonDictionary];
@@ -100,7 +100,7 @@
     }
     
     
-    NSLog(@"json : %@",jsonDictionary);
+    //NSLog(@"json : %@",jsonDictionary);
     // 1) retrieve the URL list into NSArray
     // A simple test of URLListData
     pProgramArray = [jsonDictionary objectForKey:@"program"];

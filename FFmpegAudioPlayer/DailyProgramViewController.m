@@ -55,7 +55,7 @@
         //return;
     }
 
-    NSLog(@"json : %@",jsonDictionary);
+    //NSLog(@"json : %@",jsonDictionary);
     // 1) retrieve the URL list into NSArray
     // A simple test of URLListData
     pRadioProgram = [jsonDictionary objectForKey:@"program"];
@@ -109,6 +109,27 @@
 {
     return [pRadioProgram count];
 }
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section//設定header
+{
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 18)];
+    /* Create custom view to display section header... */
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, tableView.frame.size.width, 18)];
+    [label setFont:[UIFont boldSystemFontOfSize:12]];
+
+    /* Section header is in 0th index... */
+    NSDate *now = [NSDate date];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    //[dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    [dateFormatter setDateFormat:@"MM-dd"];
+    // xx電台 09/22(六) 節目表
+    [label setText:[dateFormatter stringFromDate:now]];
+    [view addSubview:label];
+    
+    return view;
+}
+
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {

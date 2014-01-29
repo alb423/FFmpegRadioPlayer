@@ -12,16 +12,15 @@
 #import <AVFoundation/AVFoundation.h>
 #import "MediaPlayer/MPNowPlayingInfoCenter.h"
 #import "MediaPlayer/MPMediaItem.h"
-
+#import <Foundation/Foundation.h>
 
 #import "AudioPlayer.h"
 #import "AudioUtilities.h"
 
-#import "iAd/iAd.h"
-//#import "iAd/ADBannerView.h"
+
 #import "GetRadioProgram.h"
 #import "DailyProgramViewController.h"
-#import <Foundation/Foundation.h>
+
 //#import "NSCalendar.h"
 
 #define WAV_FILE_NAME @"1.wav"
@@ -79,7 +78,9 @@
 #define _UNITTEST_FOR_ALL_URL_ 0
 #define _UNITTEST_PLAY_INTERVAL_ 30
 
-@interface ViewController () <ADBannerViewDelegate>{
+
+@interface ViewController()
+{
 
     UIActivityIndicatorView *pIndicator;
     NSTimer *vReConnectMMSServerTimer;
@@ -101,8 +102,6 @@
     NSArray *PlayTimerSecondOptions;
     NSArray *PlayTimerMinuteOptions;
 
-    dispatch_queue_t    ffmpegDispatchQueue;
-    __block dispatch_semaphore_t vDispatchQueueSem;
     
 #if _UNITTEST_FOR_ALL_URL_==1
     NSInteger vTestCase;
@@ -114,7 +113,7 @@
 @synthesize bRecordStart;
 // 20130903 albert.liao modified end
 
-@synthesize URLListData, StationNameToDisplay, ProgramNameToDisplay, VolumeBar, URLListView;
+@synthesize URLListData, StationNameToDisplay, ProgramNameToDisplay, VolumeBar, URLListView, pADBannerView;
 
 -(NSInteger) getCurrentMinutes
 {
@@ -275,6 +274,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:StopButtonTapped object:nil];
 
     URLListView.pagingEnabled = false;
+    
+    pADBannerView.delegate = self;
     // For new iOS 7.0 only
     //self.canDisplayBannerAds = YES;
     
@@ -285,7 +286,7 @@
 
 - (void)dealloc
 {
-    ffmpegDispatchQueue=nil;
+    ;
 }
 
 - (void)didReceiveMemoryWarning
@@ -305,6 +306,7 @@
     // TODO: if rtsp connections is not connected
     //
     
+#if 0
     // Stop Consumer
     [aPlayer Stop:TRUE];
     aPlayer= nil;
@@ -312,9 +314,19 @@
     // Stop Producer
     [self stopFFmpegAudioStream];
     [self destroyFFmpegAudioStream];
+    
+#else
+    // To avoid the memory leakage of AudioPacketQueue
+    
+    // Stop Producer
+    [self stopFFmpegAudioStream];
+    
+    // Stop Consumer
+    [aPlayer Stop:TRUE];
+    aPlayer= nil;
 
-    ffmpegDispatchQueue = nil;
-    vDispatchQueueSem = nil;
+    [self destroyFFmpegAudioStream];
+#endif
 }
 
 - (void) UpdateCurrentProgramName
@@ -363,10 +375,6 @@
     if(vBn==nil)
        vBn = _PlayAudioButton;
     
-    //if(!ffmpegDispatchQueue)
-    //    ffmpegDispatchQueue  = dispatch_queue_create("ffmpegDispatchQueue", DISPATCH_QUEUE_SERIAL);
-    
-    //vDispatchQueueSem = dispatch_semaphore_create(0);
     
 #if 0
     NSString *pAudioInPath;
@@ -397,13 +405,13 @@
 //            }
 //        });
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
             {
                 if([self initFFmpegAudioStream]==FALSE)
                 {
                     NSLog(@"initFFmpegAudio fail");
                     dispatch_async(dispatch_get_main_queue(), ^(void) {
-                        @autoreleasepool
+                        //@autoreleasepool
                         {
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"StopButtonTapped" object:self];
                             //[MyUtilities hideWaiting:self.view];
@@ -703,7 +711,7 @@
                 if(bIsStop==TRUE)
                 {
                     // If vxPacket is read from ffmpeg. av_free_packet() will free vxPacket.data too.
-                    av_free_packet(&vxPacket);
+                    NSLog(@"***FFMPEG Stop read frame");
                     break;
                 }
                 vErr = av_read_frame(pFormatCtx, &vxPacket);
@@ -826,17 +834,14 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:tableIdentifier];
     if(cell == nil){
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:tableIdentifier];
-        //NSLog(@"cell size %ld",sizeof(cell));
+        NSLog(@"alloc cell size %ld",sizeof(cell));
     }
     
     NSDictionary *URLDict = [URLListData objectAtIndex:indexPath.row];
-    //NSLog(@"%@",[URLDict valueForKey:@"title"]);
     cell.textLabel.text = [URLDict valueForKey:@"title"];
-    cell.accessoryType= UITableViewCellAccessoryDetailDisclosureButton;
-    //cell.accessoryType= UITableViewCellAccessoryDisclosureIndicator;
-    //cell.accessoryType= UITableViewCellAccessoryDetailButton;
-
+    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     URLDict = nil;
+    
     return cell;
 }
 
@@ -863,7 +868,7 @@
     
     dispatch_async(dispatch_get_main_queue(), ^(void){
         // Start Play when user select the row
-        if([aPlayer getStatus]!=eAudioStop)
+        if([aPlayer getStatus]==eAudioRunning)
             [self StopPlayAudio:_PlayAudioButton];
         [self PlayAudio:_PlayAudioButton];
     });
@@ -1038,10 +1043,9 @@
     return YES;
 }
 
-#if 1
 - (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
 {
-      NSLog(@"didFailToReceiveAdWithError");
+      NSLog(@"didFailToReceiveAdWithError:%@",error);
 }
 
 - (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner willLeaveApplication:(BOOL)willLeave
@@ -1054,7 +1058,7 @@
     }
     return shouldExecuteAction;
 }
-#endif
+
 
 #pragma mark - test case callback
 

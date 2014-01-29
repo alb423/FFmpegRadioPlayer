@@ -149,13 +149,15 @@ typedef struct pktrec
 - (id) initQueue
 {
     self = [self init];
-    if(self != nil)
-    {
+
+    if(pQueue==nil)
         pQueue = [[NSMutableArray alloc] init];
+    
+    if(pLock==nil)
         pLock = [[NSLock alloc]init];
-        count = 0;
-        size = 0;
-    }
+    
+    count = 0;
+    size = 0;
     return self;
 }
 
@@ -165,6 +167,7 @@ typedef struct pktrec
     NSMutableData *packetData = nil;
     
     [pLock lock];
+    NSLog(@"Free AudioPacketQueue Count=%d",[pQueue count]);
     while ([pQueue count]>0) {
         packetData = [pQueue objectAtIndex:0];
         if(packetData!= nil)
@@ -180,9 +183,10 @@ typedef struct pktrec
     count = 0;
     size = 0;
     NSLog(@"Release Audio Packet Queue");
+    
     if(pQueue) pQueue = nil;
     
-    [pLock unlock];    
+    [pLock unlock];
     if(pLock) pLock = nil;
 
 }
@@ -193,7 +197,7 @@ typedef struct pktrec
 //    if ((av_dup_packet(pPacket)) < 0) {
 //        NSLog(@"Error duplicating packet");
 //    }
-    
+//    
     [pLock lock];
     
     //NSLog(@"putAVPacket %d", [pQueue count]);

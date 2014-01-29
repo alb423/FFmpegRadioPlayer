@@ -125,6 +125,7 @@
                         <outlet property="StationNameToDisplay" destination="73a-BC-1o4" id="lYg-1e-4wU"/>
                         <outlet property="URLListView" destination="CVH-Ul-EUE" id="Ra9-VM-YCH"/>
                         <outlet property="VolumeBar" destination="lA6-5W-rt0" id="1FI-S4-rhq"/>
+                        <outlet property="pADBannerView" destination="Cza-X0-krT" id="Dtf-QI-iUe"/>
                         <segue destination="i8E-XN-ZNC" kind="push" identifier="ShowDailyProgram" id="euK-DT-KkH"/>
                     </connections>
                 </viewController>
@@ -250,6 +251,17 @@ All Rights Reserved.</string>
                                 <rect key="frame" x="0.0" y="199" width="320" height="328"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="3B5-NU-ee2">
+                                        <rect key="frame" x="0.0" y="86" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="3B5-NU-ee2" id="6Si-6T-kwv">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <sections/>
                                 <connections>
                                     <outlet property="dataSource" destination="i8E-XN-ZNC" id="uUj-N8-ycG"/>
                                     <outlet property="delegate" destination="i8E-XN-ZNC" id="se2-wC-QJZ"/>

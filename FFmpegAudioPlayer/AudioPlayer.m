@@ -269,7 +269,7 @@ void HandleOutputBuffer (
         vSilenceDataSize = sizeof(SilenceAAC) + FF_INPUT_BUFFER_PADDING_SIZE;
 
         memset(buffer->mAudioData,0,vSilenceDataSize);
-        memcpy(buffer->mAudioData,SilenceAAC,vSilenceDataSize);
+        memcpy(buffer->mAudioData,SilenceAAC,sizeof(SilenceAAC) );
         buffer->mPacketDescriptions[buffer->mPacketDescriptionCount].mStartOffset = buffer->mAudioDataByteSize;
         buffer->mPacketDescriptions[buffer->mPacketDescriptionCount].mDataByteSize = vSilenceDataSize;
         buffer->mPacketDescriptions[buffer->mPacketDescriptionCount].mVariableFramesInPacket = 1;
@@ -773,14 +773,6 @@ void HandleOutputBuffer (
     int vBufferSize=0;    
     int err;
     
-#if 0
-    // support audio play when screen is locked
-    NSError *setCategoryErr = nil;
-    NSError *activationErr  = nil;
-    [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error:&setCategoryErr];
-    [[AVAudioSession sharedInstance] setActive:YES error:&activationErr];
-#endif
-    
     vAACType = eAAC_UNDEFINED;
     
     //pSampleQueue = [[NSMutableArray alloc] init];
@@ -1205,6 +1197,7 @@ withFrameLength:(int)vFrameLength{
 -(void)Pause:(BOOL)bStopImmediatelly{
     NSError *activationErr;
     
+    NSLog(@"Pause");
     if(1)
     {
         AudioQueuePause(mQueue);

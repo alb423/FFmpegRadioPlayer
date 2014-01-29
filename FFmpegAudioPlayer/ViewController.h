@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "iAd/iAd.h"	
 #include "libavformat/avformat.h"
 #include "libswscale/swscale.h"
 #import "AudioPacketQueue.h"
@@ -17,8 +18,7 @@
 #define MMS_LIVENESS_CHECK_TIMER 1  // Seconds
 #define AUDIO_BUFFER_TIME 1 //10 // Seconds
 
-//ADBannerViewDelegate
-@interface ViewController : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource, UIAlertViewDelegate>
+@interface ViewController : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource, UIAlertViewDelegate, ADBannerViewDelegate>
 {
 	AVFormatContext *pFormatCtx;    
     AVCodecContext *pAudioCodecCtx;
@@ -39,6 +39,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *StationNameToDisplay;
 @property (strong, nonatomic) IBOutlet UILabel *ProgramNameToDisplay;
 @property (weak, nonatomic) IBOutlet UISlider *VolumeBar;
+@property (strong, nonatomic) IBOutlet ADBannerView *pADBannerView;
 
 - (IBAction)PlayTimerButtonPressed:(id)sender;
 - (IBAction)VolumeBarPressed:(id)sender;

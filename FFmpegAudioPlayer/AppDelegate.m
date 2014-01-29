@@ -41,8 +41,6 @@ extern NSString *remoteControlShowMessage;
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     
     return YES;
-    
-    return YES;
 }
 							
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -115,50 +113,30 @@ extern NSString *remoteControlShowMessage;
     [[NSNotificationCenter defaultCenter] postNotificationName:name object:nil];
 }
 
-/*
-- (void)remoteControlReceivedWithEvent:(UIEvent *)event {
-    
-    if(event.type== UIEventTypeRemoteControl)  {
-        
-        NSLog(@"Remote Control Type: %d", event.subtype);
-        
-        switch (event.subtype) {
-                
-            case UIEventSubtypeRemoteControlTogglePlayPause:
-                
-                NSLog(@"UIEventSubtypeRemoteControlTogglePlayPause");
-                
-                break;
-                
-                
-            case UIEventSubtypeRemoteControlNextTrack:
-                
-                NSLog(@"UIEventSubtypeRemoteControlNextTrack");
-                
-                break;
-                
-                
-            case UIEventSubtypeRemoteControlPreviousTrack:
-                
-                NSLog(@"UIEventSubtypeRemoteControlPreviousTrack");
-                
-                break;
-                
-            case UIEventSubtypeRemoteControlPause:
-                NSLog(@"UIEventSubtypeRemoteControlPause");
-                break;
-            case UIEventSubtypeRemoteControlPlay:
-                NSLog(@"UIEventSubtypeRemoteControlPlay");
-                break;
-                
-            default:
-                break;
-        }
-    }
+
+#if 0
+#pragma mark - ad_banner_view
+- (BOOL) allowActionToRun
+{
+    return YES;
 }
-*/
 
+- (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
+{
+    NSLog(@"didFailToReceiveAdWithError");
+}
 
+- (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner willLeaveApplication:(BOOL)willLeave
+{
+    NSLog(@"Banner view is beginning an ad action");
+    BOOL shouldExecuteAction = [self allowActionToRun]; // your application implements this method
+    if (!willLeave && shouldExecuteAction)
+    {
+        // insert code here to suspend any services that might conflict with the advertisement
+    }
+    return shouldExecuteAction;
+}
+#endif
 
 
 
