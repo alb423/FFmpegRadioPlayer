@@ -188,7 +188,8 @@ void HandleOutputBuffer (
     buffer->mAudioDataByteSize = 0;
     buffer->mPacketDescriptionCount = 0;
 
-    if(AudioStatus==eAudioStop)
+    //if(AudioStatus==eAudioStop)
+    if(AudioStatus!=eAudioRunning)
     {
         return 0 ;
     }

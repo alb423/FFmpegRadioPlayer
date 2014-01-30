@@ -40,6 +40,14 @@ extern NSString *remoteControlShowMessage;
     
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     
+    
+    [[AVAudioSession sharedInstance] setDelegate: self];
+//    Delegate Methods
+//    – beginInterruption
+//    – endInterruption
+//    – endInterruptionWithFlags:
+//    – inputIsAvailableChanged:
+
     return YES;
 }
 							
@@ -113,6 +121,22 @@ extern NSString *remoteControlShowMessage;
     [[NSNotificationCenter defaultCenter] postNotificationName:name object:nil];
 }
 
+
+
+#pragma mark - AVAudioSession delegate
+- (void)beginInterruption{
+    //播放器会话被终端拨，例如打电话
+    NSLog(@"beginInterruption");
+    [[NSNotificationCenter defaultCenter] postNotificationName:remoteControlStopButtonTapped object:nil];
+}
+- (void)endInterruption{
+    NSLog(@"endInterruption");
+}
+- (void)endInterruptionWithFlags:(NSUInteger)flags{
+    //被中断后回来，例如：挂断电话回来 endInterruptionWithFlags 1
+    NSLog(@"endInterruptionWithFlags %i", flags);
+    [[NSNotificationCenter defaultCenter] postNotificationName:remoteControlPlayButtonTapped object:nil];
+}
 
 #if 0
 #pragma mark - ad_banner_view
