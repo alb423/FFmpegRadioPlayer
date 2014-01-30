@@ -834,22 +834,17 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:tableIdentifier];
     if(cell == nil){
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:tableIdentifier];
-        NSLog(@"alloc cell size %ld",sizeof(cell));
+        //NSLog(@"alloc cell size %ld",sizeof(cell));
     }
     
     NSDictionary *URLDict = [URLListData objectAtIndex:indexPath.row];
     cell.textLabel.text = [URLDict valueForKey:@"title"];
-    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+    cell.accessoryType = UITableViewCellAccessoryDetailButton;
+    //cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     URLDict = nil;
     
     return cell;
 }
-
-//-(void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-//    NSDictionary *URLDict = [URLListData objectAtIndex:indexPath.row];
-//    cell.textLabel.text = [URLDict valueForKey:@"title"];
-//    URLDict = nil;
-//}
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -874,11 +869,14 @@
     });
 }
 
--(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
-    
+-(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
+{
     vAccessorySelected = indexPath.row;
     [self performSegueWithIdentifier:@"ShowDailyProgram" sender:self.view];
 }
+
+
+#pragma mark - segue control
 
 -(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     NSLog(@"prepareForSegue");
@@ -887,21 +885,14 @@
     {
         NSDictionary *URLDict = [URLListData objectAtIndex:vAccessorySelected];
         NSString *pRaidoId = [URLDict valueForKey:@"id"];
-        NSString *pMyDateString;
-        NSDate *now = [NSDate date];
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-        pMyDateString = [dateFormatter stringFromDate:now];
-        
-        // For different country, the program URL may be different
-        // This is for taiwan only
-        NSString *pUrl = [[NSString alloc]initWithFormat:@"http://hichannel.hinet.net/ajax/radio/program.do?id=%s&date=%s",
-                          [pRaidoId UTF8String],
-                          [pMyDateString UTF8String]];
+
+        NSString *pUrlTemplate = [[NSString alloc]initWithFormat:@"http://hichannel.hinet.net/ajax/radio/program.do?id=%s&date=",
+                          [pRaidoId UTF8String]];
         
         DailyProgramViewController *pDailyProgramViewController = [segue destinationViewController];
-        [pDailyProgramViewController setValue:pUrl forKey:@"pRadioProgramUrl"];
-        [pDailyProgramViewController.navigationItem setTitle:pSelectedRadioStation];
+        [pDailyProgramViewController setValue:pUrlTemplate forKey:@"pRadioProgramUrlTemplate"];
+        [pDailyProgramViewController setValue:pSelectedRadioStation forKey:@"pRadioProgramName"];
+        //[pDailyProgramViewController.navigationItem setTitle:pSelectedRadioStation];
         
     }
     
@@ -1045,7 +1036,8 @@
 
 - (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
 {
-      NSLog(@"didFailToReceiveAdWithError:%@",error);
+    NSLog(@"didFailToReceiveAdWithError");
+    //NSLog(@"didFailToReceiveAdWithError:%@",error);
 }
 
 - (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner willLeaveApplication:(BOOL)willLeave

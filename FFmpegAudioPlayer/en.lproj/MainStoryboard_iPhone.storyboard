@@ -235,7 +235,7 @@ All Rights Reserved.</string>
             </objects>
             <point key="canvasLocation" x="524" y="-259"/>
         </scene>
-        <!--Daily Program View Controller - Program-->
+        <!--Daily Program View Controller-->
         <scene sceneID="14u-cZ-vW6">
             <objects>
                 <viewController storyboardIdentifier="DailyProgram" useStoryboardIdentifierAsRestorationIdentifier="YES" id="i8E-XN-ZNC" customClass="DailyProgramViewController" sceneMemberID="viewController">
@@ -248,7 +248,7 @@ All Rights Reserved.</string>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="yT8-as-jEk">
-                                <rect key="frame" x="0.0" y="199" width="320" height="328"/>
+                                <rect key="frame" x="0.0" y="66" width="320" height="461"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
@@ -267,20 +267,27 @@ All Rights Reserved.</string>
                                     <outlet property="delegate" destination="i8E-XN-ZNC" id="se2-wC-QJZ"/>
                                 </connections>
                             </tableView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="63Q-h3-E3Z">
-                                <rect key="frame" x="127" y="104" width="130" height="51"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Program" id="iC7-ym-hoM"/>
+                    <navigationItem key="navigationItem" id="iC7-ym-hoM">
+                        <nil key="title"/>
+                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="3Om-Eg-OoQ">
+                            <rect key="frame" x="83" y="6" width="154" height="32"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <segments>
+                                <segment title="今天"/>
+                                <segment title="明天"/>
+                                <segment title="後天"/>
+                            </segments>
+                            <connections>
+                                <action selector="pProgramDaySegSelected:" destination="i8E-XN-ZNC" eventType="valueChanged" id="mwL-5K-qbN"/>
+                            </connections>
+                        </segmentedControl>
+                    </navigationItem>
                     <connections>
                         <outlet property="DailyProgramDayTable" destination="yT8-as-jEk" id="XbZ-B8-HCJ"/>
-                        <outlet property="pDailyProgramToday" destination="63Q-h3-E3Z" id="J1s-qq-Lp5"/>
+                        <outlet property="pProgramDaySegCtrl" destination="3Om-Eg-OoQ" id="Sxx-Ey-Bgg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hyT-Ml-OCD" userLabel="First Responder" sceneMemberID="firstResponder"/>

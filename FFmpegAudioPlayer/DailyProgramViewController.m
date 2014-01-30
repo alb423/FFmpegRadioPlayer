@@ -8,6 +8,7 @@
 
 #import "DailyProgramViewController.h"
 #import "ViewController.h"
+
 #import "GetRadioProgram.h"
 #import "MyMacro.h"
 #define JSON_ERR_NOPROGRAM @"err_noprogram.json"
@@ -15,6 +16,8 @@
 @interface DailyProgramViewController ()
 {
     NSArray *pRadioProgram;
+    NSArray *pRadioProgramOn;
+    NSDate *pDateSelected;
 }
 @end
 
@@ -22,7 +25,8 @@
 
 @implementation DailyProgramViewController
 
-@synthesize pRadioProgramUrl, DailyProgramDayTable, pDailyProgramToday;
+@synthesize pRadioProgramUrlTemplate, pRadioProgramName;
+@synthesize DailyProgramDayTable, pProgramDaySegCtrl;
 
 - (void)fetchedDataForHttpGet:(NSData *)responseData {
     NSError* error;
@@ -69,22 +73,24 @@
 
 - (void)viewDidLoad
 {
-    NSDate *now = [NSDate date];
+    NSDate *today = [NSDate date];
+    pDateSelected = today;
+    
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-    [pDailyProgramToday setText:[dateFormatter stringFromDate:now]];
     
+    // Parse daily program
     NSData* pJsonData;
-    pJsonData = [NSData dataWithContentsOfURL: [NSURL URLWithString:self.pRadioProgramUrl]];
-    [self performSelectorOnMainThread:@selector(fetchedDataForHttpGet:) withObject:pJsonData waitUntilDone:YES];
- 
-    [super viewDidLoad];    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
     
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    //self.navigationItem.backBarButtonItem
+    NSString *pMyDateString = [dateFormatter stringFromDate:today];
+    NSString *pUrl = [[NSString alloc]initWithFormat:@"%@%@",pRadioProgramUrlTemplate,pMyDateString];
+    pJsonData = [NSData dataWithContentsOfURL: [NSURL URLWithString:pUrl]];
+                 
+                 
+    [self performSelectorOnMainThread:@selector(fetchedDataForHttpGet:) withObject:pJsonData waitUntilDone:YES];
+    
+    [super viewDidLoad];
+    
     
     if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
     {
@@ -95,7 +101,6 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Table view data source
@@ -113,17 +118,18 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section//設定header
 {
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 18)];
-    /* Create custom view to display section header... */
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, tableView.frame.size.width, 18)];
     [label setFont:[UIFont boldSystemFontOfSize:12]];
-
-    /* Section header is in 0th index... */
-    NSDate *now = [NSDate date];
+    [view setBackgroundColor:[UIColor whiteColor]];
+    
+    NSString *pDisplayText = [[NSString alloc] initWithString:pRadioProgramName] ;
+    
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    //[dateFormatter setDateFormat:@"yyyy-MM-dd"];
-    [dateFormatter setDateFormat:@"MM-dd"];
-    // xx電台 09/22(六) 節目表
-    [label setText:[dateFormatter stringFromDate:now]];
+    [dateFormatter setDateFormat:@"M/d"];
+    pDisplayText = [pDisplayText stringByAppendingFormat:@"(%@)",[dateFormatter stringFromDate:pDateSelected]];
+    pDisplayText = [pDisplayText stringByAppendingFormat:@"  播放列表"];
+
+    [label setText:pDisplayText];
     [view addSubview:label];
     
     return view;
@@ -147,8 +153,38 @@
                             [URLDict valueForKey:@"programName"]];
     cell.textLabel.text = OutputText;
     
-    
+    // TODO: check if this program is active
+    NSString *pOn = [[NSString alloc] initWithFormat:@"%@",[URLDict valueForKey:@"on"]] ;
+    if( [pOn integerValue] == 1)
+    {
+        [cell.textLabel setTextColor:[UIColor redColor]];
+    }
+    else
+    {
+        [cell.textLabel setTextColor:[UIColor blackColor]];
+    }
     return cell;
 }
 
+- (IBAction)pProgramDaySegSelected:(id)sender {
+    NSTimeInterval secondsPerDay = 24*60*60;
+    NSDate *tmpDate = [[NSDate alloc] initWithTimeIntervalSinceNow:
+                       secondsPerDay*[sender selectedSegmentIndex]];
+    pDateSelected = tmpDate;
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    
+    NSString *pMyDateString;
+    pMyDateString = [dateFormatter stringFromDate:pDateSelected];
+    
+    // Parse daily program
+    NSData* pJsonData;
+    NSString *pUrl = [[NSString alloc]initWithFormat:@"%@%@",pRadioProgramUrlTemplate,pMyDateString];
+    
+    pJsonData = [NSData dataWithContentsOfURL: [NSURL URLWithString:pUrl]];
+    [self performSelectorOnMainThread:@selector(fetchedDataForHttpGet:) withObject:pJsonData waitUntilDone:YES];
+    
+    [self.DailyProgramDayTable reloadData];
+}
 @end
