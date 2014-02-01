@@ -20,6 +20,7 @@
 
 #import "GetRadioProgram.h"
 #import "DailyProgramViewController.h"
+#import "SettingsViewController.h"
 
 //#import "NSCalendar.h"
 
@@ -85,22 +86,23 @@
     UIActivityIndicatorView *pIndicator;
     NSTimer *vReConnectMMSServerTimer;
     NSTimer *vUpdateProgramTimer;
+    NSTimer *vStopPlayTimer;
     
     NSString *pUserSelectedURL;
     NSInteger vUserSelectedIndex;
     NSInteger vAccessorySelected;
     NSString *pSelectedRadioStation;
     NSString *pCurrentRadioProgram;
-    UIPickerView *PlayTimePickerView;
+    
+    CGSize AudioButtonSize;
 }
 @end
 
 
 @implementation ViewController
 {
-    NSInteger vPlayTimerSecond, vPlayTimerMinute;
-    NSArray *PlayTimerSecondOptions;
-    NSArray *PlayTimerMinuteOptions;
+    NSInteger vAudioBufferThreshold;
+    NSInteger vAudioBufferPacketCount;
 
     
 #if _UNITTEST_FOR_ALL_URL_==1
@@ -113,7 +115,28 @@
 @synthesize bRecordStart;
 // 20130903 albert.liao modified end
 
-@synthesize URLListData, StationNameToDisplay, ProgramNameToDisplay, VolumeBar, URLListView, pADBannerView;
+@synthesize URLListData, StationNameToDisplay, ProgramNameToDisplay;
+@synthesize VolumeBar, URLListView, pADBannerView, AudioBufferLoadingLabel;
+@synthesize audioReplaySwitch, cacheSize, stopTimerHours, stopTimerMinutes;;
+
+
+- (void) saveStatus
+{
+    [[NSUserDefaults standardUserDefaults] setInteger:audioReplaySwitch forKey:@"audioReplaySwitch"];
+    [[NSUserDefaults standardUserDefaults] setInteger:cacheSize forKey:@"cacheSize"];
+    [[NSUserDefaults standardUserDefaults] setInteger:stopTimerHours forKey:@"stopTimerHours"];
+    [[NSUserDefaults standardUserDefaults] setInteger:stopTimerMinutes forKey:@"stopTimerMinutes"];
+    [[NSUserDefaults standardUserDefaults]  synchronize];
+}
+
+- (void) restoreStatus
+{
+    audioReplaySwitch = [[NSUserDefaults standardUserDefaults] integerForKey:@"audioReplaySwitch"];
+    cacheSize = [[NSUserDefaults standardUserDefaults] integerForKey:@"cacheSize"];
+    stopTimerHours = [[NSUserDefaults standardUserDefaults] integerForKey:@"stopTimerHours"];
+    stopTimerMinutes = [[NSUserDefaults standardUserDefaults] integerForKey:@"stopTimerMinutes"];
+}
+
 
 -(NSInteger) getCurrentMinutes
 {
@@ -204,7 +227,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    [self restoreStatus];
     // init 
     NSString *pAudioPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:DEFAULT_BROADCAST_URL];
     NSData *pJsonData = [[NSFileManager defaultManager] contentsAtPath:pAudioPath];
@@ -233,9 +256,6 @@
     [aPlayer SetVolume:VolumeBar.value];
     
     
-    // init PlayTimer options
-    PlayTimerSecondOptions = [[NSArray alloc]initWithObjects:@"0",@"5",@"10",@"15",@"20",@"25",@"30",@"35",@"40",@"45",@"50",@"55",@"60",nil];
-    PlayTimerMinuteOptions = [[NSArray alloc]initWithObjects:@"0",@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12",nil];
 
     
 #if _UNITTEST_FOR_ALL_URL_ == 1 // Unittest
@@ -273,12 +293,24 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:PlayButtonTapped object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:StopButtonTapped object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:audioBufferLoadingProgress object:nil];
+    
+    
+    
     URLListView.pagingEnabled = false;
     
     pADBannerView.delegate = self;
     // For new iOS 7.0 only
     //self.canDisplayBannerAds = YES;
     
+    vAudioBufferPacketCount = 0 ;
+    vAudioBufferThreshold = 10;
+    
+    AudioButtonSize.height = 32;
+    AudioButtonSize.width = 32;
+    //AudioButtonSize = _PlayAudioButton.imageView.image.size;
+    [AudioBufferLoadingLabel setText:@""];
+    [_PlayAudioButton sizeThatFits:AudioButtonSize];
     
     // TODO : use SCNetworkReachabilityRef to dectect 3G or WIFI
     return;
@@ -303,8 +335,7 @@
     [vUpdateProgramTimer invalidate];
     vReConnectMMSServerTimer = nil;
     vUpdateProgramTimer = nil;
-    // TODO: if rtsp connections is not connected
-    //
+
     
 #if 0
     // Stop Consumer
@@ -327,6 +358,8 @@
 
     [self destroyFFmpegAudioStream];
 #endif
+    
+    [[AVAudioSession sharedInstance] setActive:NO error:nil];
 }
 
 - (void) UpdateCurrentProgramName
@@ -368,6 +401,26 @@
     ProgramNameToDisplay.text = pCurrentRadioProgram;
 }
 
+-(void) setAudioBufferThreshold:(NSInteger )vThreshold{
+    vAudioBufferThreshold = vThreshold;
+}
+
+
+-(void)StopTimerFired:(NSTimer *)timer {
+    NSLog(@"StopTimerFired");
+    if(aPlayer)
+    {
+        [self StopPlayAudio:nil];
+    }
+    
+    if(timer!=nil)
+    {
+        [timer invalidate];
+        timer = nil;
+    }
+}
+
+
 - (IBAction)PlayAudio:(id)sender {
     
     UIButton *vBn = (UIButton *)sender;
@@ -375,6 +428,7 @@
     if(vBn==nil)
        vBn = _PlayAudioButton;
     
+    [[AVAudioSession sharedInstance] setActive:YES error:nil];
     
 #if 0
     NSString *pAudioInPath;
@@ -445,10 +499,19 @@
                 NSInteger checkTime = (60 - [dateComps minute])*60;
 
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
-                vUpdateProgramTimer = [NSTimer scheduledTimerWithTimeInterval:checkTime                                                    target:self
+                    vUpdateProgramTimer = [NSTimer scheduledTimerWithTimeInterval:checkTime                                                    target:self
                                                selector:@selector(UpdateProgramTimerFired:)
                                                userInfo:nil
                                                 repeats:NO];
+                    
+                    NSInteger vStopTime = stopTimerHours*60+stopTimerMinutes;
+                    if(vStopTime!=0)
+                    {
+                        vStopPlayTimer = [NSTimer scheduledTimerWithTimeInterval:vStopTime                                               target:self
+                                                        selector:@selector(StopTimerFired:)
+                                                                         userInfo:nil
+                                                                          repeats:NO];
+                    }
                 });
                 
                 NSLog(@"== readFFmpegAudioFrameAndDecode");
@@ -769,11 +832,17 @@
             
             // audio play callback
             //if(vPktCount<10) //<10 // The voice is listened after image is rendered
-            if([aPlayer getCount]<10)
+            //if([aPlayer getCount]<=10)
+            
+            // AudioBufferLoadingProgress
+            
+            vAudioBufferPacketCount = [aPlayer getCount];
+
+            
+            if(vAudioBufferPacketCount<=vAudioBufferThreshold)
             {
-                // TODO: remove below test log
-                // use a progress bar to replace the log
-                NSLog(@"[aPlayer getCount]=%d",[aPlayer getCount]);
+                [[NSNotificationCenter defaultCenter] postNotificationName:audioBufferLoadingProgress object:self];
+                //NSLog(@"[aPlayer getCount]=%d",vAudioBufferPacketCount);
             }
             else
             {
@@ -895,136 +964,18 @@
         //[pDailyProgramViewController.navigationItem setTitle:pSelectedRadioStation];
         
     }
+    else if([[segue identifier] isEqualToString:@"Settings"])
+    {
+        SettingsViewController *dstViewController = [segue destinationViewController];
+        dstViewController.pViewController = self;
+        ;
+    }
     
 }
 
 #pragma mark - volume_bar Slider
 - (IBAction)VolumeBarPressed:(id)sender {
     [aPlayer SetVolume:VolumeBar.value];
-}
-
-
-#pragma mark - Play Timer PickView
-// reference http://blog.csdn.net/zzfsuiye/article/details/6644566
-// reference http://blog.sina.com.cn/s/blog_7119b1a40100vxwv.html
-// 返回pickerview的组件数
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)thePickerView {
-    return 2;
-}
-
-// 返回每个组件上的行数
-- (NSInteger)pickerView:(UIPickerView *)thePickerView numberOfRowsInComponent:(NSInteger)component {
-    if(component==0)
-    {
-        return [PlayTimerMinuteOptions count];
-    }
-    else
-    {
-        return [PlayTimerSecondOptions count];
-    }
-
-}
-
-// 设置每行显示的内容
-- (NSString *)pickerView:(UIPickerView *)thePickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-    
-    if(component==0)
-    {
-        return [PlayTimerMinuteOptions objectAtIndex:row];
-    }
-    else
-    {
-        return [PlayTimerSecondOptions objectAtIndex:row];
-    }
-}
-
-//使pickerview从底部出现
--(void) showPickerView {
-    [UIView beginAnimations: @"Animation" context:nil];//设置动画
-    [UIView setAnimationDuration:0.3];
-    PlayTimePickerView.frame = CGRectMake(0,240, 320, 460);
-    [UIView commitAnimations];
-}
-
-//使pickerview隐藏到屏幕底部
--(void) hidePickerView {
-    [UIView beginAnimations:@"Animation"context:nil];
-    [UIView setAnimationDuration:0.3];
-    PlayTimePickerView.frame =CGRectMake(0,460, 320, 460);
-    [UIView commitAnimations];
-}
-
-#if 0
-//自定义pickerview使内容显示在每行的中间，默认显示在每行的左边
-- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view {
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,0.0f, [pickerView rowSizeForComponent:component].width, [pickerView rowSizeForComponent:component].height)];
-    if (row ==0) {
-        label.text =@"男";
-    }else {
-        label.text =@"女";
-    }
-    
-    //[label setTextAlignment:UITextAlignmentCenter];
-    [label setTextAlignment:NSTextAlignmentCenter];
-    return label;
-}
-#endif
-
-//当你选中pickerview的某行时会调用该函数。
-- (void)pickerView:(UIPickerView *)thePickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
-    NSLog(@"You select component:%d row %d",component, row);
-    if(component==0)
-    {
-        vPlayTimerMinute = [[PlayTimerMinuteOptions objectAtIndex:row] intValue];
-    }
-    else
-    {
-        vPlayTimerSecond = [[PlayTimerSecondOptions objectAtIndex:row] intValue];
-    }
-}
-
--(void)PlayTimerFired:(NSTimer *)timer {
-    NSLog(@"PlayTimerFired");
-    [self StopPlayAudio:nil];
-    if(timer!=nil)
-    {
-        [timer invalidate];
-        timer = nil;
-    }
-}
-
-
-- (IBAction)PlayTimerButtonPressed:(id)sender {
-    static int bPickerViewVisible = 0;
-    
-    if (PlayTimePickerView==nil) {
-        PlayTimePickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0,460, 320, 460)];
-        PlayTimePickerView.delegate = self;
-        PlayTimePickerView.dataSource = self;
-        PlayTimePickerView.showsSelectionIndicator = YES; //选中某行时会和其他行显示不同
-        [self.view addSubview:PlayTimePickerView];
-        //PlayTimePickerView= nil;
-    }
-    
-    if(bPickerViewVisible==0)
-    {
-        bPickerViewVisible = 1;
-        [self showPickerView];
-    }
-    else
-    {
-        // Choose Time and then set timer to stop play
-        int vSeconds=0;
-        vSeconds = vPlayTimerMinute*60 + vPlayTimerSecond;
-        NSLog(@"Set Play Time to %d Seconds", vSeconds);
-        [NSTimer scheduledTimerWithTimeInterval:vSeconds                                         target:self
-                                       selector:@selector(PlayTimerFired:)
-                                       userInfo:nil
-                                        repeats:YES];
-        bPickerViewVisible = 0;
-        [self hidePickerView];
-
-    }
 }
 
 
@@ -1113,13 +1064,56 @@
         [self configNowPlayingInfoCenter];
 
     } else if ([notification.name isEqualToString:PlayButtonTapped]) {
-        [_PlayAudioButton setTitle:@"Stop" forState:UIControlStateNormal];
+        UIImage * myImage = [UIImage imageNamed: @"Stop.png"];
+        [_PlayAudioButton setImage:myImage  forState:UIControlStateNormal];
+        [_PlayAudioButton sizeThatFits:AudioButtonSize];
+        
 
     } else if ([notification.name isEqualToString:StopButtonTapped]) {
-        [_PlayAudioButton setTitle:@"Play" forState:UIControlStateNormal];
+        UIImage * myImage = [UIImage imageNamed: @"Play.png"];
+        [_PlayAudioButton setImage:myImage forState:UIControlStateNormal];
+        [_PlayAudioButton sizeThatFits:AudioButtonSize];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [AudioBufferLoadingLabel setText:@""];
+        });
+    } else if ([notification.name isEqualToString:audioBufferLoadingProgress]) {
+        // TODO: the text change may blink
+        int vProgress = vAudioBufferPacketCount*100/vAudioBufferThreshold;
+        NSString *pBuffer = NSLocalizedString(@"Buffer",@"test" );
+        NSLog(@"pBuffer=%@",pBuffer);
+        NSString *pText;
+        if(vProgress<100)
+        {
+            pText = [[NSString alloc]initWithFormat:@"%@:%d%%",NSLocalizedString(@"Buffer",@"test" ), vProgress];
+        }
+        else
+        {
+            pText = NSLocalizedString(@"Playing",@"test" );
+        }
+        
+        NSLog(@"%@",pText );
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [AudioBufferLoadingLabel setText:pText];
+        });
         
     } else {
+        
+        if ([notification.name isEqualToString:beginInterruption]) {
+            if(audioReplaySwitch==eReplaySwitch_On)
+            {
+                [self StopPlayAudio:self];
+            }
+        }
+        else  if ([notification.name isEqualToString:endInterruptionWithFlags]) {
+            if(audioReplaySwitch==eReplaySwitch_On)
+            {
+                [self PlayAudio:self];
+            }
+        }
+        else
+        {
         [self updateLogWithMessage:NSLocalizedString(@"Unknown remote event recieved.", @"A log event for unknown events.")];
+        }
     }
     
 }

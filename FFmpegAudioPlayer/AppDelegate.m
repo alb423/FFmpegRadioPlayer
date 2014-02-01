@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "ViewController.h"
 #import <AVFoundation/AVFoundation.h>
 
 
@@ -20,7 +21,8 @@ extern NSString *remoteControlForwardButtonTapped;
 extern NSString *remoteControlBackwardButtonTapped;
 extern NSString *remoteControlOtherButtonTapped;
 extern NSString *remoteControlShowMessage;
-
+extern NSString *beginInterruption;
+extern NSString *endInterruptionWithFlags;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -42,11 +44,6 @@ extern NSString *remoteControlShowMessage;
     
     
     [[AVAudioSession sharedInstance] setDelegate: self];
-//    Delegate Methods
-//    – beginInterruption
-//    – endInterruption
-//    – endInterruptionWithFlags:
-//    – inputIsAvailableChanged:
 
     return YES;
 }
@@ -64,6 +61,11 @@ extern NSString *remoteControlShowMessage;
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     NSLog(@"applicationDidEnterBackground");
     [self postNotificationWithName:remoteControlShowMessage];
+    
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    UINavigationController *nav = (UINavigationController *)delegate.window.rootViewController;
+    ViewController *viewController = [[nav viewControllers] objectAtIndex:0];
+    [viewController saveStatus];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -122,46 +124,21 @@ extern NSString *remoteControlShowMessage;
 }
 
 
-
 #pragma mark - AVAudioSession delegate
 - (void)beginInterruption{
     //播放器会话被终端拨，例如打电话
     NSLog(@"beginInterruption");
-    [[NSNotificationCenter defaultCenter] postNotificationName:remoteControlStopButtonTapped object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:beginInterruption object:nil];
 }
+
 - (void)endInterruption{
     NSLog(@"endInterruption");
 }
+
 - (void)endInterruptionWithFlags:(NSUInteger)flags{
     //被中断后回来，例如：挂断电话回来 endInterruptionWithFlags 1
     NSLog(@"endInterruptionWithFlags %i", flags);
-    [[NSNotificationCenter defaultCenter] postNotificationName:remoteControlPlayButtonTapped object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:endInterruptionWithFlags object:nil];
 }
-
-#if 0
-#pragma mark - ad_banner_view
-- (BOOL) allowActionToRun
-{
-    return YES;
-}
-
-- (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
-{
-    NSLog(@"didFailToReceiveAdWithError");
-}
-
-- (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner willLeaveApplication:(BOOL)willLeave
-{
-    NSLog(@"Banner view is beginning an ad action");
-    BOOL shouldExecuteAction = [self allowActionToRun]; // your application implements this method
-    if (!willLeave && shouldExecuteAction)
-    {
-        // insert code here to suspend any services that might conflict with the advertisement
-    }
-    return shouldExecuteAction;
-}
-#endif
-
-
 
 @end

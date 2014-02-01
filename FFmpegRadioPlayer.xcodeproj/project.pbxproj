@@ -11,7 +11,12 @@
 		9A193613188C1B2700BAE3E0 /* err_noprogram.json in Resources */ = {isa = PBXBuildFile; fileRef = 9A193612188C1B2700BAE3E0 /* err_noprogram.json */; };
 		9A22811417640C2F00BB4CED /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A22811317640C2F00BB4CED /* iAd.framework */; };
 		9A29728D1851BFA900160B6E /* double_linklist.c in Sources */ = {isa = PBXBuildFile; fileRef = 9A29728C1851BFA900160B6E /* double_linklist.c */; };
+		9A387919189BE35A00BD3752 /* Play.png in Resources */ = {isa = PBXBuildFile; fileRef = 9A387917189BE35A00BD3752 /* Play.png */; };
+		9A38791A189BE35A00BD3752 /* Stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 9A387918189BE35A00BD3752 /* Stop.png */; };
+		9A387922189BF82800BD3752 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A387921189BF82800BD3752 /* SettingsViewController.m */; };
 		9A4CD8401883C83800A2C962 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9A4CD83F1883C83800A2C962 /* Images.xcassets */; };
+		9A5C154B189D103E00F962A4 /* StopTimePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A5C154A189D103E00F962A4 /* StopTimePickerViewController.m */; };
+		9A5C154E189D27B300F962A4 /* ChooseCacheSizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A5C154D189D27B300F962A4 /* ChooseCacheSizeViewController.m */; };
 		9A6674821721133300FB478C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674811721133300FB478C /* UIKit.framework */; };
 		9A6674841721133300FB478C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674831721133300FB478C /* Foundation.framework */; };
 		9A6674861721133300FB478C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674851721133300FB478C /* CoreGraphics.framework */; };
@@ -22,11 +27,6 @@
 		9A6674961721133300FB478C /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9A6674951721133300FB478C /* Default@2x.png */; };
 		9A6674981721133300FB478C /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9A6674971721133300FB478C /* Default-568h@2x.png */; };
 		9A6674A11721133300FB478C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A6674A01721133300FB478C /* ViewController.m */; };
-		9A6674A91721133400FB478C /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674A81721133400FB478C /* SenTestingKit.framework */; };
-		9A6674AA1721133400FB478C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674811721133300FB478C /* UIKit.framework */; };
-		9A6674AB1721133400FB478C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674831721133300FB478C /* Foundation.framework */; };
-		9A6674C3172113AC00FB478C /* AudioPacketQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A6674C0172113AC00FB478C /* AudioPacketQueue.m */; };
-		9A6674C4172113AC00FB478C /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A6674C2172113AC00FB478C /* AudioPlayer.m */; };
 		9A6674CF1721157900FB478C /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674C71721157900FB478C /* libavcodec.a */; };
 		9A6674D01721157900FB478C /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674C81721157900FB478C /* libavdevice.a */; };
 		9A6674D11721157900FB478C /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6674C91721157900FB478C /* libavfilter.a */; };
@@ -45,24 +45,12 @@
 		9ACD2AFF1830A66300DEBAD9 /* MyUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ACD2AFE1830A66300DEBAD9 /* MyUtilities.m */; };
 		9ACD2B011830A69700DEBAD9 /* Default-iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 9ACD2B001830A69700DEBAD9 /* Default-iphone.png */; };
 		9ADF204E1761D4D80018ACF3 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ADF204D1761D4D80018ACF3 /* AVFoundation.framework */; };
-		9AF84B1C172FB95700A56189 /* output.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 9AF84B1B172FB95700A56189 /* output.pcm */; };
 		B2070F42172D766C00745C49 /* AudioUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = B2070F41172D766C00745C49 /* AudioUtilities.m */; };
 		B21B735D1805A9FB0019497C /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B21B735A1805A9FB0019497C /* MainStoryboard_iPhone.storyboard */; };
 		B2775925188EB673008FD3B2 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2775924188EB673008FD3B2 /* MessageUI.framework */; };
-		B277592B188EB8D6008FD3B2 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B277592A188EB8D6008FD3B2 /* SettingViewController.m */; };
 		B277592E188EB8EB008FD3B2 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B277592D188EB8EB008FD3B2 /* AboutViewController.m */; };
 		B2CA3198177360B9004261DF /* GetRadioProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = B2CA3197177360B9004261DF /* GetRadioProgram.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		9A6674AC1721133400FB478C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 9A6674761721133300FB478C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 9A66747D1721133300FB478C;
-			remoteInfo = FFmpegAudioPlayer;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		9A19360E188C111100BAE3E0 /* DailyProgramViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DailyProgramViewController.h; sourceTree = "<group>"; };
@@ -73,13 +61,22 @@
 		9A29728C1851BFA900160B6E /* double_linklist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = double_linklist.c; sourceTree = "<group>"; };
 		9A29728E1851BFBB00160B6E /* double_linklist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = double_linklist.h; sourceTree = "<group>"; };
 		9A299D84188BE3FB00629C58 /* Notifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
+		9A387917189BE35A00BD3752 /* Play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Play.png; sourceTree = "<group>"; };
+		9A387918189BE35A00BD3752 /* Stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Stop.png; sourceTree = "<group>"; };
+		9A38791F189BF12A00BD3752 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
+		9A387920189BF82800BD3752 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingsViewController.h; path = ../SettingsViewController.h; sourceTree = "<group>"; };
+		9A387921189BF82800BD3752 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingsViewController.m; path = ../SettingsViewController.m; sourceTree = "<group>"; };
 		9A4CD83F1883C83800A2C962 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = FFmpegRadioPlayer/Images.xcassets; sourceTree = "<group>"; };
+		9A5C1549189D103E00F962A4 /* StopTimePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StopTimePickerViewController.h; path = ../StopTimePickerViewController.h; sourceTree = "<group>"; };
+		9A5C154A189D103E00F962A4 /* StopTimePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StopTimePickerViewController.m; path = ../StopTimePickerViewController.m; sourceTree = "<group>"; };
+		9A5C154C189D27B300F962A4 /* ChooseCacheSizeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseCacheSizeViewController.h; sourceTree = "<group>"; };
+		9A5C154D189D27B300F962A4 /* ChooseCacheSizeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseCacheSizeViewController.m; sourceTree = "<group>"; };
 		9A66747E1721133300FB478C /* FFmpegRadioPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FFmpegRadioPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A6674811721133300FB478C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		9A6674831721133300FB478C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		9A6674851721133300FB478C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		9A6674891721133300FB478C /* FFmpegRadioPlayer-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FFmpegRadioPlayer-Info.plist"; sourceTree = "<group>"; };
-		9A66748B1721133300FB478C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		9A66748B1721133300FB478C /* en */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; lineEnding = 0; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		9A66748D1721133300FB478C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		9A66748F1721133300FB478C /* FFmpegRadioPlayer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FFmpegRadioPlayer-Prefix.pch"; sourceTree = "<group>"; };
 		9A6674901721133300FB478C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -89,7 +86,6 @@
 		9A6674971721133300FB478C /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		9A66749F1721133300FB478C /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		9A6674A01721133300FB478C /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		9A6674A71721133400FB478C /* FFmpegRadioPlayerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FFmpegRadioPlayerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A6674A81721133400FB478C /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		9A6674BF172113AC00FB478C /* AudioPacketQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioPacketQueue.h; sourceTree = "<group>"; };
 		9A6674C0172113AC00FB478C /* AudioPacketQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioPacketQueue.m; sourceTree = "<group>"; };
@@ -115,10 +111,7 @@
 		9AF84B1B172FB95700A56189 /* output.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = output.pcm; sourceTree = "<group>"; };
 		B2070F40172D766C00745C49 /* AudioUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioUtilities.h; sourceTree = "<group>"; };
 		B2070F41172D766C00745C49 /* AudioUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioUtilities.m; sourceTree = "<group>"; };
-		B21B735B1805A9FB0019497C /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
 		B2775924188EB673008FD3B2 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		B2775929188EB8D6008FD3B2 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingViewController.h; path = ../SettingViewController.h; sourceTree = "<group>"; };
-		B277592A188EB8D6008FD3B2 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingViewController.m; path = ../SettingViewController.m; sourceTree = "<group>"; };
 		B277592C188EB8EB008FD3B2 /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AboutViewController.h; path = ../AboutViewController.h; sourceTree = "<group>"; };
 		B277592D188EB8EB008FD3B2 /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AboutViewController.m; path = ../AboutViewController.m; sourceTree = "<group>"; };
 		B2CA3196177360B9004261DF /* GetRadioProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetRadioProgram.h; sourceTree = "<group>"; };
@@ -151,16 +144,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9A6674A31721133400FB478C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9A6674A91721133400FB478C /* SenTestingKit.framework in Frameworks */,
-				9A6674AA1721133400FB478C /* UIKit.framework in Frameworks */,
-				9A6674AB1721133400FB478C /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -171,6 +154,28 @@
 				9AB634251763182D00D6B177 /* hinet_radio_json.json */,
 			);
 			name = jsonData;
+			sourceTree = "<group>";
+		};
+		9A387912189B9B0D00BD3752 /* images */ = {
+			isa = PBXGroup;
+			children = (
+				9A387917189BE35A00BD3752 /* Play.png */,
+				9A387918189BE35A00BD3752 /* Stop.png */,
+			);
+			name = images;
+			sourceTree = "<group>";
+		};
+		9A387923189BFF5300BD3752 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				9A5C154C189D27B300F962A4 /* ChooseCacheSizeViewController.h */,
+				9A5C154D189D27B300F962A4 /* ChooseCacheSizeViewController.m */,
+				9A5C1549189D103E00F962A4 /* StopTimePickerViewController.h */,
+				9A5C154A189D103E00F962A4 /* StopTimePickerViewController.m */,
+				9A387920189BF82800BD3752 /* SettingsViewController.h */,
+				9A387921189BF82800BD3752 /* SettingsViewController.m */,
+			);
+			name = Settings;
 			sourceTree = "<group>";
 		};
 		9A6674751721133300FB478C = {
@@ -187,7 +192,6 @@
 			isa = PBXGroup;
 			children = (
 				9A66747E1721133300FB478C /* FFmpegRadioPlayer.app */,
-				9A6674A71721133400FB478C /* FFmpegRadioPlayerTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -214,8 +218,8 @@
 		9A6674871721133300FB478C /* FFmpegAudioPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				B2775929188EB8D6008FD3B2 /* SettingViewController.h */,
-				B277592A188EB8D6008FD3B2 /* SettingViewController.m */,
+				9A387923189BFF5300BD3752 /* Settings */,
+				9A387912189B9B0D00BD3752 /* images */,
 				B277592C188EB8EB008FD3B2 /* AboutViewController.h */,
 				B277592D188EB8EB008FD3B2 /* AboutViewController.m */,
 				9A193614188C1B2A00BAE3E0 /* jsonData */,
@@ -312,25 +316,6 @@
 			productReference = 9A66747E1721133300FB478C /* FFmpegRadioPlayer.app */;
 			productType = "com.apple.product-type.application";
 		};
-		9A6674A61721133400FB478C /* FFmpegRadioPlayerTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 9A6674BC1721133400FB478C /* Build configuration list for PBXNativeTarget "FFmpegRadioPlayerTests" */;
-			buildPhases = (
-				9A6674A21721133400FB478C /* Sources */,
-				9A6674A31721133400FB478C /* Frameworks */,
-				9A6674A41721133400FB478C /* Resources */,
-				9A6674A51721133400FB478C /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				9A6674AD1721133400FB478C /* PBXTargetDependency */,
-			);
-			name = FFmpegRadioPlayerTests;
-			productName = FFmpegAudioPlayerTests;
-			productReference = 9A6674A71721133400FB478C /* FFmpegRadioPlayerTests.octest */;
-			productType = "com.apple.product-type.bundle";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -351,6 +336,8 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				"zh-Hant",
+				Base,
 			);
 			mainGroup = 9A6674751721133300FB478C;
 			productRefGroup = 9A66747F1721133300FB478C /* Products */;
@@ -358,7 +345,6 @@
 			projectRoot = "";
 			targets = (
 				9A66747D1721133300FB478C /* FFmpegRadioPlayer */,
-				9A6674A61721133400FB478C /* FFmpegRadioPlayerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -372,39 +358,17 @@
 				9A4CD8401883C83800A2C962 /* Images.xcassets in Resources */,
 				9A193613188C1B2700BAE3E0 /* err_noprogram.json in Resources */,
 				9ACD2B011830A69700DEBAD9 /* Default-iphone.png in Resources */,
+				9A38791A189BE35A00BD3752 /* Stop.png in Resources */,
 				9A6674941721133300FB478C /* Default.png in Resources */,
 				B21B735D1805A9FB0019497C /* MainStoryboard_iPhone.storyboard in Resources */,
 				9A6674961721133300FB478C /* Default@2x.png in Resources */,
+				9A387919189BE35A00BD3752 /* Play.png in Resources */,
 				9A6674981721133300FB478C /* Default-568h@2x.png in Resources */,
 				9AB634261763182D00D6B177 /* hinet_radio_json.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9A6674A41721133400FB478C /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9AF84B1C172FB95700A56189 /* output.pcm in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		9A6674A51721133400FB478C /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		9A66747A1721133300FB478C /* Sources */ = {
@@ -414,36 +378,21 @@
 				9A6674E317211FCB00FB478C /* AudioPacketQueue.m in Sources */,
 				9ACD2AFF1830A66300DEBAD9 /* MyUtilities.m in Sources */,
 				9A6674E517211FCB00FB478C /* AudioPlayer.m in Sources */,
+				9A387922189BF82800BD3752 /* SettingsViewController.m in Sources */,
 				9A66748E1721133300FB478C /* main.m in Sources */,
 				9A6674921721133300FB478C /* AppDelegate.m in Sources */,
 				9A193610188C111100BAE3E0 /* DailyProgramViewController.m in Sources */,
 				B277592E188EB8EB008FD3B2 /* AboutViewController.m in Sources */,
 				9A6674A11721133300FB478C /* ViewController.m in Sources */,
+				9A5C154E189D27B300F962A4 /* ChooseCacheSizeViewController.m in Sources */,
 				9A29728D1851BFA900160B6E /* double_linklist.c in Sources */,
 				B2070F42172D766C00745C49 /* AudioUtilities.m in Sources */,
-				B277592B188EB8D6008FD3B2 /* SettingViewController.m in Sources */,
 				B2CA3198177360B9004261DF /* GetRadioProgram.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9A6674A21721133400FB478C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9A6674C3172113AC00FB478C /* AudioPacketQueue.m in Sources */,
-				9A6674C4172113AC00FB478C /* AudioPlayer.m in Sources */,
+				9A5C154B189D103E00F962A4 /* StopTimePickerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		9A6674AD1721133400FB478C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 9A66747D1721133300FB478C /* FFmpegRadioPlayer */;
-			targetProxy = 9A6674AC1721133400FB478C /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		9A66748A1721133300FB478C /* InfoPlist.strings */ = {
@@ -457,7 +406,7 @@
 		B21B735A1805A9FB0019497C /* MainStoryboard_iPhone.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				B21B735B1805A9FB0019497C /* en */,
+				9A38791F189BF12A00BD3752 /* en */,
 			);
 			name = MainStoryboard_iPhone.storyboard;
 			sourceTree = "<group>";
@@ -598,40 +547,6 @@
 			};
 			name = Release;
 		};
-		9A6674BD1721133400FB478C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/FFmpegAudioPlayer.app/FFmpegAudioPlayer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "FFmpegAudioPlayer/FFmpegAudioPlayer-Prefix.pch";
-				INFOPLIST_FILE = "FFmpegAudioPlayerTests/FFmpegAudioPlayerTests-Info.plist";
-				PRODUCT_NAME = FFmpegRadioPlayerTests;
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Debug;
-		};
-		9A6674BE1721133400FB478C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/FFmpegAudioPlayer.app/FFmpegAudioPlayer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "FFmpegAudioPlayer/FFmpegAudioPlayer-Prefix.pch";
-				INFOPLIST_FILE = "FFmpegAudioPlayerTests/FFmpegAudioPlayerTests-Info.plist";
-				PRODUCT_NAME = FFmpegRadioPlayerTests;
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -649,15 +564,6 @@
 			buildConfigurations = (
 				9A6674BA1721133400FB478C /* Debug */,
 				9A6674BB1721133400FB478C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		9A6674BC1721133400FB478C /* Build configuration list for PBXNativeTarget "FFmpegRadioPlayerTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				9A6674BD1721133400FB478C /* Debug */,
-				9A6674BE1721133400FB478C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

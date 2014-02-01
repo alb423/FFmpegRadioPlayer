@@ -27,5 +27,9 @@
 
  NSString *PlayButtonTapped = @"PlayButtonTapped";
  NSString *StopButtonTapped = @"StopButtonTapped";
+ NSString *audioBufferLoadingProgress = @"Audio Loading Progress";
+
+ NSString *beginInterruption = @"beginInterruption";
+ NSString *endInterruptionWithFlags = @"endInterruptionWithFlags";
 
 #endif
